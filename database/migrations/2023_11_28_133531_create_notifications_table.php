@@ -13,7 +13,9 @@ return new class extends Migration
     {
         Schema::create('notifications', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
+            $table->boolean('read');
+            $table->integer("post_id");
+            $table->integer("user_id");
         });
     }
 
