@@ -13,7 +13,11 @@ return new class extends Migration
     {
         Schema::create('credentials', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
+            $table->string('phone_no', 15)->unique();
+            $table->string('password', 25);
+            $table->string('user_role', 10);
+            $table->boolean('is_vend_cust')->default(0);
+            $table->integer("user_id")->nullable();
         });
     }
 
