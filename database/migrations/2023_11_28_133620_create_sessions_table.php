@@ -13,7 +13,10 @@ return new class extends Migration
     {
         Schema::create('sessions', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
+            $table->string('session', 255);
+            $table->timestamp('expiry_date');
+            $table->boolean('is_valid')->default(1);
+            $table->integer('credential_id')->nullable();
         });
     }
 
