@@ -16,3 +16,14 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::middleware(['middleware' => 'cors'])->group(function () {
+    Route::get('/testing', function() {
+    return json_encode([
+        'hello' => 'world',
+        'hi' => 'david'
+    ]);
+});
+});
+
+

@@ -16,4 +16,11 @@ class ExampleTest extends TestCase
 
         $response->assertStatus(200);
     }
+
+    public function test_api_test(): void 
+    {
+        $res = $this->get('/api/test');
+        $res->assertStatus(200);
+        $res->assertJson(['hi' => 'david']);
+    }
 }
