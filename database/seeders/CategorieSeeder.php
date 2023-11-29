@@ -19,6 +19,7 @@ class CategorieSeeder extends Seeder
                 ['category' => 'Groceries'],
                 ['category' => 'Cold Drinks'],
                 ['category' => 'Hard Drinks'],
+                ['category' => 'Undergarments']
             ]
             );
     }
