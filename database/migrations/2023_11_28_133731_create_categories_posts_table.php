@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('categories_posts', function (Blueprint $table) {
-            $table->integer('category_id');
-            $table->integer('post_id');
+            $table->bigInteger('category_id');
+            $table->bigInteger('post_id');
         });
     }
 

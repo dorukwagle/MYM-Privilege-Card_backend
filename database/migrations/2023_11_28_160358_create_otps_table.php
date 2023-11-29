@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('otps', function (Blueprint $table) {
             $table->id();
             $table->timestamp('expiry_date');
-            $table->integer('user_id');
+            $table->bigInteger('user_id');
         });
     }
 

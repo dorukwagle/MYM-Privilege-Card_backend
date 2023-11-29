@@ -13,7 +13,9 @@ return new class extends Migration
     {
         Schema::create('payment_histories', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
+            $table->double('payment_amount');
+            $table->timestamp('payment_date')->useCurrent();
+            $table->bigInteger('user_id');
         });
     }
 
