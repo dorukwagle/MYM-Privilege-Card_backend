@@ -9,8 +9,12 @@ use GuzzleHttp\Psr7\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
+use function PHPSTORM_META\registerArgumentsSet;
+
 class RegistrationController extends Controller
 {
+    private $uploadPath = 'public/uploads/cdn';
+
     public function registerCustomer(Request $request) {
         $request->validate([
             'location' => 'required',
@@ -26,7 +30,7 @@ class RegistrationController extends Controller
             'preferred_categories.*' => 'exists:categories,id'
         ]);
 
-        $profile_icon = $request->file('profile_icon')->store('public/uploads/cdn');
+        $profileIcon = $request->file('profile_icon')->store($this->uploadPath);
 
         $user = User::create([
             'full_name' => $request->full_name,
@@ -34,7 +38,7 @@ class RegistrationController extends Controller
             'gender' => $request->gender,
             'address' => $request->address,
             'location' => $request->location,
-            'profile_icon' => $profile_icon,
+            'profile_icon' => $profileIcon,
             'contact_no' => $request->contact_no,
             'email' => $request->email,
             'password' => Hash::make($request->password),
@@ -72,6 +76,36 @@ class RegistrationController extends Controller
             'about_org' => ['required', 'max:500']
         ]);
 
-        
+        $profileIcon = $request->file('profile_icon')->store($this->uploadPath);
+        $bannerIcon = $request->file('banner_icon')->store($this->uploadPath);
+        $registrationCertificate = $request->file('org_registration_card')->store($this->uploadPath);
+
+        $user = User::create([
+            'full_name' => $request->org_name,
+            'dob' => $request->estd,
+            'address' => $request->address,
+            'location' => $request->location,
+            'profile_icon' => $profileIcon,
+            'contact_no' => $request->contact_no,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'user_role' => 'vendor',
+            'banner_icon' => $bannerIcon,
+            'org_registration_card' => $registrationCertificate,
+            'about_org' => $request->about_org,
+            'org_pan_no' => $request->org_pan_number,
+        ]);
+
+        $productCategories = [];
+        foreach ($request->product_categories as $category_id) {
+            $productCategories[] = [
+                'user_id' => $user->id,
+                'category_id' => $category_id
+            ];
+        }
+
+        UsersCategory::create($productCategories);
+
+        return response()->json(['status' => 'ok']);
     }
 }
