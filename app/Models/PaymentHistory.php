@@ -8,5 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class PaymentHistory extends Model
 {
     protected $table = 'payment_histories';
+    protected $guarded = ['id'];
     use HasFactory;
 }

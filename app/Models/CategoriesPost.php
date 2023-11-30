@@ -8,5 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class CategoriesPost extends Model
 {
     protected $table = 'categories_posts';
+    protected $guarded = ['id'];
     use HasFactory;
 }

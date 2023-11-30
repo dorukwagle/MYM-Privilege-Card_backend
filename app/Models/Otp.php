@@ -7,5 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Otp extends Model
 {
+    protected $guarded = ['id'];
     use HasFactory;
 }
