@@ -6,13 +6,14 @@ use App\Models\User;
 use App\Models\UsersCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 
 class RegistrationController extends Controller
 {
     private $uploadPath = 'public/uploads/cdn';
 
     public function registerCustomer(Request $request) {
-        $request->validate([
+        $validation = Validator::make($request->all(), [
             'location' => 'required',
             'profile_icon' => 'required',
             'full_name' => ['required', 'string', 'regex:/^[\pL\s]+ [\pL\s]+$/u'],
@@ -26,8 +27,14 @@ class RegistrationController extends Controller
             'preferred_categories.*' => 'exists:categories,id'
         ]);
 
-        $profileIcon = $request->file('profile_icon')->store($this->uploadPath);
+        if($validation->fails())
+            return response($validation->errors(), 400);
+        
+        if (!$request->hasFile('profile_icon'))
+            return response(['profile_icon' => 'file required'], 400);
 
+        $profileIcon = $request->file('profile_icon')->store($this->uploadPath);
+        return $request->all();
         $user = User::create([
             'full_name' => $request->full_name,
             'dob' => $request->dob,
@@ -55,7 +62,7 @@ class RegistrationController extends Controller
     }
 
     public function registerVendor(Request $request) {
-        $request->validate([
+        $validation = Validator::make($request->all(), [
             'location' => 'required',
             'profile_icon' => 'required',
             'banner_icon' => 'required',
@@ -71,6 +78,23 @@ class RegistrationController extends Controller
             'org_registration_card' => 'required',
             'about_org' => ['required', 'max:500']
         ]);
+
+        if ($validation->fails())
+            return response($validation->errors(), 400);
+    
+        $fileErrs = [];
+
+        if (!$request->hasFile('profile_icon'))
+            $fileErrs[] = ['profile_icon' => 'file required'];
+        
+        if (!$request->hasFile('banner_icon'))
+            $fileErrs[] = ['banner_icon' => 'file required'];
+
+         if (!$request->hasFile('org_registration_card'))
+            $fileErrs[] = ['org_registration_card' => 'file required'];
+
+        if (!!$fileErrs)
+            return response($fileErrs, 400);
 
         $profileIcon = $request->file('profile_icon')->store($this->uploadPath);
         $bannerIcon = $request->file('banner_icon')->store($this->uploadPath);
