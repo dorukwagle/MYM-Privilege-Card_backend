@@ -31,6 +31,7 @@ return new class extends Migration
             $table->string('password', 25);
             $table->string('user_role', 10);
             $table->boolean('is_vend_cust')->default(0);
+            $table->text('org_about');
         });
     }
 
