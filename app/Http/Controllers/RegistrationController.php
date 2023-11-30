@@ -69,7 +69,7 @@ class RegistrationController extends Controller
             'product_categories.*' => 'exists:categories,id',
             'org_pan_no' => 'required',
             'org_registration_card' => 'required',
-            'org_about' => ['required', 'max:500']
+            'about_org' => ['required', 'max:500']
         ]);
 
         
