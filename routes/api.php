@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\RegistrationController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -18,10 +19,5 @@ Route::middleware('auth')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/test', function () {
-    return json_encode([
-        'hello' => 'world',
-        'hi' => 'david',
-        'api' => 'test'
-    ]);
-});
+Route::post('/register/customer', [RegistrationController::class, 'registerCustomer']);
+Route::post('/register/vendor', [RegistrationController::class, 'registerVendor']);

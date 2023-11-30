@@ -27,6 +27,7 @@ return new class extends Migration
             $table->string('org_registration_card')->nullable();
             $table->string('org_pan_no')->nullable();
             $table->string('email', 15)->unique();
+            $table->boolean('email_verified')->default(0);
             $table->string('password', 25);
             $table->string('user_role', 10);
             $table->boolean('is_vend_cust')->default(0);
