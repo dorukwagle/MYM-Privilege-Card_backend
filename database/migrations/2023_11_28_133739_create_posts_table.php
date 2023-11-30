@@ -18,6 +18,7 @@ return new class extends Migration
             $table->text('body');
             $table->timestamp('created_at')->useCurrent();
             $table->bigInteger('user_id');
+            $table->timestamps();
         });
     }
 

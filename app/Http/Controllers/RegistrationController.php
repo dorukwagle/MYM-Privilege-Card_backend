@@ -34,7 +34,7 @@ class RegistrationController extends Controller
             return response(['profile_icon' => 'file required'], 400);
 
         $profileIcon = $request->file('profile_icon')->store($this->uploadPath);
-        return $request->all();
+
         $user = User::create([
             'full_name' => $request->full_name,
             'dob' => $request->dob,

@@ -8,5 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class Categorie extends Model
 {
     protected $guarded = ['id'];
+    protected $timestamps = false;
     use HasFactory;
 }
