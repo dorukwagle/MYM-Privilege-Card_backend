@@ -8,6 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class Otp extends Model
 {
     protected $guarded = ['id'];
-    protected $timestamps = false;
+    public $timestamps = false;
     use HasFactory;
 }

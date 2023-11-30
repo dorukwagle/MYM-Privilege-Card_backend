@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class CategoriesPost extends Model
 {
     protected $table = 'categories_posts';
-    protected $timestamps = false;
+    public $timestamps = false;
     protected $guarded = ['id'];
     use HasFactory;
 }

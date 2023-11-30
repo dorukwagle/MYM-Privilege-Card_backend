@@ -9,6 +9,6 @@ class PaymentHistory extends Model
 {
     protected $table = 'payment_histories';
     protected $guarded = ['id'];
-    protected $timestamps = false;
+    public $timestamps = false;
     use HasFactory;
 }

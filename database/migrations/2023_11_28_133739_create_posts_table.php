@@ -16,7 +16,6 @@ return new class extends Migration
             $table->text('title');
             $table->string('icon', 255);
             $table->text('body');
-            $table->timestamp('created_at')->useCurrent();
             $table->bigInteger('user_id');
             $table->timestamps();
         });
