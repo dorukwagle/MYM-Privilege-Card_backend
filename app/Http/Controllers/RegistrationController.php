@@ -2,14 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Categorie;
 use App\Models\User;
 use App\Models\UsersCategory;
-use GuzzleHttp\Psr7\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-
-use function PHPSTORM_META\registerArgumentsSet;
 
 class RegistrationController extends Controller
 {
