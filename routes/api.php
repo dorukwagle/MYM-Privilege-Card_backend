@@ -17,3 +17,11 @@ Route::post('/register/vendor', [RegistrationController::class, 'registerVendor'
 
 Route::post('/auth/login', [AuthController::class, 'login']);
 Route::post('/auth/logout', [AuthController::class, 'logout']);
+
+Route::put('/update-email', []); //update profile email
+
+// change unverified email in case mistakenly entered and submitted
+Route::post('/verify/change-email', []); 
+
+Route::post('/verify/send-otp', []);
+Route::post('/verify/verify-email', []);
