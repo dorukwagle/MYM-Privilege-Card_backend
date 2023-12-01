@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->string('session', 255);
             $table->timestamp('expiry_date');
-            $table->boolean('is_valid')->default(1);
             $table->bigInteger('user_id')->nullable();
         });
     }

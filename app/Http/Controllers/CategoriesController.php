@@ -8,6 +8,6 @@ use Illuminate\Http\Request;
 class CategoriesController extends Controller
 {
     public function getProductCategories() {
-        return Categorie::get();
+        return Categorie::all();
     }
 }
