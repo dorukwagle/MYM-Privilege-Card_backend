@@ -51,12 +51,11 @@ class RegistrationController extends Controller
             'user_role' => 'customer'
         ]);
 
-        $preferred = [];
         foreach ($request->preferred_categories as $category_id) {
-            $preferred[] = [
-                'user_id' => $user->id,
+            UsersCategory::create([
+                 'user_id' => $user->id,
                 'category_id' => $category_id
-            ];
+            ]);
         }
 
         return response()->json(['status' => 'ok']);
@@ -82,7 +81,6 @@ class RegistrationController extends Controller
 
         if ($validation->fails())
             return response($validation->errors(), 400);
-    
         $fileErrs = [];
 
         if (!$request->hasFile('profile_icon'))
@@ -119,14 +117,12 @@ class RegistrationController extends Controller
 
         $productCategories = [];
         foreach ($request->product_categories as $category_id) {
-            $productCategories[] = [
+            UsersCategory::create([
                 'user_id' => $user->id,
                 'category_id' => $category_id
-            ];
+            ]);
         }
-
-        UsersCategory::create($productCategories);
-
+        
         return response()->json(['status' => 'ok']);
     }
 }
