@@ -4,11 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\UsersCategory;
-use Error;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class RegistrationController extends Controller
@@ -58,7 +55,11 @@ class RegistrationController extends Controller
             ]);
         }
 
-        return response()->json(['status' => 'ok']);
+        return response()->json([
+            'status' => 'ok', 
+            'user_id' => $user->id, 
+            'email' => $user->email
+        ]);
     }
 
     public function registerVendor(Request $request) {
@@ -115,14 +116,17 @@ class RegistrationController extends Controller
             'org_pan_no' => $request->org_pan_number,
         ]);
 
-        $productCategories = [];
         foreach ($request->product_categories as $category_id) {
             UsersCategory::create([
                 'user_id' => $user->id,
                 'category_id' => $category_id
             ]);
         }
-        
-        return response()->json(['status' => 'ok']);
+
+        return response()->json([
+            'status' => 'ok',
+            'user_id' => $user->id,
+            'email' => $user->email
+        ]);
     }
 }
