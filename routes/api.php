@@ -17,6 +17,24 @@ Route::get('/categories', [CategoriesController::class, 'getProductCategories'])
  * Returns the list of categories:
  * [{id: '1', category: 'Cosmetics'}, .....]
  */
+Route::post('/category', [CategoriesController::class, 'addCategory']);
+/**
+ * body parameters:
+ * category (name of the category)
+ * 
+ * ON SUCCESS: returns {status: 'ok'}
+ * Errors:
+ * validation errors with 400 code
+ * 
+ */
+Route::delete('/category/{id}', [CategoriesController::class, 'deleteCategory'])
+            ->whereNumber('id');
+/**
+ * ON SUCCESS: {status: ok}
+ * 
+ * Errors:
+ * 400 with {err: 'category not found'}
+ */
 
 Route::post('/register/customer', [RegistrationController::class, 'registerCustomer']);
 /**
