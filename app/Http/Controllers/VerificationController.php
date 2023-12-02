@@ -11,8 +11,6 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
-use function PHPUnit\Framework\returnSelf;
-
 class VerificationController extends Controller
 {
     
@@ -91,7 +89,8 @@ class VerificationController extends Controller
         $user = User::find($request->user_id);
 
         if (!$user) return response(['err' => 'invalid user_id'], 400);
-        if (!Hash::check($request->password, $user->password)) return response(['err' => 'incorrect password']);
+        if (!Hash::check($request->password, $user->password)) return response(['err' => 'incorrect password'], 400);
+        if ($user->email_verified) return response(['err' => 'email already verified'], 400);
         
         $user->email = $request->email;
         $user->save();

@@ -27,8 +27,9 @@ class AuthController extends Controller
            return $this->getErrMsg();
 
         $user = User::where('email', '=', $request->email)->first();
+        $passCheck = Hash::check($request->password, $user->password);
 
-        if(!$user)
+        if(!($user && $passCheck))
             return $this->getErrMsg();
 
         if(!$user->email_verified)
