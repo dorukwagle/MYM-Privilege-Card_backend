@@ -25,3 +25,6 @@ Route::post('/verify/change-email', []);
 
 Route::post('/verify/send-otp', []);
 Route::post('/verify/verify-email', []);
+
+// InfoController for getting information of a customer or vendor or admin for contact purposes
+// ProfileController for user's profile updating and retrieving

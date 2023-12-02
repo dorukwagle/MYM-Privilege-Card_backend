@@ -7,8 +7,11 @@ use App\Models\Otp;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
+
+use function PHPUnit\Framework\returnSelf;
 
 class VerificationController extends Controller
 {
@@ -71,6 +74,27 @@ class VerificationController extends Controller
 
         User::where('id', $request->user_id)
                     ->update(['email_verified' => true]);
+
+        return ['status' => 'ok'];
+    }
+
+    public function changeEmail(Request $request) {
+        $validation = Validator::make($request->all(), [
+            'user_id' => 'required',
+            'email' => ['required', 'email', 'unique:users'],
+            'password' => 'required'
+        ]);
+
+        if ($validation->fails())
+            return response($validation->errors(), 400);
+
+        $user = User::find($request->user_id);
+
+        if (!$user) return response(['err' => 'invalid user_id'], 400);
+        if (!Hash::check($request->password, $user->password)) return response(['err' => 'incorrect password']);
+        
+        $user->email = $request->email;
+        $user->save();
 
         return ['status' => 'ok'];
     }
