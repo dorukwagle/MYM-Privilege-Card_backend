@@ -45,7 +45,7 @@ class VerificationController extends Controller
         Otp::create([
             'otp' => $otp,
             'user_id' => $user->id,
-            'expiry_date' =>Carbon::now()->addMinutes(3)
+            'expiry_date' =>Carbon::now()->addMinutes(1)
         ]);
 
         // send the otp to the user
@@ -55,6 +55,23 @@ class VerificationController extends Controller
     }
 
     public function verifyEmail(Request $request) {
+        $validation = Validator::make($request->all(), [
+            'user_id' => 'required',
+            'otp' => ['required', 'min:6', 'max:6'],
+        ]);
 
+        if ($validation->fails())
+            return response($validation->errors(), 400);
+
+        $otp = Otp::where('user_id', '=', $request->user_id)->where('otp', '=', $request->otp);
+
+        if (!$otp) return response(['err' => 'user not found'], 400);
+        if (Carbon::parse($otp->expiry_date)->isPast()) 
+            return response(['err' => 'otp expired'], 400);
+
+        User::where('id', $request->user_id)
+                    ->update(['email_verified' => true]);
+
+        return ['status' => 'ok'];
     }
 }
