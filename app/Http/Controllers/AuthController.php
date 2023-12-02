@@ -17,7 +17,6 @@ class AuthController extends Controller
     }
 
     public function login(Request $request) {
-        return Carbon::now();
         $validation = Validator::make($request->all(), [
             'email' => 'required',
             'password' => 'required'
@@ -27,9 +26,11 @@ class AuthController extends Controller
            return $this->getErrMsg();
 
         $user = User::where('email', '=', $request->email)->first();
+        if (!$user) return $this->getErrMsg();
+
         $passCheck = Hash::check($request->password, $user->password);
 
-        if(!($user && $passCheck))
+        if(!$user || !$passCheck)
             return $this->getErrMsg();
 
         if(!$user->email_verified)

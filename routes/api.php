@@ -83,7 +83,7 @@ Route::post('/auth/logout', [AuthController::class, 'logout']);
 
 // Route::put('/update-email', []); //update profile email
 
-Route::put('/verify/change-email', [VerificationController::class, 'changeEmail']); 
+Route::post('/verify/change-email', [VerificationController::class, 'changeEmail']); 
 /**
  * change unverified email in case mistakenly entered and submitted
  * Body parameters: 
@@ -129,3 +129,6 @@ Route::post('/verify/verify-email', [VerificationController::class, 'verifyEmail
 
 // InfoController for getting information of a customer or vendor or admin for contact purposes
 // ProfileController for user's profile updating and retrieving
+
+//test reamining routes:
+// logout

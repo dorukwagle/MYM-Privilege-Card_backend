@@ -35,20 +35,19 @@ class VerificationController extends Controller
         if($validation->fails())
             return $this->sendErrorResponse();
 
-        $user = User::where('id', '=', $request->user_id)->get();
-
+        $user = User::find($request->user_id);
         if (($user->email != $request->email) || $user->email_verified)
             return $this->sendErrorResponse();
-
+        
         $otp = $this->generateOtp();
-
+        
         // save the otp in the database
         Otp::create([
             'otp' => $otp,
             'user_id' => $user->id,
-            'expiry_date' =>Carbon::now()->addMinutes(1)
+            'expiry_date' => Carbon::now()->addMinutes(1)
         ]);
-
+        
         // send the otp to the user
         $this->sendOtp($user->email, $otp);
 
@@ -63,10 +62,10 @@ class VerificationController extends Controller
 
         if ($validation->fails())
             return response($validation->errors(), 400);
-
-        $otp = Otp::where('user_id', '=', $request->user_id)->where('otp', '=', $request->otp);
-
+        $otp = Otp::where('user_id', $request->user_id)->where('otp', $request->otp)->first();
+        
         if (!$otp) return response(['err' => 'user not found'], 400);
+
         if (Carbon::parse($otp->expiry_date)->isPast()) 
             return response(['err' => 'otp expired'], 400);
 
@@ -79,7 +78,7 @@ class VerificationController extends Controller
     public function changeEmail(Request $request) {
         $validation = Validator::make($request->all(), [
             'user_id' => 'required',
-            'email' => ['required', 'email', 'unique:users'],
+            'email' => ['required', 'email'],
             'password' => 'required'
         ]);
 

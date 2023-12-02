@@ -16,14 +16,17 @@ class OtpMail extends Mailable
     /**
      * Create a new message instance.
      */
-    public function __construct()
+    public $otp;
+
+    public function __construct($otp)
     {
-        //
+        $this->otp = $otp;
     }
 
     // public function build()
     // {
-    //     return $this->view('otp');
+    //     // return $this->view('emails.otp')->with(['otp' => $this->otp]);
+    //     return $this->html(view('emails.otp')->with(['opt' => $this->otp])->render());
     // }
 
     
@@ -43,7 +46,7 @@ class OtpMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'view.name',
+            view: 'emails.otp',
         );
     }
 
