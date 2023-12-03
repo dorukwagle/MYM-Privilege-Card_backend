@@ -17,7 +17,8 @@ Route::get('/categories', [CategoriesController::class, 'getProductCategories'])
  * Returns the list of categories:
  * [{id: '1', category: 'Cosmetics'}, .....]
  */
-Route::post('/category', [CategoriesController::class, 'addCategory']);
+Route::middleware('auth.admin')
+            ->post('/category', [CategoriesController::class, 'addCategory']);
 /**
  * body parameters:
  * category (name of the category)
@@ -27,7 +28,8 @@ Route::post('/category', [CategoriesController::class, 'addCategory']);
  * validation errors with 400 code
  * 
  */
-Route::delete('/category/{id}', [CategoriesController::class, 'deleteCategory'])
+Route::middleware('auth.admin')
+            ->delete('/category/{id}', [CategoriesController::class, 'deleteCategory'])
             ->whereNumber('id');
 /**
  * ON SUCCESS: {status: ok}
@@ -94,7 +96,8 @@ Route::post('/auth/login', [AuthController::class, 'login']);
  * 
  * */
 
-Route::post('/auth/logout', [AuthController::class, 'logout']);
+Route::middleware('auth')
+            ->post('/auth/logout', [AuthController::class, 'logout']);
 /**
  * ON success: {status: 'ok'}
  */
@@ -155,5 +158,11 @@ Route::post('/verify/verify-email', [VerificationController::class, 'verifyEmail
  * 
  */
 
-//test reamining routes:
+//test reamining routes and middlewares:
 // logout
+// test auth middleware
+// test vendor middleware
+// test customer middleware
+// test verified vendor middleware
+// test verified customer middleware
+// test with expired customer
