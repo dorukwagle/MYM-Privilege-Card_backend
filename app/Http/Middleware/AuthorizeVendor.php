@@ -15,8 +15,13 @@ class AuthorizeVendor
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if ($request->user() && $request->user()->user_role !== 'vendor')
-        return response(['err' => "Unauthorized"], 403);
+        $res =  response(['err' => "Unauthorized"], 403);
+
+        if (!$request->user)
+            return $res;
+        
+        if ($request->user->user_role !== 'vendor')
+            return $res;
 
         return $next($request);
     }

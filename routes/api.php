@@ -169,9 +169,11 @@ Route::post('/verify/verify-email', [VerificationController::class, 'verifyEmail
 // test with expired customer
 
 // just for testing 
-Route::middleware('auth')->post('/test/simple', function() {return response(['status' => 'ok']);});
-Route::middleware('api')->post('/test/vendor', function() {return response(['status' => 'ok']);});
-Route::middleware('auth.customer')->post('/test/customer', function() {return response(['status' => 'ok']);});
-Route::middleware('auth.verified.customer')->post('/test/verifiedcustomer', function() {return response(['status' => 'ok']);});
-Route::middleware('auth.verified.vendor')->post('/test/verifiedvendor', function() {return response(['status' => 'ok']);});
-Route::middleware('auth.admin')->post('/test/admin', function() {return response(['status' => 'ok']);});
+Route::middleware('auth')->group(function() {
+    Route::middleware('auth')->post('/test/simple', function() {return response(['status' => 'ok']);});
+    Route::middleware('auth.vendor')->post('/test/vendor', function() {return response(['status' => 'ok']);});
+    Route::middleware('auth.customer')->post('/test/customer', function() {return response(['status' => 'ok']);});
+    Route::middleware('auth.verified.customer')->post('/test/verifiedcustomer', function() {return response(['status' => 'ok']);});
+    Route::middleware('auth.verified.vendor')->post('/test/verifiedvendor', function() {return response(['status' => 'ok']);});
+    Route::middleware('auth.admin')->post('/test/admin', function() {return response(['status' => 'ok']);});
+});

@@ -15,13 +15,18 @@ class AuthorizeVerifiedVendor
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $user = $request->user();
-        if ($request->user() && $user->user_role !== 'vendor')
-        return response(['err' => 'Unauthorized'], 403);
+        $resUn = response(['err' => 'Unauthorized'], 403);
+        $resVerified = response(['err' => 'Unverified account'], 403);
+
+        $user = $request->user;
+        if (!$user) return $resUn;
+
+        if ($user->user_role !== 'vendor')
+            return $resUn;
 
         if ($user->account_status !== 'verified')
-        return response(['err' => 'Unverified account'], 402);
+            return $resVerified;
 
-        $next($request);        
+        return $next($request);        
     }
 }

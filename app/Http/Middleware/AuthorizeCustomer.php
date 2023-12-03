@@ -15,8 +15,12 @@ class AuthorizeCustomer
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if ($request->user() && $request->user()->user_role !== 'customer')
-        return response(['err' => 'Unauthorized'], 403);
+        $res = response(['err' => 'Unauthorized'], 403);
+
+        if (!$request->user)
+            return $res;
+        if ($request->user->user_role !== 'customer')
+            return $res;
 
         return $next($request);
     }
