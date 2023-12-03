@@ -148,5 +148,12 @@ Route::post('/verify/verify-email', [VerificationController::class, 'verifyEmail
 // InfoController for getting information of a customer or vendor or admin for contact purposes
 // ProfileController for user's profile updating and retrieving
 
+/**
+ * TODO:
+ * implement authorization role based
+ * route protection
+ * 
+ */
+
 //test reamining routes:
 // logout
