@@ -52,13 +52,17 @@ class Kernel extends HttpKernel
      *
      * @var array<string, class-string|string>
      */
-    protected $middlewareAliases = [
+    protected $routeMiddleware = [
         'auth' => \App\Http\Middleware\AuthorizationMiddleware::class,
-        'auth.vendor' => \App\Http\Middleware\AuthorizationMiddleware::class . ':vendor',
+        'auth.vendor' => \App\Http\Middleware\AuthorizationMiddleware::class.':vendor',
         'auth.customer' => \App\Http\Middleware\AuthorizationMiddleware::class . ':customer',
         'auth.admin' => \App\Http\Middleware\AuthorizationMiddleware::class . ':admin',
         'auth.verified.customer' => \App\Http\Middleware\AuthorizationMiddleware::class . ':verifiedCustomer',
         'auth.verified.vendor' => \App\Http\Middleware\AuthorizationMiddleware::class . ':verifiedVendor',
+    ];
+
+    protected $middlewareAliases = [
+       
         'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,
         'can' => \Illuminate\Auth\Middleware\Authorize::class,
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,

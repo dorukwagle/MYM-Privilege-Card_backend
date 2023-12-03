@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\RegistrationController;
 use App\Http\Controllers\VerificationController;
+use App\Http\Middleware\AuthorizationMiddleware;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -166,3 +167,11 @@ Route::post('/verify/verify-email', [VerificationController::class, 'verifyEmail
 // test verified vendor middleware
 // test verified customer middleware
 // test with expired customer
+
+// just for testing 
+Route::middleware('auth')->post('/test/simple', function() {return response(['status' => 'ok']);});
+Route::middleware('api')->post('/test/vendor', function() {return response(['status' => 'ok']);});
+Route::middleware('auth.customer')->post('/test/customer', function() {return response(['status' => 'ok']);});
+Route::middleware('auth.verified.customer')->post('/test/verifiedcustomer', function() {return response(['status' => 'ok']);});
+Route::middleware('auth.verified.vendor')->post('/test/verifiedvendor', function() {return response(['status' => 'ok']);});
+Route::middleware('auth.admin')->post('/test/admin', function() {return response(['status' => 'ok']);});
