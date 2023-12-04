@@ -19,7 +19,8 @@ Route::get('/categories', [CategoriesController::class, 'getProductCategories'])
  * Returns the list of categories:
  * [{id: '1', category: 'Cosmetics'}, .....]
  */
-Route::middleware('auth')->group(function() {
+
+ Route::middleware('auth')->group(function() {
     Route::middleware('auth.admin')
                 ->post('/category', [CategoriesController::class, 'addCategory']);
     /**
@@ -40,28 +41,31 @@ Route::middleware('auth')->group(function() {
      * Errors:
      * 400 with {err: 'category not found'}
      */
-});
+    Route::middleware('auth.customer')
+                ->post('/kyc/customer', [RegistrationController::class, 'customerKyc']);
+                
+    /**
+     * Body parameters:
+     * location (coordinates of the actual location of the user, from google map)
+     * full_name (full name of user at least two words required)
+     * contact_no (user phone no.)
+     * gender   
+     * address  (name of city or locality)
+     * dob
+     * email (sign up email )
+     * password
+     * preferred_categories (list of categories id. e.g. [1, 2, 3])
+     * profile_icon (photo of the user)
+     * 
+     * ON SUCCESS: returns e.g. {'status' : 'ok', user_id: 2, email: 'example@email'}
+     * 
+     * ERROR:
+     * returns 400 code with validation error if invalid field data are sent
+     * returns 400 if photo not uploaded
+     */
 
-Route::post('/kyc/customer', [RegistrationController::class, 'customerKyc']);
-/**
- * Body parameters:
- * location (coordinates of the actual location of the user, from google map)
- * full_name (full name of user at least two words required)
- * contact_no (user phone no.)
- * gender   
- * address  (name of city or locality)
- * dob
- * email (sign up email )
- * password
- * preferred_categories (list of categories id. e.g. [1, 2, 3])
- * profile_icon (photo of the user)
- * 
- * ON SUCCESS: returns e.g. {'status' : 'ok', user_id: 2, email: 'example@email'}
- * 
- * ERROR:
- * returns 400 code with validation error if invalid field data are sent
- * returns 400 if photo not uploaded
- */
+    Route::post('/auth/logout', [AuthController::class, 'logout']);
+});
 
  Route::post('/register/customer', [RegistrationController::class, 'registerCustomer']);
 
@@ -102,11 +106,6 @@ Route::post('/auth/login', [AuthController::class, 'login']);
  * 
  * */
 
-Route::middleware('auth')
-            ->post('/auth/logout', [AuthController::class, 'logout']);
-/**
- * ON success: {status: 'ok'}
- */
 
 // Route::put('/update-email', []); //update profile email
 
@@ -156,6 +155,14 @@ Route::post('/verify/verify-email', [VerificationController::class, 'verifyEmail
 
 // InfoController for getting information of a customer or vendor or admin for contact purposes
 // ProfileController for user's profile updating and retrieving
+
+/**
+ * TODO:
+ * profile_icon upload
+ * banner_icon upload
+ * org bio
+ * 
+ */
 
 /**
  * TODO:

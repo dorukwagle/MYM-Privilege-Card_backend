@@ -11,19 +11,20 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('location');
+            $table->string('location')->nullable();
             $table->string('banner_icon', 150)->nullable();
             $table->string('profile_icon', 150)->nullable();
             $table->string('full_name');
+            $table->string('org_name', 150)->nullable();
             $table->string('contact_no');
             $table->string('account_status')->default('pending');
             $table->timestamp('expires')->nullable();
             $table->string('payment_status')->default('pending');
             $table->string('gender')->nullable();
             $table->string('address');
-            $table->date('dob');
+            $table->date('dob')->nullable();
             $table->string('org_registration_card', 150)->nullable();
-            $table->string('org_pan_no')->nullable();
+            $table->string('org_vat_card', 150)->nullable();
             $table->string('email', 100)->unique();
             $table->boolean('email_verified')->default(0);
             $table->string('password', 75);
