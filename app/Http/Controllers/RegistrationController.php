@@ -14,6 +14,35 @@ class RegistrationController extends Controller
 
     public function registerCustomer(Request $request) {
         $validation = Validator::make($request->all(), [
+            'full_name' => ['required', 'string', 'regex:/^[\pL\s]+ [\pL\s]+$/u'],
+            'contact_no' => ['required', 'regex:/^(\+?\d{6,15})$/'],
+            'gender' => ['required', 'string', 'in:male,female,others'],
+            'email' => ['required', 'email', 'unique:users'],
+            'password' => ['required', 'string', 'min:6'],
+        ]);
+
+        if($validation->fails())
+            return response($validation->errors(), 400);
+
+        $user = User::create([
+            'full_name' => $request->full_name,
+            'gender' => $request->gender,
+            'contact_no' => $request->contact_no,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'user_role' => 'customer'
+        ]);
+
+        return response()->json([
+            'status' => 'ok',
+            'user_id' => $user->id,
+            'email' => $user->email
+        ]);
+    }
+
+    public function customerKyc(Request $request) {
+        $validation = Validator::make($request->all(), [
+            'user_id' => ['required', 'number'],
             'location' => 'required',
             'profile_icon' => 'required',
             'full_name' => ['required', 'string', 'regex:/^[\pL\s]+ [\pL\s]+$/u'],
@@ -34,20 +63,23 @@ class RegistrationController extends Controller
             return response(['profile_icon' => 'file required'], 400);
 
         $profileIcon = $request->file('profile_icon')->store($this->uploadPath);
+        $user = User::find($request->user_id);
 
-        $user = User::create([
-            'full_name' => $request->full_name,
-            'dob' => $request->dob,
-            'gender' => $request->gender,
-            'address' => $request->address,
-            'location' => $request->location,
-            'profile_icon' => $profileIcon,
-            'contact_no' => $request->contact_no,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'user_role' => 'customer'
-        ]);
+        if (!$user) return response(['err' => 'user_id not found']);
+        
+        $user->full_name = $request->full_name;
+        $user->dob = $request->dob;
+        $user->gender = $request->gender;
+        $user->address = $request->address;
+        $user->location = $request->location;
+        $user->profile_icon = $profileIcon;
+        $user->contact_no = $request->contact_no;
+        $user->email = $request->email;
+        $user->password = Hash::make($request->password);
+        $user->user_role = 'customer';
 
+        $user->save();
+        
         foreach ($request->preferred_categories as $category_id) {
             UsersCategory::create([
                  'user_id' => $user->id,

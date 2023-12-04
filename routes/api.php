@@ -7,6 +7,7 @@ use App\Http\Controllers\VerificationController;
 use App\Http\Middleware\AuthorizationMiddleware;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Monolog\Registry;
 
 // Route::middleware('auth')->get('/user', function (Request $request) {
 //     return $request->user();
@@ -18,28 +19,30 @@ Route::get('/categories', [CategoriesController::class, 'getProductCategories'])
  * Returns the list of categories:
  * [{id: '1', category: 'Cosmetics'}, .....]
  */
-Route::middleware('auth.admin')
-            ->post('/category', [CategoriesController::class, 'addCategory']);
-/**
- * body parameters:
- * category (name of the category)
- * 
- * ON SUCCESS: returns {status: 'ok'}
- * Errors:
- * validation errors with 400 code
- * 
- */
-Route::middleware('auth.admin')
-            ->delete('/category/{id}', [CategoriesController::class, 'deleteCategory'])
-            ->whereNumber('id');
-/**
- * ON SUCCESS: {status: ok}
- * 
- * Errors:
- * 400 with {err: 'category not found'}
- */
+Route::middleware('auth')->group(function() {
+    Route::middleware('auth.admin')
+                ->post('/category', [CategoriesController::class, 'addCategory']);
+    /**
+     * body parameters:
+     * category (name of the category)
+     * 
+     * ON SUCCESS: returns {status: 'ok'}
+     * Errors:
+     * validation errors with 400 code
+     * 
+     */
+    Route::middleware('auth.admin')
+                ->delete('/category/{id}', [CategoriesController::class, 'deleteCategory'])
+                ->whereNumber('id');
+    /**
+     * ON SUCCESS: {status: ok}
+     * 
+     * Errors:
+     * 400 with {err: 'category not found'}
+     */
+});
 
-Route::post('/register/customer', [RegistrationController::class, 'registerCustomer']);
+Route::post('/kyc/customer', [RegistrationController::class, 'customerKyc']);
 /**
  * Body parameters:
  * location (coordinates of the actual location of the user, from google map)
@@ -59,6 +62,8 @@ Route::post('/register/customer', [RegistrationController::class, 'registerCusto
  * returns 400 code with validation error if invalid field data are sent
  * returns 400 if photo not uploaded
  */
+
+ Route::post('/register/customer', [RegistrationController::class, 'registerCustomer']);
 
 Route::post('/register/vendor', [RegistrationController::class, 'registerVendor']);
 /**
@@ -154,19 +159,11 @@ Route::post('/verify/verify-email', [VerificationController::class, 'verifyEmail
 
 /**
  * TODO:
- * implement authorization role based
- * route protection
- * 
+ * forget password route
+ * profile update
+ * email update
+ * password change
  */
-
-//test reamining routes and middlewares:
-// logout
-// test auth middleware
-// test vendor middleware
-// test customer middleware
-// test verified vendor middleware
-// test verified customer middleware
-// test with expired customer
 
 // just for testing 
 Route::middleware('auth')->group(function() {
