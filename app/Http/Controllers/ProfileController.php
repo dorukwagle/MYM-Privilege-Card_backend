@@ -77,4 +77,14 @@ class ProfileController extends Controller
         return ['status' => 'ok'];
     }
     
+    public function getProfile(Request $request) {
+        $info = array_filter($request->user->toArray(), function($value) {
+            return $value !== null;
+        });
+        unset($info['user_role']);
+        unset($info['is_vend_cust']);
+        unset($info['updated_at']);
+        unset($info['password']);
+        return $info;
+    }
 }

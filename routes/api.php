@@ -76,6 +76,8 @@ Route::middleware('auth')->group(function() {
 
     Route::post('/profile/change-password', [ProfileController::class, 'changePassword']);
 
+    Route::get('/profile/get-profile', [ProfileController::class, 'getProfile']);
+
     Route::post('/auth/logout', [AuthController::class, 'logout']);
 });
 
@@ -177,7 +179,6 @@ Route::post('/verify/verify-email', [VerificationController::class, 'verifyEmail
  * email update
  * about admin (get info)
  * about vendor (get info)
- * profile/info (get own info)
  */
 
 // just for testing 
