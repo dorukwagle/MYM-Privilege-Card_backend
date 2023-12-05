@@ -2,12 +2,14 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoriesController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RegistrationController;
 use App\Http\Controllers\VerificationController;
 use App\Http\Middleware\AuthorizationMiddleware;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Monolog\Registry;
+use Symfony\Component\HttpKernel\Profiler\Profile;
 
 // Route::middleware('auth')->get('/user', function (Request $request) {
 //     return $request->user();
@@ -20,7 +22,7 @@ Route::get('/categories', [CategoriesController::class, 'getProductCategories'])
  * [{id: '1', category: 'Cosmetics'}, .....]
  */
 
- Route::middleware('auth')->group(function() {
+Route::middleware('auth')->group(function() {
     Route::middleware('auth.admin')
                 ->post('/category', [CategoriesController::class, 'addCategory']);
     /**
@@ -44,30 +46,40 @@ Route::get('/categories', [CategoriesController::class, 'getProductCategories'])
     Route::middleware('auth.customer')
                 ->post('/kyc/customer', [RegistrationController::class, 'customerKyc']);
                 
-    /**
-     * Body parameters:
-     * location (coordinates of the actual location of the user, from google map)
-     * full_name (full name of user at least two words required)
-     * contact_no (user phone no.)
-     * gender   
-     * address  (name of city or locality)
-     * dob
-     * email (sign up email )
-     * password
-     * preferred_categories (list of categories id. e.g. [1, 2, 3])
-     * profile_icon (photo of the user)
-     * 
-     * ON SUCCESS: returns e.g. {'status' : 'ok', user_id: 2, email: 'example@email'}
-     * 
-     * ERROR:
-     * returns 400 code with validation error if invalid field data are sent
-     * returns 400 if photo not uploaded
-     */
+        /**
+         * Body parameters:
+         * location (coordinates of the actual location of the user, from google map)
+         * full_name (full name of user at least two words required)
+         * contact_no (user phone no.)
+         * gender   
+         * address  (name of city or locality)
+         * dob
+         * email (sign up email )
+         * password
+         * preferred_categories (list of categories id. e.g. [1, 2, 3])
+         * profile_icon (photo of the user)
+         * 
+         * ON SUCCESS: returns e.g. {'status' : 'ok', user_id: 2, email: 'example@email'}
+         * 
+         * ERROR:
+         * returns 400 code with validation error if invalid field data are sent
+         * returns 400 if photo not uploaded
+         */
+    
+    Route::post('/profile/profile-icon', [ProfileController::class, 'profileIconUpdate']);
+
+    Route::middleware('auth.vendor')
+                ->post('/profile/banner-icon', [ProfileController::class, 'bannerIconUpdate']);
+
+    Route::middleware('auth.vendor')
+                ->post('/profile/org-bio', [ProfileController::class, 'orgBioUpdate']);
+
+    Route::post('/profile/change-password', [ProfileController::class, 'changePassword']);
 
     Route::post('/auth/logout', [AuthController::class, 'logout']);
 });
 
- Route::post('/register/customer', [RegistrationController::class, 'registerCustomer']);
+Route::post('/register/customer', [RegistrationController::class, 'registerCustomer']);
 
 Route::post('/register/vendor', [RegistrationController::class, 'registerVendor']);
 /**
@@ -158,18 +170,14 @@ Route::post('/verify/verify-email', [VerificationController::class, 'verifyEmail
 
 /**
  * TODO:
- * profile_icon upload
- * banner_icon upload
- * org bio
- * 
- */
-
-/**
- * TODO:
  * forget password route
+ * reset password route
+ * 
  * profile update
  * email update
- * password change
+ * about admin (get info)
+ * about vendor (get info)
+ * profile/info (get own info)
  */
 
 // just for testing 
