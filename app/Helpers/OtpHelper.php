@@ -12,23 +12,29 @@ class OtpHelper {
     {
         $otp =  OtpHelper::generateOtp();
 
+        Mail::to($email)->send(new OtpMail($otp));
+        
         // save the otp in the database
         Otp::create([
             'otp' => $otp,
             'user_id' => $user_id,
-            'expiry_date' => Carbon::now()->addMinutes(3)
+            'expiry_date' => Carbon::now()->addMinutes(3),
+            'sent_to' => $email
         ]);
-
-        Mail::to($email)->send(new OtpMail($otp));
     }
 
-    public static function generateOtp()
+    private static function generateOtp()
     {
         return random_int(100000, 999999);
     }
 
-    public static function verifyOtp($user_id, $otp): bool {
+    public static function verifyOtp($user_id, $otp, $email=null): bool {
         $otp = Otp::where('user_id', $user_id)->where('otp', $otp)->first();
+
+        if ($email) {
+            if ($otp->sent_to !== $email)
+                return false;
+        }
 
         if (!$otp) return false;
 

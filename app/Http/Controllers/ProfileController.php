@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\OtpHelper;
 use App\Models\Session;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -98,10 +99,28 @@ class ProfileController extends Controller
         if ($validation->fails())
             return response($validation->errors(), 400);
 
-        
+        OtpHelper::sendOtp($request->user->id, $request->email);
+        return ['status' => 'ok'];
     }
 
     public function verifyEmail(Request $request)  {
+        $validation = Validator::make($request->all(), [
+            'email' => ['required', 'email'],
+            'otp' => ['required', 'numeric']
+        ]);
+
+        if ($validation->fails()) 
+            return response($validation->errors(), 400);
         
+        $validOtp = OtpHelper::verifyOtp($request->user->id, $request->otp, $request->email);
+        if (!$validOtp) return response(['err' => 'unable to verify otp']);
+
+        User::where('id', $request->user->id)
+                    ->update([
+                        'email' => $request->email,
+                        'email_verified' => true
+                    ]);
+        
+        return ['status' => 'ok'];
     }
 }

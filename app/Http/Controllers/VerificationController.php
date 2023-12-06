@@ -40,7 +40,7 @@ class VerificationController extends Controller
     public function verifyEmail(Request $request) {
         $validation = Validator::make($request->all(), [
             'user_id' => 'required',
-            'otp' => ['required', 'min:6', 'max:6'],
+            'otp' => ['required', 'min:6', 'max:6', 'numeric'],
         ]);
 
         if ($validation->fails())
