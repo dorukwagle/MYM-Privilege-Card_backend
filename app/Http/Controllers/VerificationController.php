@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\OtpHelper;
 use App\Mail\OtpMail;
 use App\Models\Otp;
 use App\Models\User;
@@ -13,15 +14,6 @@ use Illuminate\Support\Facades\Validator;
 
 class VerificationController extends Controller
 {
-    
-    private function sendOtp($email,  $otp) {
-        Mail::to($email)->send(new OtpMail($otp));
-    }
-
-    private function generateOtp() {
-        return random_int(100000, 999999);
-    }
-
     private function sendErrorResponse() {
         return response(['err' => 'email or user does not exist'], 400);
     }
@@ -39,7 +31,7 @@ class VerificationController extends Controller
         if (($user->email != $request->email) || $user->email_verified)
             return $this->sendErrorResponse();
         
-        $otp = $this->generateOtp();
+        $otp =  OtpHelper::generateOtp();
         
         // save the otp in the database
         Otp::create([
@@ -49,7 +41,7 @@ class VerificationController extends Controller
         ]);
         
         // send the otp to the user
-        $this->sendOtp($user->email, $otp);
+        OtpHelper::sendOtp($user->email, $otp);
 
         return ['status' => 'ok'];
     }
@@ -62,12 +54,9 @@ class VerificationController extends Controller
 
         if ($validation->fails())
             return response($validation->errors(), 400);
-        $otp = Otp::where('user_id', $request->user_id)->where('otp', $request->otp)->first();
-        
-        if (!$otp) return response(['err' => 'user not found'], 400);
 
-        if (Carbon::parse($otp->expiry_date)->isPast()) 
-            return response(['err' => 'otp expired'], 400);
+        $verified = OtpHelper::verifyOtp($request->user_id, $request->otp);
+        if (!$verified) return response(['err' => 'failed to verify otp', 400]);
 
         User::where('id', $request->user_id)
                     ->update(['email_verified' => true]);
