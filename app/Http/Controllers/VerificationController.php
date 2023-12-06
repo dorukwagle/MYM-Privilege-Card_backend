@@ -31,17 +31,8 @@ class VerificationController extends Controller
         if (($user->email != $request->email) || $user->email_verified)
             return $this->sendErrorResponse();
         
-        $otp =  OtpHelper::generateOtp();
-        
-        // save the otp in the database
-        Otp::create([
-            'otp' => $otp,
-            'user_id' => $user->id,
-            'expiry_date' => Carbon::now()->addMinutes(3)
-        ]);
-        
         // send the otp to the user
-        OtpHelper::sendOtp($user->email, $otp);
+        OtpHelper::sendOtp($user->id, $user->email);
 
         return ['status' => 'ok'];
     }

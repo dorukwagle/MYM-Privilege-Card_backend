@@ -8,8 +8,17 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Mail;
 
 class OtpHelper {
-    public static function sendOtp($email,  $otp)
+    public static function sendOtp($user_id,  $email)
     {
+        $otp =  OtpHelper::generateOtp();
+
+        // save the otp in the database
+        Otp::create([
+            'otp' => $otp,
+            'user_id' => $user_id,
+            'expiry_date' => Carbon::now()->addMinutes(3)
+        ]);
+
         Mail::to($email)->send(new OtpMail($otp));
     }
 
