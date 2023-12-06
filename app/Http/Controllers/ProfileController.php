@@ -81,10 +81,27 @@ class ProfileController extends Controller
         $info = array_filter($request->user->toArray(), function($value) {
             return $value !== null;
         });
+
         unset($info['user_role']);
         unset($info['is_vend_cust']);
         unset($info['updated_at']);
         unset($info['password']);
+        
         return $info;
+    }
+
+    public function updateEmail(Request $request) {
+        $validation = Validator::make($request->all(), [
+            'email' => ['required', 'email']
+        ]);
+
+        if ($validation->fails())
+            return response($validation->errors(), 400);
+
+        
+    }
+
+    public function verifyEmail(Request $request)  {
+        
     }
 }

@@ -76,7 +76,21 @@ Route::middleware('auth')->group(function() {
 
     Route::post('/profile/change-password', [ProfileController::class, 'changePassword']);
 
+    // get user's profile, accessible only to the user
     Route::get('/profile/get-profile', [ProfileController::class, 'getProfile']);
+
+    Route::post('/profile/update-email', [ProfileController::class, 'updateEmail']);
+    /**
+     * Body parameters:
+     * email (new email)
+     */
+
+    Route::post('/profile/verify/verify-email', [ProfileController::class, 'verifyEmail']);
+    /**
+     * Body parameters:
+     * otp
+     * email (new email)
+     */
 
     Route::post('/auth/logout', [AuthController::class, 'logout']);
 });
