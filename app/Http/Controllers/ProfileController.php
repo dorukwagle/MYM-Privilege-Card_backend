@@ -123,4 +123,22 @@ class ProfileController extends Controller
         
         return ['status' => 'ok'];
     }
+
+    public function updateProfile(Request $request)  {
+        $validation = Validator::make($request->all(), [
+            'location' => ['sometimes', 'nullable', 'regex:/^-?([1-8]?\d(?:\.\d+)?|90(?:\.0+)?)\s*,\s*-?(180(?:\.0+)?|1[0-7]\d(?:\.\d+)?|\d{1,2}(?:\.\d+)?)$/'],
+            'full_name' => ['required', 'string', 'regex:/^[\pL\s]+ [\pL\s]+$/u'],
+            'org_name' => 'sometimes',
+            'contact_no' => ['required', 'regex:/^(\+?\d{6,15})$/'],
+            'gender' => ['sometimes', 'nullable', 'in:male,female,others'],
+            'address' => 'required',
+            'dob' => ['sometimes', 'nullable', 'date'],
+            'about_org' => ['sometimes', 'nullable', 'min:50', 'max:500']
+        ]);
+
+        if ($validation->fails())
+            return response($validation->errors(), 400);
+
+        
+    }
 }

@@ -93,6 +93,8 @@ Route::middleware('auth')->group(function() {
      */
 
     Route::post('/auth/logout', [AuthController::class, 'logout']);
+
+    Route::post('/profile/update-profile', [ProfileController::class, 'updateProfile']);
 });
 
 Route::post('/register/customer', [RegistrationController::class, 'registerCustomer']);
@@ -190,7 +192,6 @@ Route::post('/verify/verify-email', [VerificationController::class, 'verifyEmail
  * reset password route
  * 
  * profile update
- * email update
  * about admin (get info)
  * about vendor (get info)
  */

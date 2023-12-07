@@ -43,7 +43,7 @@ class RegistrationController extends Controller
     public function customerKyc(Request $request) {
         $validation = Validator::make($request->all(), [
             'user_id' => ['required', 'number'],
-            'location' => 'required',
+            'location' => ['required', 'regex:/^-?([1-8]?\d(?:\.\d+)?|90(?:\.0+)?)\s*,\s*-?(180(?:\.0+)?|1[0-7]\d(?:\.\d+)?|\d{1,2}(?:\.\d+)?)$/'],
             'profile_icon' => 'required',
             'full_name' => ['required', 'string', 'regex:/^[\pL\s]+ [\pL\s]+$/u'],
             'contact_no' => ['required', 'regex:/^(\+?\d{6,15})$/'],
@@ -94,11 +94,9 @@ class RegistrationController extends Controller
         ]);
     }
 
-
-
     public function registerVendor(Request $request) {
         $validation = Validator::make($request->all(), [
-            'location' => 'required',
+            'location' => ['required', 'regex:/^-?([1-8]?\d(?:\.\d+)?|90(?:\.0+)?)\s*,\s*-?(180(?:\.0+)?|1[0-7]\d(?:\.\d+)?|\d{1,2}(?:\.\d+)?)$/'],
             'org_name' => 'required',
             'full_name' => ['required', 'string', 'regex:/^[\pL\s]+ [\pL\s]+$/u'],
             'contact_no' => ['required', 'regex:/^(\+?\d{6,15})$/'],
