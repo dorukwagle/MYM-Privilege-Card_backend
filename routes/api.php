@@ -94,6 +94,11 @@ Route::middleware('auth')->group(function() {
 
     Route::post('/auth/logout', [AuthController::class, 'logout']);
 
+    Route::get('/info/vendor/{id}', [ProfileController::class, 'getVendorInfo'])
+            ->whereNumber('id');
+
+    Route::get('/info/admin', [ProfileController::class, 'getAdminInfo']);
+    
     Route::post('/profile/update-profile', [ProfileController::class, 'updateProfile']);
 });
 
@@ -191,9 +196,6 @@ Route::post('/verify/verify-email', [VerificationController::class, 'verifyEmail
  * forget password route
  * reset password route
  * 
- * profile update
- * about admin (get info)
- * about vendor (get info)
  */
 
 // just for testing 

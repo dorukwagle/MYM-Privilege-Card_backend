@@ -160,4 +160,37 @@ class ProfileController extends Controller
 
         return ['status' => 'ok'];
     }
+
+    public function getAdminInfo(Request $request) {
+        $admin = User::where('user_role', 'admin')->first([
+            'profile_icon',
+            'full_name',
+            'contact_no',
+            'gender',
+            'address',
+            'email'
+        ]);
+
+        return $admin;
+    }
+
+    public function getVendorInfo($vendor_id) {
+        $vendor = User::where('id', $vendor_id)->first([
+            'profile_icon',
+            'full_name',
+            'contact_no',
+            'address',
+            'dob',
+            'about_org',
+            'org_name',
+            'id',
+            'location',
+            'banner_icon'
+        ]);
+
+        if(!$vendor) return response(['err' => 'user not found'], 400);
+        
+        return $vendor;
+    }
+
 }
