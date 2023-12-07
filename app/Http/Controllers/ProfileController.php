@@ -139,6 +139,25 @@ class ProfileController extends Controller
         if ($validation->fails())
             return response($validation->errors(), 400);
 
+        $user = User::find($request->user->id);
         
+        $user->full_name = $request->full_name;
+        $user->contact_no = $request->contact_no;
+        $user->address = $request->address;
+
+        if ($request->location)
+            $user->location = $request->location;
+        if ($request->org_name)
+            $user->org_name = $request->org_name;
+        if ($request->gender)
+            $user->gender = $request->gender;
+        if ($request->dob)
+            $user->dob = $request->dob;
+        if ($request->about_org)
+            $user->about_org = $request->about_org;
+
+        $user->save();
+
+        return ['status' => 'ok'];
     }
 }
