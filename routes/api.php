@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RegistrationController;
+use App\Http\Controllers\ResetPasswordController;
 use App\Http\Controllers\VerificationController;
 use App\Http\Middleware\AuthorizationMiddleware;
 use Illuminate\Http\Request;
@@ -98,8 +99,8 @@ Route::middleware('auth')->group(function() {
             ->whereNumber('id');
 
     Route::get('/info/admin', [ProfileController::class, 'getAdminInfo']);
-    
-    Route::post('/profile/update-profile', [ProfileController::class, 'updateProfile']);
+
+    Route::put('/profile/update-profile', [ProfileController::class, 'updateProfile']);
 });
 
 Route::post('/register/customer', [RegistrationController::class, 'registerCustomer']);
@@ -174,36 +175,23 @@ Route::post('/verify/send-otp', [VerificationController::class, 'startEmailVerif
  */
 
 Route::post('/verify/verify-email', [VerificationController::class, 'verifyEmail']);
-/**
- * Body Parameters:
- * user_id
- * otp (otp that is sent to email)
- * 
- * ON SUCCESS : {'status':  ok}
- * 
- * ON ERROR:
- * validation errors with 400
- * user not found: 400 with {err: 'user not found'}
- * if otp expires: 400 with {err: 'otp expired'}
- */
+    /**
+     * Body Parameters:
+     * user_id
+     * otp (otp that is sent to email)
+     * 
+     * ON SUCCESS : {'status':  ok}
+     * 
+     * ON ERROR:
+     * validation errors with 400
+     * user not found: 400 with {err: 'user not found'}
+     * if otp expires: 400 with {err: 'otp expired'}
+     */
 
+Route::post('/auth/forget-password', [ResetPasswordController::class, 'sendResetOtp']);
+Route::put('/auth/reset-password', [ResetPasswordController::class, 'resetPassword']);
 
-// InfoController for getting information of a customer or vendor or admin for contact purposes
-// ProfileController for user's profile updating and retrieving
-
-/**
+ /**
  * TODO:
- * forget password route
- * reset password route
  * 
  */
-
-// just for testing 
-Route::middleware('auth')->group(function() {
-    Route::middleware('auth')->post('/test/simple', function() {return response(['status' => 'ok']);});
-    Route::middleware('auth.vendor')->post('/test/vendor', function() {return response(['status' => 'ok']);});
-    Route::middleware('auth.customer')->post('/test/customer', function() {return response(['status' => 'ok']);});
-    Route::middleware('auth.verified.customer')->post('/test/verifiedcustomer', function() {return response(['status' => 'ok']);});
-    Route::middleware('auth.verified.vendor')->post('/test/verifiedvendor', function() {return response(['status' => 'ok']);});
-    Route::middleware('auth.admin')->post('/test/admin', function() {return response(['status' => 'ok']);});
-});
