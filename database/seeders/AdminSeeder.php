@@ -14,7 +14,7 @@ class AdminSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::table('categories')->insert(
+        DB::table('users')->insert(
             [
                 'full_name' => 'Doruk Wagle',
                 'contact_no' => '+9779829293466',
