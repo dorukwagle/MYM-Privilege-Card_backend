@@ -51,4 +51,14 @@ class AdminController extends Controller
 
         return $user->get($columns);
     }
+
+    public function verifyVendor($vendorId) {
+        $user = User::find($vendorId);
+        if (!$user) return response(['err' => 'not found'], 404);
+
+        $user->account_status = 'verified';
+        $user->save();
+
+        return ['status' => 'ok'];
+    }
 }

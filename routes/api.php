@@ -109,6 +109,10 @@ Route::middleware('auth')->group(function() {
          * /api/users?type=vendor
          * /api/users?user-id=1 (return specific user information)
          */
+        
+    Route::middleware('auth.admin')
+                ->post('/users/verify/vendor/{id}', [AdminController::class, 'verifyVendor'])
+                ->whereNumber('id');
 
     Route::put('/profile/update-profile', [ProfileController::class, 'updateProfile']);
 });
@@ -205,4 +209,6 @@ Route::put('/auth/reset-password', [ResetPasswordController::class, 'resetPasswo
  * TODO:
  * admin: verify vendors
  * admin: verify and assign a card to customer
+ * admin: reject vendor /cancel on verify
+ * admin: reject customer /cancel on verify
  */
