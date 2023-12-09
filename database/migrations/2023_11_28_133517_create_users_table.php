@@ -21,7 +21,7 @@ return new class extends Migration
             $table->timestamp('expires')->nullable();
             $table->string('payment_status')->default('pending');
             $table->string('gender')->nullable();
-            $table->string('address');
+            $table->string('address')->nullable();
             $table->date('dob')->nullable();
             $table->string('org_registration_card', 150)->nullable();
             $table->string('org_vat_card', 150)->nullable();
