@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\ProfileController;
@@ -100,6 +101,15 @@ Route::middleware('auth')->group(function() {
 
     Route::get('/info/admin', [ProfileController::class, 'getAdminInfo']);
 
+    Route::middleware('auth.admin')
+                ->get('/users', [AdminController::class, 'getUsers']);
+        /**
+         * /api/users?type=customer (returns new unverified users who requested the card)
+         * /api/users?type=customer&request=expired (returns card expired users)
+         * /api/users?type=vendor
+         * /api/users?user-id=1 (return specific user information)
+         */
+
     Route::put('/profile/update-profile', [ProfileController::class, 'updateProfile']);
 });
 
@@ -193,5 +203,6 @@ Route::put('/auth/reset-password', [ResetPasswordController::class, 'resetPasswo
 
  /**
  * TODO:
- * 
+ * admin: verify vendors
+ * admin: verify and assign a card to customer
  */
