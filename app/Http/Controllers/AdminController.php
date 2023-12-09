@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 
 use function PHPUnit\Framework\returnSelf;
 
@@ -58,6 +59,21 @@ class AdminController extends Controller
 
         $user->account_status = 'verified';
         $user->save();
+
+        return ['status' => 'ok'];
+    }
+
+    public function rejectVendor($vendorId) {
+         $user = User::find($vendorId);
+        if (!$user) return response(['err' => 'not found'], 404);
+
+        $vatCard = $user->org_vat_card;
+        $registrationCard = $user->org_registration_card;
+        
+        if ($vatCard) File::delete($vatCard);
+        if ($registrationCard) File::delete($registrationCard);
+
+        $user->delete();
 
         return ['status' => 'ok'];
     }
