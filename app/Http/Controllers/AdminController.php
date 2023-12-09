@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Carbon\Carbon;
+use Illuminate\Http\Client\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 
@@ -11,6 +12,22 @@ use function PHPUnit\Framework\returnSelf;
 
 class AdminController extends Controller
 {
+
+    private function notFound() {
+        return response(['err' => 'not found'], 404);
+    }
+
+    private function isVendorAccount($user) {
+        if (!$user) return false;
+
+        if ($user->user_role === 'admin') return false;
+
+        if ($user->user_role !== 'vendor' && (!$user->is_vend_cust))
+            return false;
+
+        return true;
+    }
+
     public function getUsers(Request $request) {
         /**
          * /api/users?type=customer
@@ -55,7 +72,7 @@ class AdminController extends Controller
 
     public function verifyVendor($vendorId) {
         $user = User::find($vendorId);
-        if (!$user) return response(['err' => 'not found'], 404);
+        if (!$this->isVendorAccount($user)) return $this->notFound();
 
         $user->account_status = 'verified';
         $user->save();
@@ -64,8 +81,8 @@ class AdminController extends Controller
     }
 
     public function rejectVendor($vendorId) {
-         $user = User::find($vendorId);
-        if (!$user) return response(['err' => 'not found'], 404);
+        $user = User::find($vendorId);
+        if (!$this->isVendorAccount($user)) return $this->notFound();
 
         $vatCard = $user->org_vat_card;
         $registrationCard = $user->org_registration_card;
