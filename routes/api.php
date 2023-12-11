@@ -24,30 +24,30 @@ Route::get('/categories', [CategoriesController::class, 'getProductCategories'])
  * [{id: '1', category: 'Cosmetics'}, .....]
  */
 
-Route::middleware('auth')->group(function() {
-    Route::middleware('auth.admin')
+Route::middleware('auth')->group(function () {
+        Route::middleware('auth.admin')
                 ->post('/category', [CategoriesController::class, 'addCategory']);
-    /**
-     * body parameters:
-     * category (name of the category)
-     * 
-     * ON SUCCESS: returns {status: 'ok'}
-     * Errors:
-     * validation errors with 400 code
-     * 
-     */
-    Route::middleware('auth.admin')
+        /**
+         * body parameters:
+         * category (name of the category)
+         * 
+         * ON SUCCESS: returns {status: 'ok'}
+         * Errors:
+         * validation errors with 400 code
+         * 
+         */
+        Route::middleware('auth.admin')
                 ->delete('/category/{id}', [CategoriesController::class, 'deleteCategory'])
                 ->whereNumber('id');
-    /**
-     * ON SUCCESS: {status: ok}
-     * 
-     * Errors:
-     * 400 with {err: 'category not found'}
-     */
-    Route::middleware('auth.customer')
+        /**
+         * ON SUCCESS: {status: ok}
+         * 
+         * Errors:
+         * 400 with {err: 'category not found'}
+         */
+        Route::middleware('auth.customer')
                 ->post('/kyc/customer', [RegistrationController::class, 'customerKyc']);
-                
+
         /**
          * Body parameters:
          * location (coordinates of the actual location of the user, from google map)
@@ -67,41 +67,41 @@ Route::middleware('auth')->group(function() {
          * returns 400 code with validation error if invalid field data are sent
          * returns 400 if photo not uploaded
          */
-    
-    Route::post('/profile/profile-icon', [ProfileController::class, 'profileIconUpdate']);
 
-    Route::middleware('auth.vendor')
+        Route::post('/profile/profile-icon', [ProfileController::class, 'profileIconUpdate']);
+
+        Route::middleware('auth.vendor')
                 ->post('/profile/banner-icon', [ProfileController::class, 'bannerIconUpdate']);
 
-    Route::middleware('auth.vendor')
+        Route::middleware('auth.vendor')
                 ->post('/profile/org-bio', [ProfileController::class, 'orgBioUpdate']);
 
-    Route::post('/profile/change-password', [ProfileController::class, 'changePassword']);
+        Route::post('/profile/change-password', [ProfileController::class, 'changePassword']);
 
-    // get user's profile, accessible only to the user
-    Route::get('/profile/get-profile', [ProfileController::class, 'getProfile']);
+        // get user's profile, accessible only to the user
+        Route::get('/profile/get-profile', [ProfileController::class, 'getProfile']);
 
-    Route::post('/profile/update-email', [ProfileController::class, 'updateEmail']);
-    /**
-     * Body parameters:
-     * email (new email)
-     */
+        Route::post('/profile/update-email', [ProfileController::class, 'updateEmail']);
+        /**
+         * Body parameters:
+         * email (new email)
+         */
 
-    Route::post('/profile/verify/verify-email', [ProfileController::class, 'verifyEmail']);
-    /**
-     * Body parameters:
-     * otp
-     * email (new email)
-     */
+        Route::post('/profile/verify/verify-email', [ProfileController::class, 'verifyEmail']);
+        /**
+         * Body parameters:
+         * otp
+         * email (new email)
+         */
 
-    Route::post('/auth/logout', [AuthController::class, 'logout']);
+        Route::post('/auth/logout', [AuthController::class, 'logout']);
 
-    Route::get('/info/vendor/{id}', [ProfileController::class, 'getVendorInfo'])
-            ->whereNumber('id');
+        Route::get('/info/vendor/{id}', [ProfileController::class, 'getVendorInfo'])
+                ->whereNumber('id');
 
-    Route::get('/info/admin', [ProfileController::class, 'getAdminInfo']);
+        Route::get('/info/admin', [ProfileController::class, 'getAdminInfo']);
 
-    Route::middleware('auth.admin')
+        Route::middleware('auth.admin')
                 ->get('/users', [AdminController::class, 'getUsers']);
         /**
          * /api/users?type=customer (returns new unverified users who requested the card)
@@ -110,19 +110,25 @@ Route::middleware('auth')->group(function() {
          * /api/users?user-id=1 (return specific user information)
          */
 
-    Route::middleware('auth.admin')
+        Route::middleware('auth.admin')
                 ->post('/users/verify/vendor/{id}', [AdminController::class, 'verifyVendor'])
                 ->whereNumber('id');
 
-    Route::middleware('auth.admin')
-            ->post('/users/reject/vendor/{id}', [AdminController::class, 'rejectVendor'])
-            ->whereNumber('id');
+        Route::middleware('auth.admin')
+                ->post('/users/reject/vendor/{id}', [AdminController::class, 'rejectVendor'])
+                ->whereNumber('id');
 
         Route::middleware('auth.admin')
                 ->get('/card/generate', [AdminController::class, 'generateCardNumber']);
         // returns random card number of 16 digits
 
-    Route::put('/profile/update-profile', [ProfileController::class, 'updateProfile']);
+        Route::middleware('/auth.admin')
+                ->post('/users/verify/customer/{id}', [AdminController::class, 'assignCard'])
+                ->whereNumber('id');
+        //assign card to the user
+        // body: card_id
+
+        Route::put('/profile/update-profile', [ProfileController::class, 'updateProfile']);
 });
 
 Route::post('/register/customer', [RegistrationController::class, 'registerCustomer']);
@@ -167,7 +173,7 @@ Route::post('/auth/login', [AuthController::class, 'login']);
 
 // Route::put('/update-email', []); //update profile email
 
-Route::post('/verify/change-email', [VerificationController::class, 'changeEmail']); 
+Route::post('/verify/change-email', [VerificationController::class, 'changeEmail']);
 /**
  * change unverified email in case mistakenly entered and submitted
  * Body parameters: 
@@ -197,24 +203,32 @@ Route::post('/verify/send-otp', [VerificationController::class, 'startEmailVerif
  */
 
 Route::post('/verify/verify-email', [VerificationController::class, 'verifyEmail']);
-    /**
-     * Body Parameters:
-     * user_id
-     * otp (otp that is sent to email)
-     * 
-     * ON SUCCESS : {'status':  ok}
-     * 
-     * ON ERROR:
-     * validation errors with 400
-     * user not found: 400 with {err: 'user not found'}
-     * if otp expires: 400 with {err: 'otp expired'}
-     */
+/**
+ * Body Parameters:
+ * user_id
+ * otp (otp that is sent to email)
+ * 
+ * ON SUCCESS : {'status':  ok}
+ * 
+ * ON ERROR:
+ * validation errors with 400
+ * user not found: 400 with {err: 'user not found'}
+ * if otp expires: 400 with {err: 'otp expired'}
+ */
 
 Route::post('/auth/forget-password', [ResetPasswordController::class, 'sendResetOtp']);
 Route::put('/auth/reset-password', [ResetPasswordController::class, 'resetPassword']);
 
- /**
+/**
  * TODO:
  * admin: verify and assign a card to customer
  * admin: reject customer /cancel on verify
+ * admin: renew customer card
+ * 
+ * admin: search users by email or name
+ * admin: search users and their payment details
+ * admin: unverify mistakenly verified users 
  */
+
+ // change getUsers logic to return payment status, get profile logic to return if the user is dual_user
+ // change auth methods to include dual_users.

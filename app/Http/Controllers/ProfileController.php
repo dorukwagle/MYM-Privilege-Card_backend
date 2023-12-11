@@ -84,7 +84,7 @@ class ProfileController extends Controller
         });
 
         unset($info['user_role']);
-        unset($info['is_vend_cust']);
+        unset($info['is_vend_cust']);// remote this line in next commit
         unset($info['updated_at']);
         unset($info['password']);
         
