@@ -54,11 +54,10 @@ class Kernel extends HttpKernel
      */
     protected $routeMiddleware = [
         'auth' => \App\Http\Middleware\AuthorizationMiddleware::class,
-        'auth.vendor' => \App\Http\Middleware\AuthorizeVendor::class,
         'auth.customer' => \App\Http\Middleware\AuthorizeCustomer::class,
         'auth.admin' => \App\Http\Middleware\AuthorizeAdmin::class,
         'auth.verified.customer' => \App\Http\Middleware\AuthorizeVerifiedCustomer::class,
-        'auth.verified.vendor' => \App\Http\Middleware\AuthorizeVerifiedVendor::class,
+        'auth.vendor' => \App\Http\Middleware\AuthorizeVerifiedVendor::class,
     ];
 
     protected $middlewareAliases = [

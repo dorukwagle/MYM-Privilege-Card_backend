@@ -86,9 +86,11 @@ class AdminController extends Controller
 
         $vatCard = $user->org_vat_card;
         $registrationCard = $user->org_registration_card;
+        $profileIcon = $user->profile_icon;
         
         if ($vatCard) File::delete($vatCard);
         if ($registrationCard) File::delete($registrationCard);
+        if ($profileIcon) File::delete($profileIcon);
 
         $user->delete();
 
