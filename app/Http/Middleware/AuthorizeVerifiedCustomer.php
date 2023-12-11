@@ -22,7 +22,7 @@ class AuthorizeVerifiedCustomer
         $user = $request->user;
         if (!$user) return $resUn;
 
-        if ($user->user_role !== 'customer')
+        if ($user->user_role !== 'customer' && !$user->is_vend_cust)
             return $resUn;
 
         if ($user->account_status !== 'verified')

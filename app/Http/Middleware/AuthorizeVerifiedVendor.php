@@ -21,7 +21,7 @@ class AuthorizeVerifiedVendor
         $user = $request->user;
         if (!$user) return $resUn;
 
-        if ($user->user_role !== 'vendor')
+        if ($user->user_role !== 'vendor' && !$user->is_vend_cust)
             return $resUn;
 
         if ($user->account_status !== 'verified')

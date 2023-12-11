@@ -19,7 +19,7 @@ class AuthorizeCustomer
 
         if (!$request->user)
             return $res;
-        if ($request->user->user_role !== 'customer')
+        if ($request->user->user_role !== 'customer' && !$request->user->is_vend_cust)
             return $res;
 
         return $next($request);
