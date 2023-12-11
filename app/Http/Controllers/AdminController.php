@@ -118,7 +118,7 @@ class AdminController extends Controller
     public function assignCard(Request $request, $userId)
     {
         $validation = Validator::make($request->all(), [
-            'card_id' => ['required', 'min:19', 'max:19']
+            'card_id' => ['required', 'min:19', 'max:19', 'unique:card,id']
         ]);
 
         if ($validation->fails())

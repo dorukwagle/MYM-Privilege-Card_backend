@@ -221,14 +221,26 @@ Route::put('/auth/reset-password', [ResetPasswordController::class, 'resetPasswo
 
 /**
  * TODO:
- * admin: verify and assign a card to customer
  * admin: reject customer /cancel on verify
  * admin: renew customer card
  * 
  * admin: search users by email or name
  * admin: search users and their payment details
  * admin: unverify mistakenly verified users 
+ * 
+ * admin: manual payment
+ * 
+ * packages system {
+ * 1 year - Rs 1000
+ * 2 years - Rs 1800
+ * } etc, editable and removable by admin
  */
 
  // change getUsers logic to return payment status, get profile logic to return if the user is dual_user
  // change auth methods to include dual_users.
+
+ /**
+  * LATERAL CHANGES
+  * add new database table for packages
+  * add new categories in users table: preferred_categories and product_categories to adjust the dual_users
+  */
