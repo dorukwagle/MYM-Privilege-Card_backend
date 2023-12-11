@@ -83,7 +83,6 @@ class ProfileController extends Controller
             return $value !== null;
         });
 
-        unset($info['user_role']);
         unset($info['updated_at']);
         unset($info['password']);
         
