@@ -96,4 +96,14 @@ class AdminController extends Controller
 
         return ['status' => 'ok'];
     }
+
+    public function generateCardNumber(Request $request) {
+        $numbers = [];
+
+        for ($i = 0; $i < 4; $i++) {
+            $numbers[] = random_int(1000, 9999);
+        }
+
+        return ['id' => implode('-', $numbers)];
+    }
 }

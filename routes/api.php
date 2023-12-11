@@ -118,6 +118,10 @@ Route::middleware('auth')->group(function() {
             ->post('/users/reject/vendor/{id}', [AdminController::class, 'rejectVendor'])
             ->whereNumber('id');
 
+        Route::middleware('auth.admin')
+                ->get('/card/generate', [AdminController::class, 'generateCardNumber']);
+        // returns random card number of 16 digits
+
     Route::put('/profile/update-profile', [ProfileController::class, 'updateProfile']);
 });
 
