@@ -224,6 +224,7 @@ Route::put('/auth/reset-password', [ResetPasswordController::class, 'resetPasswo
  * admin: reject customer /cancel on verify
  * admin: renew customer card
  * 
+ * 
  * admin: search users by email or name
  * admin: search users and their payment details
  * admin: unverify mistakenly verified users 
@@ -237,7 +238,7 @@ Route::put('/auth/reset-password', [ResetPasswordController::class, 'resetPasswo
  */
 
  // change getUsers logic to return payment status, get profile logic to return if the user is dual_user
- // change auth methods to include dual_users.
+ // getUsers filters: new user: paid/unpaid // expired: paid/unpaid
 
  /**
   * LATERAL CHANGES

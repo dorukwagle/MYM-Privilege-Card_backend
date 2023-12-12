@@ -51,7 +51,9 @@ class AuthController extends Controller
         // return the session cookie to the user
         return [
             'status' => 'ok',
-            'access_token' => $cookie
+            'access_token' => $cookie,
+            'user_role' => $user->user_role,
+            'is_vend_cust' => $user->is_vend_cust
         ];
     }
 
