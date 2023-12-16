@@ -32,20 +32,36 @@ class AdminController extends Controller
         return true;
     }
 
-    public function getUsers(Request $request)
+    public function getUserRequests(Request $request)
     {
         /**
-         * /api/users?type=customer
-         * /api/users?type=customer&request=expired
-         * /api/users?type=vendor
-         * /api/users/user_id=1
+         * /api/users?type=customer (returns new unverified users who paid)
+         * /api/users?type=customer&expired=true (returns expired users who paid)
+         * /api/users?type=customer&expired=true&paid=false (returns expired users who haven't paid)
+         * /api/users?type=customer&paid=false (returns new users who haven't paid)
+         * /api/users?type=customer&expired=true (returns card expired users)
+         * /api/users?type=vendor 
          */
-        $userId = $request->query('user_id');
-        $userType = $request->query('type');
-        $requestType = $request->query('request'); //expired or new
 
-        if (!$userId && !$userType)
-            return response(['err' => 'not found'], 404);
+        $validation = Validator::make($request->all(), [
+            'type' => ['required', 'in:customer,vendor'],
+            'expired' => ['sometimes', 'nullable', 'in:yes,no'],
+            'paid' => ['sometimes', 'nullable', 'in:yes,no']
+        ]);
+
+        $expired = false;
+        $paid = true;
+
+        if ($validation->fails())
+            return response($validation->errors(), 400);
+
+        $userType = $request->query('type');
+
+        if ($request->query('expired') && $request->query('expired') === 'yes')
+            $expired = true;
+
+        if ($request->query('paid') && $request->query('paid') === 'no')
+            $paid = false;
 
         $columns = [
             'id',
@@ -53,26 +69,18 @@ class AdminController extends Controller
             'contact_no',
             'email',
             'full_name',
-            'org_name'
+            'org_name',
+            'payment_status'
         ];
 
-        if ($userId)
-            return User::where('id', $userId)->first($columns);
+        $users = User::where('user_role', $userType);
+        $users->where('payment_status', $paid ? 'paid' : 'pending');
+        
+        if ($expired)
+            $users->whereDate('expires', '<', Carbon::now());
+        else $users->where('account_status', 'pending');
 
-        if ($userType == 'vendor')
-            return User::where('user_role', 'vendor')
-                ->where('account_status', 'pending')
-                ->get($columns);
-
-        if ($userType != 'customer')
-            return response(['err' => 'not found'], 404);
-
-        $user = User::where('user_role', 'customer');
-        if ($requestType == 'expired')
-            $user->whereDate('expires', '<', Carbon::now());
-        else $user->where('account_status', 'pending');
-
-        return $user->get($columns);
+        return $users->get($columns);
     }
 
     public function verifyVendor($vendorId)
@@ -118,7 +126,8 @@ class AdminController extends Controller
     public function assignCard(Request $request, $userId)
     {
         $validation = Validator::make($request->all(), [
-            'card_id' => ['required', 'min:19', 'max:19', 'unique:card,id']
+            'card_id' => ['required', 'min:19', 'max:19', 'unique:card,id'],
+            'valid_duration' => ['required', 'numeric', 'min:1']
         ]);
 
         if ($validation->fails())
@@ -128,8 +137,8 @@ class AdminController extends Controller
         if (!$this->isValidAccount($user, 'customer')) return $this->notFound();
 
         $user->account_status = 'verified';
-        $user->expires = Carbon::now()->addMinutes(5);
-        $user->payment_status = 'unpaid';
+        $user->expires = Carbon::now()->addYears($request->valid_duration);
+        $user->payment_status = 'pending';
 
         Card::create([
             'user_id' => $user->id,

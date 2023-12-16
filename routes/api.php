@@ -102,12 +102,14 @@ Route::middleware('auth')->group(function () {
         Route::get('/info/admin', [ProfileController::class, 'getAdminInfo']);
 
         Route::middleware('auth.admin')
-                ->get('/users', [AdminController::class, 'getUsers']);
+                ->get('/user-requests', [AdminController::class, 'getUserRequests']);
         /**
-         * /api/users?type=customer (returns new unverified users who requested the card)
-         * /api/users?type=customer&request=expired (returns card expired users)
-         * /api/users?type=vendor
-         * /api/users?user-id=1 (return specific user information)
+         * /api/users?type=customer (returns new unverified users who paid)
+         * /api/users?type=customer&expired=yes (returns expired users who paid)
+         * /api/users?type=customer&expired=yes&paid=no (returns expired users who haven't paid)
+         * /api/users?type=customer&paid=no (returns new users who haven't paid)
+         * /api/users?type=customer&expired=yes (returns card expired users)
+         * /api/users?type=vendor 
          */
 
         Route::middleware('auth.admin')
@@ -223,6 +225,8 @@ Route::put('/auth/reset-password', [ResetPasswordController::class, 'resetPasswo
  * TODO:
  * admin: reject customer /cancel on verify
  * admin: renew customer card
+ * admin: get request details {return user info and payment status i.e. unpaid or paid amount}
+ * admin: get user details {return user info and payment histories} {option to unverify/verify}
  * 
  * 
  * admin: search users by email or name
@@ -230,6 +234,9 @@ Route::put('/auth/reset-password', [ResetPasswordController::class, 'resetPasswo
  * admin: unverify mistakenly verified users 
  * 
  * admin: manual payment
+ * 
+ * user-> profile -> payment history
+ * 
  * 
  * packages system {
  * 1 year - Rs 1000
