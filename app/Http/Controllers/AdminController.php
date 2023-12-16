@@ -172,4 +172,14 @@ class AdminController extends Controller
 
         return ['status' => 'ok'];
     }
+
+    public function expireCard($userId) {
+        $user = User::find($userId);
+        if (!$this->isValidAccount($user, 'customer')) return $this->notFound();
+
+        $user->expires = Carbon::now()->yesterday();
+        $user->save();
+
+        return ['status' => 'ok'];
+    }
 }

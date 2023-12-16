@@ -135,11 +135,16 @@ Route::middleware('auth')->group(function () {
         // body: card_id, valid_duration
 
         Route::middleware('auth.admin')
-                ->post('/users/renew-card/{id}', [AdminController::class, 'renewCard'])
+                ->put('/users/card/renew/{id}', [AdminController::class, 'renewCard'])
                 ->whereNumber('id');
         // renew expired customer cards
         // body: valid_duration
-        
+
+        Route::middleware('auth.admin')
+                ->put('/users/card/expire/{id}', [AdminController::class, 'expireCard'])
+                ->whereNumber('id');
+        //expire the card if needed
+
         Route::put('/profile/update-profile', [ProfileController::class, 'updateProfile']);
 });
 
