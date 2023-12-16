@@ -132,8 +132,14 @@ Route::middleware('auth')->group(function () {
                 ->post('/users/verify/customer/{id}', [AdminController::class, 'assignCard'])
                 ->whereNumber('id');
         //assign card to the user
-        // body: card_id
+        // body: card_id, valid_duration
 
+        Route::middleware('auth.admin')
+                ->post('/users/renew-card/{id}', [AdminController::class, 'renewCard'])
+                ->whereNumber('id');
+        // renew expired customer cards
+        // body: valid_duration
+        
         Route::put('/profile/update-profile', [ProfileController::class, 'updateProfile']);
 });
 
@@ -227,10 +233,9 @@ Route::put('/auth/reset-password', [ResetPasswordController::class, 'resetPasswo
 
 /**
  * TODO:
- * admin: reject customer /cancel on verify
- * admin: renew customer card
  * admin: get request details {return user info and payment status i.e. unpaid or paid amount}
  * admin: get user details {return user info and payment histories} {option to unverify/verify}
+ * {create two payment-history routes i.e. /profile/payment-historhy & /users/payment-history and keep a common function in helpers access it from profile and admin controllers}
  * 
  * 
  * admin: search users by email or name

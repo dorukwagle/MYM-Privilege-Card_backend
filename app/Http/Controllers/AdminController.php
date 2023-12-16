@@ -154,4 +154,22 @@ class AdminController extends Controller
 
         return ['status' => 'ok'];
     }
+
+    public function renewCard(Request $request, $userId) {
+        $validation = Validator::make($request->all(), [
+            'valid_duration' => ['required', 'numeric', 'min:1']
+        ]);
+
+        if ($validation->fails())
+            return response($validation->errors(), 400);
+
+        $user = User::find($userId);
+        if (!$this->isValidAccount($user, 'customer')) return $this->notFound();
+
+        $user->payment_status = 'pending';
+        $user->expires = Carbon::now()->addYears($request->valid_duration);
+        $user->save();
+
+        return ['status' => 'ok'];
+    }
 }
