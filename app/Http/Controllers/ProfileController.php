@@ -6,6 +6,7 @@ use App\Helpers\OtpHelper;
 use App\Models\Session;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
@@ -20,6 +21,10 @@ class ProfileController extends Controller
         $profileIcon = $request->file('profile_icon')->store($this->uploadPath);
 
         $user = User::find($request->user->id);
+
+        $previousIcon = $user->profile_icon;
+        if ($previousIcon) File::delete($profileIcon);~
+
         $user->profile_icon = $profileIcon;
         $user->save();
 
@@ -33,6 +38,10 @@ class ProfileController extends Controller
         $bannerIcon = $request->file('banner_icon')->store($this->uploadPath);
 
         $user = User::find($request->user->id);
+
+        $previousBanner = $user->banner_icon;
+        if ($previousBanner) File::delete($previousBanner);
+
         $user->banner_icon = $bannerIcon;
         $user->save();
 
