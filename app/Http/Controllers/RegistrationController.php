@@ -77,6 +77,7 @@ class RegistrationController extends Controller
         $user->email = $request->email;
         $user->password = Hash::make($request->password);
         $user->user_role = 'customer';
+        $user->account_status = 'requested';
 
         $user->save();
         

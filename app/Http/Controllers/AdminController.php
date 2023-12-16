@@ -34,15 +34,6 @@ class AdminController extends Controller
 
     public function getUserRequests(Request $request)
     {
-        /**
-         * /api/users?type=customer (returns new unverified users who paid)
-         * /api/users?type=customer&expired=true (returns expired users who paid)
-         * /api/users?type=customer&expired=true&paid=false (returns expired users who haven't paid)
-         * /api/users?type=customer&paid=false (returns new users who haven't paid)
-         * /api/users?type=customer&expired=true (returns card expired users)
-         * /api/users?type=vendor 
-         */
-
         $validation = Validator::make($request->all(), [
             'type' => ['required', 'in:customer,vendor'],
             'expired' => ['sometimes', 'nullable', 'in:yes,no'],
@@ -145,6 +136,20 @@ class AdminController extends Controller
             'id' => $request->card_id
         ]);
 
+        $user->save();
+
+        return ['status' => 'ok'];
+    }
+
+    public function rejectCustomer($custId) {
+        $user = User::find($custId);
+        if (!$this->isValidAccount($user, 'customer')) return $this->notFound();
+
+        $profileIcon = $user->profile_icon;
+        if ($profileIcon) File::delete($profileIcon);
+
+        $user->profile_icon = null;
+        $user->account_status = 'rejected';
         $user->save();
 
         return ['status' => 'ok'];

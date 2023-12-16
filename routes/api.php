@@ -121,6 +121,10 @@ Route::middleware('auth')->group(function () {
                 ->whereNumber('id');
 
         Route::middleware('auth.admin')
+                ->post('/users/reject/customer/{id}', [AdminController::class, 'rejectCustomer'])
+                ->whereNumber('id');
+
+        Route::middleware('auth.admin')
                 ->get('/card/generate', [AdminController::class, 'generateCardNumber']);
         // returns random card number of 16 digits
 
@@ -244,11 +248,16 @@ Route::put('/auth/reset-password', [ResetPasswordController::class, 'resetPasswo
  * } etc, editable and removable by admin
  */
 
- // change getUsers logic to return payment status, get profile logic to return if the user is dual_user
- // getUsers filters: new user: paid/unpaid // expired: paid/unpaid
+/**
+ * LATERAL CHANGES
+ * add new database table for packages
+ **/
 
- /**
-  * LATERAL CHANGES
-  * add new database table for packages
-  * add new categories in users table: preferred_categories and product_categories to adjust the dual_users
-  */
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/**
+ * FUTURE UPGRADES
+ * make acconts switchable to vendor from customer and vice versa
+ * add new categories in users table: preferred_categories and product_categories to adjust the dual_users
+ * do not delete entire user while rejecting vendor, as it can be customer upgrading to vendor
+ * add one more account_status flag in database to keep track of dual users verification
+ */
