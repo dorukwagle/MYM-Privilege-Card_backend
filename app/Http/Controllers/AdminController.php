@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Card;
+use App\Models\PaymentHistory;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Client\Response;
@@ -180,6 +181,29 @@ class AdminController extends Controller
         $user->expires = Carbon::now()->yesterday();
         $user->save();
 
+        return ['status' => 'ok'];
+    }
+
+    public function manualPayment(Request $request) {
+        $validation = Validator::make($request->all(), [
+            'user_id' => 'required',
+            'payment_amount' => ['required', 'numeric']
+        ]);
+
+        if ($validation->fails())
+            return response($validation->errors(), 400);
+
+        $user = User::find($request->user_id);
+        if (!$user)
+            return response(['err' => 'user not found'], 404);
+    
+        PaymentHistory::create([
+            'user_id' => $user->id,
+            'payment_amount' => $request->payment_amount
+            ]);
+
+        $user->payment_status = 'paid';
+        $user->save();
         return ['status' => 'ok'];
     }
 }

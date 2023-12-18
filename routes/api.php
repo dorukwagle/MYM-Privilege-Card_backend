@@ -145,6 +145,10 @@ Route::middleware('auth')->group(function () {
                 ->whereNumber('id');
         //expire the card if needed
 
+        Route::middleware('auth.admin')
+                ->post('/payment/manual', [AdminController::class, 'manualPayment']);
+        // body: user_id, amount
+
         Route::put('/profile/update-profile', [ProfileController::class, 'updateProfile']);
 });
 
@@ -245,7 +249,6 @@ Route::put('/auth/reset-password', [ResetPasswordController::class, 'resetPasswo
  * 
  * admin: search users by email or name
  * admin: search users and their payment details
- * admin: unverify mistakenly verified users 
  * 
  * admin: manual payment
  * 
