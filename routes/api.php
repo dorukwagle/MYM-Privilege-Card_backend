@@ -150,9 +150,15 @@ Route::middleware('auth')->group(function () {
         // body: user_id, amount
 
         Route::middleware('auth.admin')
-                ->post('/users/detail/{id}', [AdminController::class, 'getUserRequestDetails'])
+                ->get('/users/detail/{id}', [AdminController::class, 'getUserRequestDetails'])
                 ->whereNumber('id');
-        
+                // returns details about the user: expired or not etc
+
+        Route::middleware('auth.admin')
+                ->get('/payments/user/{id}', [AdminController::class, 'getUserPaymentHistory'])
+                ->whereNumber('id');
+                // returns the payment history of the given user
+
         Route::put('/profile/update-profile', [ProfileController::class, 'updateProfile']);
 });
 

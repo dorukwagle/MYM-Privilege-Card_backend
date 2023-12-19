@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\PaymentsHelper;
 use App\Models\Card;
 use App\Models\PaymentHistory;
 use App\Models\User;
@@ -197,10 +198,14 @@ class AdminController extends Controller
         unset($user['password']);
 
         $user->expired = false;
+        $user->last_paid_amount = null;
 
-        if($user->expires && Carbon::parse($user->expires)->isPast())
+        if ($user->expires && Carbon::parse($user->expires)->isPast())
             $user->expired = true;
         
+        if ($this->isValidAccount($user, 'customer'))
+            $user->last_paid_amount = PaymentsHelper::getLastPayment($user->id);
+
         return $user;
     }
 

@@ -1,8 +1,10 @@
 <?php
 
+namespace App\Helpers;
+
 use App\Models\PaymentHistory;
 
-class PaymentHelper
+class PaymentsHelper
 {
     public static function getHistory($userId)
     {
