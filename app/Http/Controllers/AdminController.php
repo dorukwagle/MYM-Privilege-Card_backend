@@ -232,4 +232,12 @@ class AdminController extends Controller
         $user->save();
         return ['status' => 'ok'];
     }
+
+    public function getUserPaymentHistory($userId) {
+        $user = User::find($userId);
+        if (!$this->isValidAccount($user, 'customer'))
+            return $this->notFound();
+        
+        return PaymentsHelper::getHistory($userId);
+    }
 }

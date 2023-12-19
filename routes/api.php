@@ -152,7 +152,7 @@ Route::middleware('auth')->group(function () {
         Route::middleware('auth.admin')
                 ->get('/users/detail/{id}', [AdminController::class, 'getUserRequestDetails'])
                 ->whereNumber('id');
-                // returns details about the user: expired or not etc
+                // returns details about the user: expired or not, last payment details etc,
 
         Route::middleware('auth.admin')
                 ->get('/payments/user/{id}', [AdminController::class, 'getUserPaymentHistory'])
