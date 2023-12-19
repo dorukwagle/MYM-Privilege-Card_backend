@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\OtpHelper;
+use App\Helpers\PaymentsHelper;
 use App\Models\Session;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -198,6 +199,10 @@ class ProfileController extends Controller
         if(!$vendor) return response(['err' => 'user not found'], 400);
         
         return $vendor;
+    }
+
+    public function getPaymentHistory(Request $request) {
+        return PaymentsHelper::getHistory($request->user->id);
     }
 
 }
