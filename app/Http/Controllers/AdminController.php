@@ -187,9 +187,21 @@ class AdminController extends Controller
         return ['status' => 'ok'];
     }
 
-    public function getRequestDetails($userId)
+    public function getUserRequestDetails($userId)
     {
-        // also return if the account is expired or not
+        $user = User::find($userId);
+        if (!$user)
+            return $this->notFound();
+        
+        unset($user['updated_at']);
+        unset($user['password']);
+
+        $user->expired = false;
+
+        if($user->expires && Carbon::parse($user->expires)->isPast())
+            $user->expired = true;
+        
+        return $user;
     }
 
     public function manualPayment(Request $request)
@@ -204,7 +216,7 @@ class AdminController extends Controller
 
         $user = User::find($request->user_id);
         if (!$user)
-            return response(['err' => 'user not found'], 404);
+            return $this->notFound();
 
         PaymentHistory::create([
             'user_id' => $user->id,

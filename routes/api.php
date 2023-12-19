@@ -149,6 +149,10 @@ Route::middleware('auth')->group(function () {
                 ->post('/payment/manual', [AdminController::class, 'manualPayment']);
         // body: user_id, amount
 
+        Route::middleware('auth.admin')
+                ->post('/users/detail/{id}', [AdminController::class, 'getUserRequestDetails'])
+                ->whereNumber('id');
+        
         Route::put('/profile/update-profile', [ProfileController::class, 'updateProfile']);
 });
 
@@ -242,8 +246,6 @@ Route::put('/auth/reset-password', [ResetPasswordController::class, 'resetPasswo
 
 /**
  * TODO:
- * admin: get request details {return user info and payment status i.e. unpaid or paid amount}
- * admin: get user details {return user info and payment histories} {option to unverify/verify}
  * {create two payment-history routes i.e. /profile/payment-historhy & /users/payment-history and keep a common function in helpers access it from profile and admin controllers}
  * 
  * 
@@ -256,7 +258,6 @@ Route::put('/auth/reset-password', [ResetPasswordController::class, 'resetPasswo
  * }
  * admin: search users and their payment details
  * 
- * admin: manual payment
  * 
  * user-> profile -> payment history
  * 
