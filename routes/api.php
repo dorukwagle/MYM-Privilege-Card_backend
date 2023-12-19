@@ -247,7 +247,13 @@ Route::put('/auth/reset-password', [ResetPasswordController::class, 'resetPasswo
  * {create two payment-history routes i.e. /profile/payment-historhy & /users/payment-history and keep a common function in helpers access it from profile and admin controllers}
  * 
  * 
- * admin: search users by email or name
+ * admin: search users by email or name {
+ * >>reject/delete vendor account
+ * >> expire the card if customer account
+ * >> verify vendor/customer account
+ * >> assign card in case of customer
+ * >> renew card
+ * }
  * admin: search users and their payment details
  * 
  * admin: manual payment

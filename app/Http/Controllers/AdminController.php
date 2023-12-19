@@ -67,7 +67,7 @@ class AdminController extends Controller
 
         $users = User::where('user_role', $userType);
         $users->where('payment_status', $paid ? 'paid' : 'pending');
-        
+
         if ($expired)
             $users->whereDate('expires', '<', Carbon::now());
         else $users->where('account_status', 'pending');
@@ -142,7 +142,8 @@ class AdminController extends Controller
         return ['status' => 'ok'];
     }
 
-    public function rejectCustomer($custId) {
+    public function rejectCustomer($custId)
+    {
         $user = User::find($custId);
         if (!$this->isValidAccount($user, 'customer')) return $this->notFound();
 
@@ -156,7 +157,8 @@ class AdminController extends Controller
         return ['status' => 'ok'];
     }
 
-    public function renewCard(Request $request, $userId) {
+    public function renewCard(Request $request, $userId)
+    {
         $validation = Validator::make($request->all(), [
             'valid_duration' => ['required', 'numeric', 'min:1']
         ]);
@@ -174,7 +176,8 @@ class AdminController extends Controller
         return ['status' => 'ok'];
     }
 
-    public function expireCard($userId) {
+    public function expireCard($userId)
+    {
         $user = User::find($userId);
         if (!$this->isValidAccount($user, 'customer')) return $this->notFound();
 
@@ -184,7 +187,13 @@ class AdminController extends Controller
         return ['status' => 'ok'];
     }
 
-    public function manualPayment(Request $request) {
+    public function getRequestDetails($userId)
+    {
+        // also return if the account is expired or not
+    }
+
+    public function manualPayment(Request $request)
+    {
         $validation = Validator::make($request->all(), [
             'user_id' => 'required',
             'payment_amount' => ['required', 'numeric']
@@ -196,11 +205,11 @@ class AdminController extends Controller
         $user = User::find($request->user_id);
         if (!$user)
             return response(['err' => 'user not found'], 404);
-    
+
         PaymentHistory::create([
             'user_id' => $user->id,
             'payment_amount' => $request->payment_amount
-            ]);
+        ]);
 
         $user->payment_status = 'paid';
         $user->save();
