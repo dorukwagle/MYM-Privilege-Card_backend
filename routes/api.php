@@ -80,7 +80,7 @@ Route::middleware('auth')->group(function () {
 
         Route::middleware('auth.verified.customer')
                 ->get('/profile/payment-history', [ProfileController::class, 'getPaymentHistory']);
-                // returns the payment history of the user
+        // returns the payment history of the user
 
         // get user's profile, accessible only to the user
         Route::get('/profile/get-profile', [ProfileController::class, 'getProfile']);
@@ -156,12 +156,17 @@ Route::middleware('auth')->group(function () {
         Route::middleware('auth.admin')
                 ->get('/users/detail/{id}', [AdminController::class, 'getUserRequestDetails'])
                 ->whereNumber('id');
-                // returns details about the user: expired or not, last payment details etc,
+        // returns details about the user: expired or not, last payment details etc,
 
         Route::middleware('auth.admin')
                 ->get('/payments/user/{id}', [AdminController::class, 'getUserPaymentHistory'])
                 ->whereNumber('id');
-                // returns the payment history of the given user
+        // returns the payment history of the given user
+
+        Route::middleware('auth.admin')
+                ->get('/users/search', [AdminController::class, 'searchUsers']);
+        // returns the list of users matching the query
+        // /users/search/?value=<full name> or <email>
 
         Route::put('/profile/update-profile', [ProfileController::class, 'updateProfile']);
 });
@@ -256,8 +261,6 @@ Route::put('/auth/reset-password', [ResetPasswordController::class, 'resetPasswo
 
 /**
  * TODO:
- * {create two payment-history routes i.e. /profile/payment-historhy & /users/payment-history and keep a common function in helpers access it from profile and admin controllers}
- * 
  * 
  * admin: search users by email or name {
  * >>reject/delete vendor account
@@ -266,10 +269,6 @@ Route::put('/auth/reset-password', [ResetPasswordController::class, 'resetPasswo
  * >> assign card in case of customer
  * >> renew card
  * }
- * admin: search users and their payment details
- * 
- * 
- * user-> profile -> payment history
  * 
  * 
  * packages system {

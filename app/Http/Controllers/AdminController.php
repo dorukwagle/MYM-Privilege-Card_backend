@@ -193,7 +193,7 @@ class AdminController extends Controller
         $user = User::find($userId);
         if (!$user)
             return $this->notFound();
-        
+
         unset($user['updated_at']);
         unset($user['password']);
 
@@ -202,7 +202,7 @@ class AdminController extends Controller
 
         if ($user->expires && Carbon::parse($user->expires)->isPast())
             $user->expired = true;
-        
+
         if ($this->isValidAccount($user, 'customer'))
             $user->last_paid_amount = PaymentsHelper::getLastPayment($user->id);
 
@@ -233,11 +233,36 @@ class AdminController extends Controller
         return ['status' => 'ok'];
     }
 
-    public function getUserPaymentHistory($userId) {
+    public function getUserPaymentHistory($userId)
+    {
         $user = User::find($userId);
         if (!$this->isValidAccount($user, 'customer'))
             return $this->notFound();
-        
+
         return PaymentsHelper::getHistory($userId);
+    }
+
+    public function searchUsers(Request $request)
+    {
+        $validation = Validator::make($request->all(), [
+            'value' => ['required', 'string'],
+        ]);
+
+        if ($validation->fails())
+            return response($validation->errors(), 400);
+
+        $value = $request->query('value');
+
+        $users = User::where('full_name', 'like', '%' . $value . '%')
+            ->orWhere('email', 'like', '%' . $value . '%')
+            ->get([
+                'id',
+                'full_name',
+                'email',
+                'contact',
+                'account_status',
+            ]);
+
+        return $users;
     }
 }
