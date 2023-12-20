@@ -88,7 +88,7 @@ Route::middleware('auth')->group(function () {
 
         Route::post('/profile/change-password', [ProfileController::class, 'changePassword']);
 
-        Route::middleware('auth.verified.customer')
+        Route::middleware('auth.customer')
                 ->get('/profile/payment-history', [ProfileController::class, 'getPaymentHistory']);
         // returns the payment history of the user
 
