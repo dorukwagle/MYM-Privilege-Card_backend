@@ -67,11 +67,14 @@ class AdminController extends Controller
         ];
 
         $users = User::where('user_role', $userType);
+        if ($userType === 'vendor')
+            return $users->where('account_status', 'pending')->get($columns);
+
         $users->where('payment_status', $paid ? 'paid' : 'pending');
 
         if ($expired)
             $users->whereDate('expires', '<', Carbon::now());
-        else $users->where('account_status', 'pending');
+        else $users->where('account_status', 'requested');
 
         return $users->get($columns);
     }
