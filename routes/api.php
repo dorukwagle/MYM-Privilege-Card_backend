@@ -68,6 +68,16 @@ Route::middleware('auth')->group(function () {
          * returns 400 if photo not uploaded
          */
 
+        Route::middleware('auth.customer')
+                ->get('/profile/my-card', [ProfileController::class, 'getMyCard']);
+                /**
+                 * Returns customer Card
+                 * return sample: 
+                 * {card: <card_number>, expires: <expiry date>, status: 'active'}
+                 * {status: 'not found' } if there is no card 404
+                 * {status: 'expired' } if card is expired 410
+                 */
+
         Route::post('/profile/profile-icon', [ProfileController::class, 'profileIconUpdate']);
 
         Route::middleware('auth.vendor')

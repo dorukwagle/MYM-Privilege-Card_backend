@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Helpers\OtpHelper;
 use App\Helpers\PaymentsHelper;
+use App\Models\Card;
 use App\Models\Session;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
@@ -205,4 +207,20 @@ class ProfileController extends Controller
         return PaymentsHelper::getHistory($request->user->id);
     }
 
+    public function getMyCard(Request $request) {
+        $id = $request->user->id;
+        $card = Card::where('user_id', $id)->first();
+
+        if (!$card)
+            return response(['status' => 'not found'], 404);
+
+        if (Carbon::parse($request->user->expires)->isPast())
+            return response(['status' => 'expired'], 410);
+
+        return [
+            'card' => $card->id,
+            'card_status' => 'active',
+            'expires_on' => $request->user->expires
+        ];
+    }
 }
