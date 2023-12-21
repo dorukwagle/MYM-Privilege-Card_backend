@@ -36,14 +36,39 @@ class AdminController extends Controller
 
     public function getUserRequests(Request $request)
     {
+        function queryItems($query, $page, $size)
+        {
+            $defaultPage = $page ? $page : 1;
+            $defaultSize = $size ? $size : 9;
+            $offset = ($defaultPage - 1) * $defaultSize;
+
+            $columns = [
+                'id',
+                'profile_icon',
+                'contact_no',
+                'email',
+                'full_name',
+                'org_name',
+                'payment_status'
+            ];
+
+            return $query->offset($offset)
+                ->limit($defaultSize)
+                ->get($columns);
+        }
+
         $validation = Validator::make($request->all(), [
             'type' => ['required', 'in:customer,vendor'],
             'expired' => ['sometimes', 'nullable', 'in:yes,no'],
-            'paid' => ['sometimes', 'nullable', 'in:yes,no']
+            'paid' => ['sometimes', 'nullable', 'in:yes,no'],
+            'size' => ['sometimes', 'nullable', 'numeric', 'min:1'],
+            'page' => ['sometimes', 'nullable', 'numeric', 'min:1']
         ]);
 
         $expired = false;
         $paid = true;
+        $size = $request->query('size');
+        $page = $request->query('page');
 
         if ($validation->fails())
             return response($validation->errors(), 400);
@@ -56,19 +81,11 @@ class AdminController extends Controller
         if ($request->query('paid') && $request->query('paid') === 'no')
             $paid = false;
 
-        $columns = [
-            'id',
-            'profile_icon',
-            'contact_no',
-            'email',
-            'full_name',
-            'org_name',
-            'payment_status'
-        ];
-
         $users = User::where('user_role', $userType);
-        if ($userType === 'vendor')
-            return $users->where('account_status', 'pending')->get($columns);
+        if ($userType === 'vendor') {
+            $users->where('account_status', 'pending');
+            return queryItems($users, $page, $size);
+        }
 
         $users->where('payment_status', $paid ? 'paid' : 'pending');
 
@@ -76,7 +93,7 @@ class AdminController extends Controller
             $users->whereDate('expires', '<', Carbon::now());
         else $users->where('account_status', 'requested');
 
-        return $users->get($columns);
+        return queryItems($users, $page, $size);
     }
 
     public function verifyVendor($vendorId)

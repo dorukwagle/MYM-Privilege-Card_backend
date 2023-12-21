@@ -118,7 +118,9 @@ Route::middleware('auth')->group(function () {
         Route::middleware('auth.admin')
                 ->get('/user-requests', [AdminController::class, 'getUserRequests']);
         /**
-         * /api/users?type=customer (returns new unverified users who paid)
+         * /api/users?type=customer (returns new unverified users who paid) first 9 items only
+         * /api/users?type=customer&page=2 (returns new unverified users who paid) page 2 with 9 items only
+         * /api/users?type=customer&page=2&size=10 (returns new unverified users who paid) page 2 with 10 items only
          * /api/users?type=customer&expired=yes (returns expired users who paid)
          * /api/users?type=customer&expired=yes&paid=no (returns expired users who haven't paid)
          * /api/users?type=customer&paid=no (returns new users who haven't paid)
@@ -272,13 +274,6 @@ Route::put('/auth/reset-password', [ResetPasswordController::class, 'resetPasswo
 /**
  * TODO:
  * 
- * admin: search users by email or name {
- * >>reject/delete vendor account
- * >> expire the card if customer account
- * >> verify vendor/customer account
- * >> assign card in case of customer
- * >> renew card
- * }
  * 
  * 
  * packages system {
