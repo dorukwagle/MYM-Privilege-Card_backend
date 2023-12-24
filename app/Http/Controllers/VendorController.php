@@ -71,7 +71,14 @@ class VendorController extends Controller
     }
 
     public function deletePost($postId) {
-        Post::where('id', $postId)->delete();
+        $post = Post::find($postId);
+
+        if (!$post)
+            return response(['err' => 'not found'], 404);
+
+        File::delete($post->icon);
+        $post->delete();
+        
         return ['status' => 'ok'];
     }
 

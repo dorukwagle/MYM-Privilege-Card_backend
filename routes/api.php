@@ -280,10 +280,7 @@ Route::put('/auth/reset-password', [ResetPasswordController::class, 'resetPasswo
 
 /**
  * TODO:
- * vendor: create post
- * vendor: update post
- * vendor: delete post
- * vendor: view own posts by filters
+ * 
  * 
  * 
  * SOMETIMES LATER
