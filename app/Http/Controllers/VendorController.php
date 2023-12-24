@@ -74,4 +74,23 @@ class VendorController extends Controller
         Post::where('id', $postId)->delete();
         return ['status' => 'ok'];
     }
+
+    public function getPosts(Request $request) {
+        $validation = Validator::make($request->all(), [
+            'size' => ['sometimes', 'nullable', 'numeric', 'min:1'],
+            'page' => ['sometimes', 'nullable', 'numeric', 'min:1']
+        ]);
+
+        $size = $request->filled('size') ? $request->query('size') : 1;
+        $page = $request->filled('page') ? $request->query('page') : 1;
+
+        if ($validation->fails())
+            return response($validation->errors(), 400);
+
+        return Post::where('user_id', $request->user->id)
+                            ->orderBy('created_at', 'desc')
+                            ->offset(($page - 1) * $size)
+                            ->limit($size)
+                            ->get();
+    }
 }
