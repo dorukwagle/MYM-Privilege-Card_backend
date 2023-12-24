@@ -6,6 +6,7 @@ use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RegistrationController;
 use App\Http\Controllers\ResetPasswordController;
+use App\Http\Controllers\VendorController;
 use App\Http\Controllers\VerificationController;
 use App\Http\Middleware\AuthorizationMiddleware;
 use Illuminate\Http\Request;
@@ -183,6 +184,12 @@ Route::middleware('auth')->group(function () {
         Route::put('/profile/update-profile', [ProfileController::class, 'updateProfile']);
 });
 
+Route::middleware(['auth', 'auth.vendor'])->group(function() {
+        Route::post('/vendor/post', [VendorController::class, 'createPost']);
+        Route::put('/vendor/post', [VendorController::class, 'updatePost']);
+        Route::delete('/vendor/post/{id}', [VendorController::class, 'deletePost']);
+});
+
 Route::post('/register/customer', [RegistrationController::class, 'registerCustomer']);
 
 Route::post('/register/vendor', [RegistrationController::class, 'registerVendor']);
@@ -273,7 +280,15 @@ Route::put('/auth/reset-password', [ResetPasswordController::class, 'resetPasswo
 
 /**
  * TODO:
+ * vendor: create post
+ * vendor: update post
+ * vendor: delete post
+ * vendor: view own posts by filters
  * 
+ * 
+ * SOMETIMES LATER
+ * send notifications when vendor posts
+ * admin view the feedback
  * 
  * 
  * packages system {
