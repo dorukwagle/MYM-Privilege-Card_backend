@@ -109,7 +109,7 @@ Route::middleware('auth')->group(function () {
          * email (new email)
          */
 
-        Route::post('/auth/logout', [AuthController::class, 'logout']);
+        Route::delete('/auth/logout', [AuthController::class, 'logout']);
 
         Route::get('/info/vendor/{id}', [ProfileController::class, 'getVendorInfo'])
                 ->whereNumber('id');
@@ -221,7 +221,7 @@ Route::post('/auth/login', [AuthController::class, 'login']);
  * 
  * Success: {'status' : 'ok', access_token: '<token>'}
  * 
- * Errors:
+ * Errors:      
  *  if fields not sent, user not found, incorrect password: returns {'err': 'incorrect email or password'} with 400
  * if email not verified:
  *  {'user_id' : <id>, email: <email>, email_status: 'unverified'}
