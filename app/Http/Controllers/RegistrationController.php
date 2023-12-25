@@ -65,7 +65,7 @@ class RegistrationController extends Controller
         $profileIcon = $request->file('profile_icon')->store($this->uploadPath);
         $user = User::find($request->user_id);
 
-        if (!$user) return response(['err' => 'user_id not found']);
+        if (!$user) return response(['err' => 'user_id not found'], 404);
         
         $user->full_name = $request->full_name;
         $user->dob = $request->dob;

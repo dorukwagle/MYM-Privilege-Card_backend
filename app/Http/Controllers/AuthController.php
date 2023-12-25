@@ -34,11 +34,11 @@ class AuthController extends Controller
             return $this->getErrMsg();
 
         if(!$user->email_verified)
-            return [
+            return response([
                 'user_id' => $user->id,
                 'email' => $user->email,
                 'email_status' => 'unverified'
-            ];
+            ], 401);
        
         // create a session cookie and insert it into the database
         $cookie = Hash::make(Carbon::now());

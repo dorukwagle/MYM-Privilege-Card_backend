@@ -26,7 +26,7 @@ class ResetPasswordController extends Controller
     }
 
     public function resetPassword(Request $request) {
-        $err = response(['err' => 'invalid otp']);
+        $err = response(['err' => 'invalid otp'], 400);
         $validation = Validator::make($request->all(), [
             'email' => ['required', 'email'],
             'otp' => ['required', 'numeric'],
