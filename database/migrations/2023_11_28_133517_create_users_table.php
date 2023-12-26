@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -11,7 +12,7 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('location')->nullable();
+            $table->point('coordinates')->nullable();
             $table->string('banner_icon', 150)->nullable();
             $table->string('profile_icon', 150)->nullable();
             $table->string('full_name');
@@ -33,6 +34,8 @@ return new class extends Migration
             $table->text('about_org')->nullable();
             $table->timestamps();
         });
+
+        DB::statement('ALTER TABLE users ADD SPATIAL INDEX(coordinates)');
     }
 
     /**

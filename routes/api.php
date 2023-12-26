@@ -276,6 +276,11 @@ Route::put('/auth/reset-password', [ResetPasswordController::class, 'resetPasswo
 
 /**
  * TODO:
+ * edit users table to store coordinates as point datatype
+ * edit all the registration and validation logic to validate location from reques
+ * convert the location string from request into coordinates to save in the database
+ * save the coordinates in database
+ * now retrieve the point from database and perform distance calculation
  * 
  * cust: search nearby post by category -400 m
  * cust: show preferred posts in home page -4 km
