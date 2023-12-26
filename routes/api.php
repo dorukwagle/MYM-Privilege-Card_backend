@@ -197,12 +197,10 @@ Route::post('/register/vendor', [RegistrationController::class, 'registerVendor'
  * org_name (name of business or organization)
  * contact_no
  * address (a bit more detailed, as it may appear in shop info when user views it)
- * estd (date of establishment of the org.)
  * email
  * password
- * org_pan_no (registration pan no. of the business)
+ * org_vat_card (registration pan no. of the business)
  * about_org (a short and comprehensive bio of the business)    
- * 
  * profile_icon (profile photo or the shop logo)
  * banner_icon (background page photo)
  * org_registration_card (photo of business registration certificate)
