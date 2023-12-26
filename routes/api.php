@@ -26,72 +26,9 @@ Route::get('/categories', [CategoriesController::class, 'getProductCategories'])
  */
 
 Route::middleware('auth')->group(function () {
-        Route::middleware('auth.admin')
-                ->post('/category', [CategoriesController::class, 'addCategory']);
-        /**
-         * body parameters:
-         * category (name of the category)
-         * 
-         * ON SUCCESS: returns {status: 'ok'}
-         * Errors:
-         * validation errors with 400 code
-         * 
-         */
-        Route::middleware('auth.admin')
-                ->delete('/category/{id}', [CategoriesController::class, 'deleteCategory'])
-                ->whereNumber('id');
-        /**
-         * ON SUCCESS: {status: ok}
-         * 
-         * Errors:
-         * 400 with {err: 'category not found'}
-         */
-        Route::middleware('auth.customer')
-                ->post('/kyc/customer', [RegistrationController::class, 'customerKyc']);
-
-        /**
-         * Body parameters:
-         * location (coordinates of the actual location of the user, from google map)
-         * full_name (full name of user at least two words required)
-         * contact_no (user phone no.)
-         * gender   
-         * address  (name of city or locality)
-         * dob
-         * email (sign up email )
-         * password
-         * preferred_categories (list of categories id. e.g. [1, 2, 3])
-         * profile_icon (photo of the user)
-         * 
-         * ON SUCCESS: returns e.g. {'status' : 'ok', user_id: 2, email: 'example@email'}
-         * 
-         * ERROR:
-         * returns 400 code with validation error if invalid field data are sent
-         * returns 400 if photo not uploaded
-         */
-
-        Route::middleware('auth.customer')
-                ->get('/profile/my-card', [ProfileController::class, 'getMyCard']);
-                /**
-                 * Returns customer Card
-                 * return sample: 
-                 * {card: <card_number>, expires: <expiry date>, status: 'active'}
-                 * {status: 'not found' } if there is no card 404
-                 * {status: 'expired' } if card is expired 410
-                 */
-
         Route::post('/profile/profile-icon', [ProfileController::class, 'profileIconUpdate']);
 
-        Route::middleware('auth.vendor')
-                ->post('/profile/banner-icon', [ProfileController::class, 'bannerIconUpdate']);
-
-        Route::middleware('auth.vendor')
-                ->post('/profile/org-bio', [ProfileController::class, 'orgBioUpdate']);
-
         Route::post('/profile/change-password', [ProfileController::class, 'changePassword']);
-
-        Route::middleware('auth.customer')
-                ->get('/profile/payment-history', [ProfileController::class, 'getPaymentHistory']);
-        // returns the payment history of the user
 
         // get user's profile, accessible only to the user
         Route::get('/profile/get-profile', [ProfileController::class, 'getProfile']);
@@ -116,8 +53,30 @@ Route::middleware('auth')->group(function () {
 
         Route::get('/info/admin', [ProfileController::class, 'getAdminInfo']);
 
-        Route::middleware('auth.admin')
-                ->get('/user-requests', [AdminController::class, 'getUserRequests']);
+        Route::put('/profile/update-profile', [ProfileController::class, 'updateProfile']);
+});
+
+Route::middleware(['auth', 'auth.admin'])->group(function () {
+        Route::post('/category', [CategoriesController::class, 'addCategory']);
+        /**
+         * body parameters:
+         * category (name of the category)
+         * 
+         * ON SUCCESS: returns {status: 'ok'}
+         * Errors:
+         * validation errors with 400 code
+         * 
+         */
+        Route::delete('/category/{id}', [CategoriesController::class, 'deleteCategory'])
+                ->whereNumber('id');
+        /**
+         * ON SUCCESS: {status: ok}
+         * 
+         * Errors:
+         * 400 with {err: 'category not found'}
+         */
+
+        Route::get('/user-requests', [AdminController::class, 'getUserRequests']);
         /**
          * /api/users?type=customer (returns new unverified users who paid) first 9 items only
          * /api/users?type=customer&page=2 (returns new unverified users who paid) page 2 with 9 items only
@@ -129,65 +88,90 @@ Route::middleware('auth')->group(function () {
          * /api/users?type=vendor 
          */
 
-        Route::middleware('auth.admin')
-                ->post('/users/verify/vendor/{id}', [AdminController::class, 'verifyVendor'])
+        Route::post('/users/verify/vendor/{id}', [AdminController::class, 'verifyVendor'])
                 ->whereNumber('id');
 
-        Route::middleware('auth.admin')
-                ->post('/users/reject/vendor/{id}', [AdminController::class, 'rejectVendor'])
+        Route::post('/users/reject/vendor/{id}', [AdminController::class, 'rejectVendor'])
                 ->whereNumber('id');
 
-        Route::middleware('auth.admin')
-                ->post('/users/reject/customer/{id}', [AdminController::class, 'rejectCustomer'])
+        Route::post('/users/reject/customer/{id}', [AdminController::class, 'rejectCustomer'])
                 ->whereNumber('id');
 
-        Route::middleware('auth.admin')
-                ->get('/card/generate', [AdminController::class, 'generateCardNumber']);
+        Route::get('/card/generate', [AdminController::class, 'generateCardNumber']);
         // returns random card number of 16 digits
 
-        Route::middleware('/auth.admin')
-                ->post('/users/verify/customer/{id}', [AdminController::class, 'assignCard'])
+        Route::post('/users/verify/customer/{id}', [AdminController::class, 'assignCard'])
                 ->whereNumber('id');
         //assign card to the user
         // body: card_id, valid_duration
 
-        Route::middleware('auth.admin')
-                ->put('/users/card/renew/{id}', [AdminController::class, 'renewCard'])
+        Route::put('/users/card/renew/{id}', [AdminController::class, 'renewCard'])
                 ->whereNumber('id');
         // renew expired customer cards
         // body: valid_duration
 
-        Route::middleware('auth.admin')
-                ->put('/users/card/expire/{id}', [AdminController::class, 'expireCard'])
+        Route::put('/users/card/expire/{id}', [AdminController::class, 'expireCard'])
                 ->whereNumber('id');
         //expire the card if needed
 
-        Route::middleware('auth.admin')
-                ->post('/payment/manual', [AdminController::class, 'manualPayment']);
+        Route::post('/payment/manual', [AdminController::class, 'manualPayment']);
         // body: user_id, amount
 
-        Route::middleware('auth.admin')
-                ->get('/users/detail/{id}', [AdminController::class, 'getUserRequestDetails'])
+        Route::get('/users/detail/{id}', [AdminController::class, 'getUserRequestDetails'])
                 ->whereNumber('id');
         // returns details about the user: expired or not, last payment details etc,
 
-        Route::middleware('auth.admin')
-                ->get('/payments/user/{id}', [AdminController::class, 'getUserPaymentHistory'])
+        Route::get('/payments/user/{id}', [AdminController::class, 'getUserPaymentHistory'])
                 ->whereNumber('id');
         // returns the payment history of the given user
 
-        Route::middleware('auth.admin')
-                ->get('/users/search', [AdminController::class, 'searchUsers']);
+        Route::get('/users/search', [AdminController::class, 'searchUsers']);
         // returns the list of users matching the query
         // /users/search/?value=<full name> or <email>
-
-        Route::put('/profile/update-profile', [ProfileController::class, 'updateProfile']);
 });
 
-Route::middleware(['auth', 'auth.vendor'])->group(function() {
+Route::middleware(['auth', 'auth.vendor'])->group(function () {
         Route::post('/vendor/post', [VendorController::class, 'createPost']);
         Route::put('/vendor/post', [VendorController::class, 'updatePost']);
         Route::delete('/vendor/post/{id}', [VendorController::class, 'deletePost']);
+        Route::post('/profile/banner-icon', [ProfileController::class, 'bannerIconUpdate']);
+        Route::post('/profile/org-bio', [ProfileController::class, 'orgBioUpdate']);
+});
+
+Route::middleware(['auth', 'auth.customer'])->groud(function () {
+        Route::post('/kyc/customer', [RegistrationController::class, 'customerKyc']);
+
+        /**
+         * Body parameters:
+         * location (coordinates of the actual location of the user, from google map)
+         * full_name (full name of user at least two words required)
+         * contact_no (user phone no.)
+         * gender   
+         * address  (name of city or locality)
+         * dob
+         * email (sign up email )
+         * password
+         * preferred_categories (list of categories id. e.g. [1, 2, 3])
+         * profile_icon (photo of the user)
+         * 
+         * ON SUCCESS: returns e.g. {'status' : 'ok', user_id: 2, email: 'example@email'}
+         * 
+         * ERROR:
+         * returns 400 code with validation error if invalid field data are sent
+         * returns 400 if photo not uploaded
+         */
+
+        Route::get('/profile/my-card', [ProfileController::class, 'getMyCard']);
+        /**
+         * Returns customer Card
+         * return sample: 
+         * {card: <card_number>, expires: <expiry date>, status: 'active'}
+         * {status: 'not found' } if there is no card 404
+         * {status: 'expired' } if card is expired 410
+         */
+
+        Route::get('/profile/payment-history', [ProfileController::class, 'getPaymentHistory']);
+        // returns the payment history of the user
 });
 
 Route::post('/register/customer', [RegistrationController::class, 'registerCustomer']);
