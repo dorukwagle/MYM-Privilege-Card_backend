@@ -3,6 +3,7 @@
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoriesController;
+use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RegistrationController;
 use App\Http\Controllers\ResetPasswordController;
@@ -131,6 +132,9 @@ Route::middleware(['auth', 'auth.admin'])->group(function () {
 });
 
 Route::middleware(['auth', 'auth.vendor'])->group(function () {
+        Route::get('/vendor/posts', [VendorController::class, 'getPosts']);
+        // /vendor/posts?size=9&page=1
+        
         Route::post('/vendor/post', [VendorController::class, 'createPost']);
         Route::put('/vendor/post', [VendorController::class, 'updatePost']);
         Route::delete('/vendor/post/{id}', [VendorController::class, 'deletePost']);
@@ -173,7 +177,7 @@ Route::middleware(['auth', 'auth.customer'])->group(function () {
         Route::get('/profile/payment-history', [ProfileController::class, 'getPaymentHistory']);
         // returns the payment history of the user
 
-        Route::get('/cust/notifications', []);
+        Route::get('/cust/notifications', [CustomerController::class, 'getNotifications']);
 });
 
 Route::post('/register/customer', [RegistrationController::class, 'registerCustomer']);
