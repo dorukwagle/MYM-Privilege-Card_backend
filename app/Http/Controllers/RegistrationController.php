@@ -106,7 +106,7 @@ class RegistrationController extends Controller
             'password' => ['required', 'string', 'min:6'],
             'product_categories' => ['required', 'array'],
             'product_categories.*' => 'exists:categories,id',
-            'org_vat_catd' => 'required',
+            'org_vat_card' => 'required',
             'org_registration_card' => 'required',
         ]);
 

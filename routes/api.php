@@ -278,7 +278,6 @@ Route::put('/auth/reset-password', [ResetPasswordController::class, 'resetPasswo
 
 /**
  * TODO:
- * fix Carbon::now() bug in all controllers
  * 
  * cust: search nearby post by category -400 m
  * cust: show preferred posts in home page -4 km
