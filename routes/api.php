@@ -134,7 +134,7 @@ Route::middleware(['auth', 'auth.admin'])->group(function () {
 Route::middleware(['auth', 'auth.vendor'])->group(function () {
         Route::get('/vendor/posts', [VendorController::class, 'getPosts']);
         // /vendor/posts?size=9&page=1
-        
+
         Route::post('/vendor/post', [VendorController::class, 'createPost']);
         Route::put('/vendor/post', [VendorController::class, 'updatePost']);
         Route::delete('/vendor/post/{id}', [VendorController::class, 'deletePost']);
@@ -178,6 +178,12 @@ Route::middleware(['auth', 'auth.customer'])->group(function () {
         // returns the payment history of the user
 
         Route::get('/cust/notifications', [CustomerController::class, 'getNotifications']);
+        // /card/notifications?page=1&size=9
+
+        Route::post('/cust/notifs-read/{last-notif-id}', [CustomerController::class, 'markNotificationAsRead'])
+                ->whereNumber('last-notif-id');
+        // /cust/notifs-read/5  (marks all the notifications as seen upto this timestamp)
+        
 });
 
 Route::post('/register/customer', [RegistrationController::class, 'registerCustomer']);
@@ -270,7 +276,6 @@ Route::put('/auth/reset-password', [ResetPasswordController::class, 'resetPasswo
 
 /**
  * TODO:
- * cust: view notification
  * cust: notifs-read
  * cust: unread-notifs-count
  * 

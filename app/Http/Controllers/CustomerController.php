@@ -27,5 +27,16 @@ class CustomerController extends Controller
             ->get();
     }
 
-    
+    public function markNotificationAsRead(Request $request, $notifId) {
+        $userId = $request->user->id;
+        $notif = Notification::find($notifId);
+
+        if (!$notif) return ['status' => 'ok'];
+
+        Notification::where('user_id', $userId)
+            ->where('created_at', '<=', $notif->created_at)
+            ->update(['read' => true]);
+
+        return ['status' => 'ok'];
+    }
 }
