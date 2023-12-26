@@ -39,4 +39,12 @@ class CustomerController extends Controller
 
         return ['status' => 'ok'];
     }
+
+    public function getUnreadNotifsCount(Request $request) {
+        $userId = $request->user->id;
+
+        return Notification::where('user_id', $userId)
+            ->where('read', false)
+            ->count();
+    }
 }

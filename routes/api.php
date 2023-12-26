@@ -183,7 +183,9 @@ Route::middleware(['auth', 'auth.customer'])->group(function () {
         Route::post('/cust/notifs-read/{last-notif-id}', [CustomerController::class, 'markNotificationAsRead'])
                 ->whereNumber('last-notif-id');
         // /cust/notifs-read/5  (marks all the notifications as seen upto this timestamp)
-        
+
+        Route::get('/cust/unread-notifs-count', [CustomerController::class, 'getUnreadNotifsCount']);
+        // returns the number new/unread notifications
 });
 
 Route::post('/register/customer', [RegistrationController::class, 'registerCustomer']);
@@ -276,8 +278,7 @@ Route::put('/auth/reset-password', [ResetPasswordController::class, 'resetPasswo
 
 /**
  * TODO:
- * cust: notifs-read
- * cust: unread-notifs-count
+ * fix Carbon::now() bug in all controllers
  * 
  * cust: search nearby post by category -400 m
  * cust: show preferred posts in home page -4 km
