@@ -138,7 +138,7 @@ Route::middleware(['auth', 'auth.vendor'])->group(function () {
         Route::post('/profile/org-bio', [ProfileController::class, 'orgBioUpdate']);
 });
 
-Route::middleware(['auth', 'auth.customer'])->groud(function () {
+Route::middleware(['auth', 'auth.customer'])->group(function () {
         Route::post('/kyc/customer', [RegistrationController::class, 'customerKyc']);
 
         /**
@@ -172,6 +172,8 @@ Route::middleware(['auth', 'auth.customer'])->groud(function () {
 
         Route::get('/profile/payment-history', [ProfileController::class, 'getPaymentHistory']);
         // returns the payment history of the user
+
+        Route::get('/cust/notifications', []);
 });
 
 Route::post('/register/customer', [RegistrationController::class, 'registerCustomer']);
@@ -264,8 +266,19 @@ Route::put('/auth/reset-password', [ResetPasswordController::class, 'resetPasswo
 
 /**
  * TODO:
+ * cust: view notification
+ * cust: notifs-read
+ * cust: unread-notifs-count
  * 
+ * cust: search nearby post by category -400 m
+ * cust: show preferred posts in home page -4 km
+ * cust: recommended {
+ * -nearby posts with non preferred category // near you section
+ * -preferred posts beyong nearby // you might like section
+ * }
  * 
+ * users: send feedback
+ * admin: view feedback
  * 
  * SOMETIMES LATER
  * send notifications when vendor posts

@@ -16,6 +16,7 @@ return new class extends Migration
             $table->boolean('read')->default(0);
             $table->bigInteger("post_id")->nullable();
             $table->bigInteger("user_id")->nullable();
+            $table->timestamps();
         });
     }
 
