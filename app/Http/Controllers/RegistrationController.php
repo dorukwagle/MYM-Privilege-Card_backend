@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\UsersCategory;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
@@ -43,7 +44,7 @@ class RegistrationController extends Controller
     public function customerKyc(Request $request) {
         $validation = Validator::make($request->all(), [
             'user_id' => ['required', 'number'],
-            'location' => ['required', 'regex:/^-?([1-8]?\d(?:\.\d+)?|90(?:\.0+)?)\s*,\s*-?(180(?:\.0+)?|1[0-7]\d(?:\.\d+)?|\d{1,2}(?:\.\d+)?)$/'],
+            'location' => ['required', 'regex:/^-?([1-8]?\d(?:\.\d+)?|90(?:\.0+)?), -?(180(?:\.0+)?|1[0-7]\d(?:\.\d+)?|\d{1,2}(?:\.\d+)?)$/'],
             'profile_icon' => 'required',
             'full_name' => ['required', 'string', 'regex:/^[\pL\s]+ [\pL\s]+$/u'],
             'contact_no' => ['required', 'regex:/^(\+?\d{6,15})$/'],
@@ -66,12 +67,16 @@ class RegistrationController extends Controller
         $user = User::find($request->user_id);
 
         if (!$user) return response(['err' => 'user_id not found'], 404);
+
+        // convert location string to point
+        $latLong = explode(", ", $request->location);
+        $location = DB::raw("POINT($latLong[0] $latLong[1])");
         
         $user->full_name = $request->full_name;
         $user->dob = $request->dob;
         $user->gender = $request->gender;
         $user->address = $request->address;
-        $user->location = $request->location;
+        $user->location = $location;
         $user->profile_icon = $profileIcon;
         $user->contact_no = $request->contact_no;
         $user->email = $request->email;
@@ -97,7 +102,7 @@ class RegistrationController extends Controller
 
     public function registerVendor(Request $request) {
         $validation = Validator::make($request->all(), [
-            'location' => ['required', 'regex:/^-?([1-8]?\d(?:\.\d+)?|90(?:\.0+)?)\s*,\s*-?(180(?:\.0+)?|1[0-7]\d(?:\.\d+)?|\d{1,2}(?:\.\d+)?)$/'],
+            'location' => ['required', 'regex:/^-?([1-8]?\d(?:\.\d+)?|90(?:\.0+)?), -?(180(?:\.0+)?|1[0-7]\d(?:\.\d+)?|\d{1,2}(?:\.\d+)?)$/'],
             'org_name' => 'required',
             'full_name' => ['required', 'string', 'regex:/^[\pL\s]+ [\pL\s]+$/u'],
             'contact_no' => ['required', 'regex:/^(\+?\d{6,15})$/'],
@@ -126,10 +131,14 @@ class RegistrationController extends Controller
         $orgVatCard = $request->file('org_vat_card')->store($this->uploadPath);
         $registrationCertificate = $request->file('org_registration_card')->store($this->uploadPath);
 
+        // convert location string to point
+        $latLong = explode(", ", $request->location);
+        $location = DB::raw("POINT($latLong[0] $latLong[1])");
+
         $user = User::create([
             'full_name' => $request->org_name,
             'address' => $request->address,
-            'location' => $request->location,
+            'coordinates' => $location,
             'contact_no' => $request->contact_no,
             'email' => $request->email,
             'password' => Hash::make($request->password),
