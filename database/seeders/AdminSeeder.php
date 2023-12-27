@@ -6,6 +6,7 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use TarfinLabs\LaravelSpatial\Types\Point;
 
 class AdminSeeder extends Seeder
 {
@@ -22,7 +23,8 @@ class AdminSeeder extends Seeder
                 'email' => 'doruk',
                 'user_role' => 'admin',
                 'email_verified' => true,
-                'password' => Hash::make('adminpass')
+                'password' => Hash::make('adminpass'),
+                'coordinates' => DB::raw("point(85, 83)"),
             ]
         );
     }

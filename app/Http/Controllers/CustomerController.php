@@ -4,11 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\Notification;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class CustomerController extends Controller
 {
-    public function getNotifications(Request $request) {
+    public function getNotifications(Request $request)
+    {
         $validation = Validator::make($request->all(), [
             'size' => ['sometimes', 'nullable', 'numeric', 'min:1'],
             'page' => ['sometimes', 'nullable', 'numeric', 'min:1']
@@ -27,7 +29,8 @@ class CustomerController extends Controller
             ->get();
     }
 
-    public function markNotificationAsRead(Request $request, $notifId) {
+    public function markNotificationAsRead(Request $request, $notifId)
+    {
         $userId = $request->user->id;
         $notif = Notification::find($notifId);
 
@@ -40,11 +43,39 @@ class CustomerController extends Controller
         return ['status' => 'ok'];
     }
 
-    public function getUnreadNotifsCount(Request $request) {
+    public function getUnreadNotifsCount(Request $request)
+    {
         $userId = $request->user->id;
 
         return Notification::where('user_id', $userId)
             ->where('read', false)
             ->count();
+    }
+
+    public function searchVendorPosts(Request $request)
+    {
+        $validation = Validator::make($request->all(), [
+            'search' => ['required', 'string'],
+            'user_location' => ['required', 'regex:/^-?([1-8]?\d(?:\.\d+)?|90(?:\.0+)?), -?(180(?:\.0+)?|1[0-7]\d(?:\.\d+)?|\d{1,2}(?:\.\d+)?)$/']
+        ]);
+
+        if ($validation->fails())
+            return response($validation->errors(), 400);
+
+        $capitalizedSearch = ucwords($request->category);
+        $latLang = explode(", ", $request->user_location);
+
+        // select posts of matching categories
+        // select posts of nearby distance
+
+        return DB::table('users')
+            ->join('posts', 'users.id', '=', 'posts.user_id')
+            ->join('categories', 'categories.id', '=', 'posts.category_id')
+            ->selectRaw('users.id as vendor_id, users.org_name as org_name, users.coordinates as location, posts.*')
+            ->whereRaw('users.user_role = ? or users.is_vend_cust = ?', ['vendor', true])
+            ->whereRaw('match(categories.category) against(? in boolean mode)', [$capitalizedSearch])
+            ->havingRaw('st_distance_sphere(users.coordinates, point(?, ?)) < ?', [$latLang[1], $latLang[0], 401]) // less than 401 meter
+            ->orderBy('posts.created_at', 'desc')
+            ->get();
     }
 }

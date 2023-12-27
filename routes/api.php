@@ -186,6 +186,11 @@ Route::middleware(['auth', 'auth.customer'])->group(function () {
 
         Route::get('/cust/unread-notifs-count', [CustomerController::class, 'getUnreadNotifsCount']);
         // returns the number new/unread notifications
+
+        Route::get('/cust/search', [CustomerController::class, 'searchVendorPosts']);
+        // /cust/search?category=cosmetic (returns all cosmetic posts created by nearby vendors)
+
+        
 });
 
 Route::post('/register/customer', [RegistrationController::class, 'registerCustomer']);
@@ -276,10 +281,6 @@ Route::put('/auth/reset-password', [ResetPasswordController::class, 'resetPasswo
 
 /**
  * TODO:
- * edit all the registration and validation logic to validate location from request
- * convert the location string from request into coordinates to save in the database
- * save the coordinates in database
- * now retrieve the point from database and perform distance calculation
  * 
  * cust: search nearby post by category -400 m
  * cust: show preferred posts in home page -4 km

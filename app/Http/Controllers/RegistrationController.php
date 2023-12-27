@@ -70,13 +70,13 @@ class RegistrationController extends Controller
 
         // convert location string to point
         $latLong = explode(", ", $request->location);
-        $location = DB::raw("POINT($latLong[0] $latLong[1])");
+        $location = DB::raw("POINT($latLong[1] $latLong[0])");
         
         $user->full_name = $request->full_name;
         $user->dob = $request->dob;
         $user->gender = $request->gender;
         $user->address = $request->address;
-        $user->location = $location;
+        $user->coordinates = $location;
         $user->profile_icon = $profileIcon;
         $user->contact_no = $request->contact_no;
         $user->email = $request->email;
@@ -133,7 +133,7 @@ class RegistrationController extends Controller
 
         // convert location string to point
         $latLong = explode(", ", $request->location);
-        $location = DB::raw("POINT($latLong[0] $latLong[1])");
+        $location = DB::raw("POINT($latLong[1] $latLong[0])");
 
         $user = User::create([
             'full_name' => $request->org_name,
