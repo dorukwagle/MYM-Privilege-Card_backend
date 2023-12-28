@@ -190,6 +190,7 @@ Route::middleware(['auth', 'auth.customer'])->group(function () {
         Route::get('/cust/search', [CustomerController::class, 'searchVendorPosts']);
         // /cust/search?category=cosmetic (returns all cosmetic posts created by nearby vendors)
 
+        Route::get('/cust/preferred-posts', [CustomerController::class, 'getPreferredPosts']);
         
 });
 
@@ -282,8 +283,9 @@ Route::put('/auth/reset-password', [ResetPasswordController::class, 'resetPasswo
 /**
  * TODO:
  * 
- * cust: search nearby post by category -400 m
- * cust: show preferred posts in home page -4 km
+ * cust: search nearby post by category -400 m #done
+ * cust: show preferred posts in home page -4 km #done
+ * 
  * cust: recommended {
  * -nearby posts with non preferred category // near you section
  * -preferred posts beyong nearby // you might like section

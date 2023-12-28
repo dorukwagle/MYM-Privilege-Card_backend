@@ -11,12 +11,7 @@ use Illuminate\Support\Facades\Validator;
 class CategoriesController extends Controller
 {
     public function getProductCategories() {
-        // return Categorie::all();
-        // return response()->json(DB::select("select 'hello' as name, 'world' as place, point(12.2432, 22.1233) as location"));
-        
-       return User::all();
-        // return response()->json($resultArray);
-
+        return Categorie::all();
     }
 
     public function addCategory(Request $request) {

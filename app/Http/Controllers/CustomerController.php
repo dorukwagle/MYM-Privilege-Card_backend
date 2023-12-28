@@ -65,9 +65,6 @@ class CustomerController extends Controller
         $capitalizedSearch = ucwords($request->category);
         $latLang = explode(", ", $request->user_location);
 
-        // select posts of matching categories
-        // select posts of nearby distance
-
         return DB::table('users')
             ->join('posts', 'users.id', '=', 'posts.user_id')
             ->join('categories', 'categories.id', '=', 'posts.category_id')
@@ -77,5 +74,34 @@ class CustomerController extends Controller
             ->havingRaw('st_distance_sphere(users.coordinates, point(?, ?)) < ?', [$latLang[1], $latLang[0], 401]) // less than 401 meter
             ->orderBy('posts.created_at', 'desc')
             ->get();
+    }
+
+    public function getPreferredPosts(Request $request)
+    {
+        $userLocation = $request->user->coordinates;
+
+        return DB::table('users')
+            ->join('posts', 'users.id', '=', 'posts.user_id')
+            ->join('categories', 'categories.id', '=', 'posts.category_id')
+            ->selectRaw('users.id as vendor_id, users.org_name as org_name, users.coordinates as location, posts.*')
+            ->whereRaw('users.user_role = ? or users.is_vend_cust = ?', ['vendor', true])
+            ->whereIn('posts.category_id', $this->getPreferredCategories($request->user->id))
+            ->havingRaw(
+                'st_distance_sphere(users.coordinates, point(?, ?)) < ?',
+                [$userLocation->longitude, $userLocation->latitude, 4001]
+            ) // less than 4 km
+            ->orderBy('posts.created_at', 'desc')
+            ->get();
+    }
+
+
+    private function getPreferredCategories($userId)
+    {
+        return DB::table('users_categories')
+            ->join('categories', 'users_categories.category_id', '=', 'categories.id')
+            ->select('categories.id')
+            ->where('users_categories.user_id', '=', $userId)
+            ->pluck('id')
+            ->toArray();
     }
 }

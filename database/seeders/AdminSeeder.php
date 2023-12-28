@@ -24,7 +24,7 @@ class AdminSeeder extends Seeder
                 'user_role' => 'admin',
                 'email_verified' => true,
                 'password' => Hash::make('adminpass'),
-                'coordinates' => DB::raw("point(85, 83)"),
+                'coordinates' => DB::raw("point(100, 86.32)"),
             ]
         );
     }
