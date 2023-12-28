@@ -78,30 +78,45 @@ class CustomerController extends Controller
 
     public function getPreferredPosts(Request $request)
     {
-        $userLocation = $request->user->coordinates;
-        return $this->getPosts($request->user->is, $userLocation, 0, 4001, true);
+        return $this->getPosts( $request, 0, 4001, true);
     }
 
     // returns the posts from nearby vendors other than preferred categories
     public function getNearbyPosts(Request $request)
     {
-        $userLocation = $request->user->coordinates;
-        return $this->getPosts($request->user->is, $userLocation, 0, 4001, false);
+        return $this->getPosts($request, 0, 4001, false);
     }
 
     // returns the posts from preferred categories but beyond the nearby distance
     public function getPreferredPostsBeyondNear(Request $request)
     {
-        $userLocation = $request->user->coordinates;
-        return $this->getPosts($request->user->is, $userLocation,4001,  9001, true);
+        return $this->getPosts($request, 4001,  9001, true);
     }
 
-    private function getPosts($userId, $userLocation, $minDistance, $maxDistance, $preferred)
+    private function getPosts(Request $request, $minDistance, $maxDistance, $preferred)
     {
+        $validation = Validator::make($request->all(), [
+            'size' => ['sometimes', 'nullable', 'numeric', 'min:1'],
+            'page' => ['sometimes', 'nullable', 'numeric', 'min:1']
+        ]);
+
+        $size = $request->filled('size') ? $request->query('size') : 1;
+        $page = $request->filled('page') ? $request->query('page') : 1;
+
+        if ($validation->fails())
+            return response($validation->errors(), 400);
+
+        $userId = $request->user->id;
+        $userLocation = $request->user->coordinates;
+
         $query = DB::table('users')
             ->join('posts', 'users.id', '=', 'posts.user_id')
             ->join('categories', 'categories.id', '=', 'posts.category_id')
-            ->selectRaw('users.id as vendor_id, users.org_name as org_name, users.coordinates as location, posts.*, st_distance_sphere(users.coordinates, point(?, ?)) as distance', [$userLocation->longitude, $userLocation->latitude])
+            ->selectRaw(
+                'users.id as vendor_id, users.org_name as org_name, users.coordinates as location, posts.*, 
+                st_distance_sphere(users.coordinates, point(?, ?)) as distance',
+                [$userLocation->longitude, $userLocation->latitude]
+            )
             ->whereRaw('users.user_role = ? or users.is_vend_cust = ?', ['vendor', true]);
 
         if ($preferred)
@@ -110,6 +125,8 @@ class CustomerController extends Controller
 
         return $query->havingBetween('distance', [$minDistance, $maxDistance])
             ->orderBy('posts.created_at', 'desc')
+            ->offset(($page - 1) * $size)
+            ->limit($size)
             ->get();
     }
 
