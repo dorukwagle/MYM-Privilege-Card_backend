@@ -79,21 +79,39 @@ class CustomerController extends Controller
     public function getPreferredPosts(Request $request)
     {
         $userLocation = $request->user->coordinates;
+        return $this->getPosts($request->user->is, $userLocation, 0, 4001, true);
+    }
 
-        return DB::table('users')
+    // returns the posts from nearby vendors other than preferred categories
+    public function getNearbyPosts(Request $request)
+    {
+        $userLocation = $request->user->coordinates;
+        return $this->getPosts($request->user->is, $userLocation, 0, 4001, false);
+    }
+
+    // returns the posts from preferred categories but beyond the nearby distance
+    public function getPreferredPostsBeyondNear(Request $request)
+    {
+        $userLocation = $request->user->coordinates;
+        return $this->getPosts($request->user->is, $userLocation,4001,  9001, true);
+    }
+
+    private function getPosts($userId, $userLocation, $minDistance, $maxDistance, $preferred)
+    {
+        $query = DB::table('users')
             ->join('posts', 'users.id', '=', 'posts.user_id')
             ->join('categories', 'categories.id', '=', 'posts.category_id')
-            ->selectRaw('users.id as vendor_id, users.org_name as org_name, users.coordinates as location, posts.*')
-            ->whereRaw('users.user_role = ? or users.is_vend_cust = ?', ['vendor', true])
-            ->whereIn('posts.category_id', $this->getPreferredCategories($request->user->id))
-            ->havingRaw(
-                'st_distance_sphere(users.coordinates, point(?, ?)) < ?',
-                [$userLocation->longitude, $userLocation->latitude, 4001]
-            ) // less than 4 km
+            ->selectRaw('users.id as vendor_id, users.org_name as org_name, users.coordinates as location, posts.*, st_distance_sphere(users.coordinates, point(?, ?)) as distance', [$userLocation->longitude, $userLocation->latitude])
+            ->whereRaw('users.user_role = ? or users.is_vend_cust = ?', ['vendor', true]);
+
+        if ($preferred)
+            $query->whereIn('posts.category_id', $this->getPreferredCategories($userId));
+        else $query->whereNotIn('posts.category_id', $this->getPreferredCategories($userId));
+
+        return $query->havingBetween('distance', [$minDistance, $maxDistance])
             ->orderBy('posts.created_at', 'desc')
             ->get();
     }
-
 
     private function getPreferredCategories($userId)
     {
