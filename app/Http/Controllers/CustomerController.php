@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\QueryHelper;
 use App\Models\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -123,23 +124,13 @@ class CustomerController extends Controller
             ->whereRaw('users.user_role = ? or users.is_vend_cust = ?', ['vendor', true]);
 
         if ($preferred)
-            $query->whereIn('posts.category_id', $this->getPreferredCategories($userId));
-        else $query->whereNotIn('posts.category_id', $this->getPreferredCategories($userId));
+            $query->whereIn('posts.category_id', QueryHelper::getPreferredCategories($userId));
+        else $query->whereNotIn('posts.category_id', QueryHelper::getPreferredCategories($userId));
 
         return $query->havingBetween('distance', [$minDistance, $maxDistance])
             ->orderBy('posts.created_at', 'desc')
             ->offset(($page - 1) * $size)
             ->limit($size)
             ->get();
-    }
-
-    private function getPreferredCategories($userId)
-    {
-        return DB::table('users_categories')
-            ->join('categories', 'users_categories.category_id', '=', 'categories.id')
-            ->select('categories.id')
-            ->where('users_categories.user_id', '=', $userId)
-            ->pluck('id')
-            ->toArray();
     }
 }
