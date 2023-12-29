@@ -70,7 +70,7 @@ class RegistrationController extends Controller
 
         // convert location string to point
         $latLong = explode(", ", $request->location);
-        $location = DB::raw("POINT($latLong[1] $latLong[0])");
+        $location = DB::raw("POINT($latLong[1], $latLong[0])");
         
         $user->full_name = $request->full_name;
         $user->dob = $request->dob;
@@ -133,18 +133,19 @@ class RegistrationController extends Controller
 
         // convert location string to point
         $latLong = explode(", ", $request->location);
-        $location = DB::raw("POINT($latLong[1] $latLong[0])");
+        $location = DB::raw("POINT($latLong[1], $latLong[0])");
 
         $user = User::create([
-            'full_name' => $request->org_name,
+            'full_name' => $request->full_name,
+            'org_name' => $request->org_name,
             'address' => $request->address,
             'coordinates' => $location,
             'contact_no' => $request->contact_no,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'user_role' => 'vendor',
-            'org_registration_card' => $registrationCertificate,
             'org_vat_card' => $orgVatCard,
+            'org_registration_card' => $registrationCertificate,
+            'user_role' => 'vendor'
         ]);
 
         foreach ($request->product_categories as $category_id) {

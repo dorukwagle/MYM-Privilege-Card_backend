@@ -9,6 +9,9 @@ use Illuminate\Support\Facades\Validator;
 
 class CustomerController extends Controller
 {
+    private $nearbySearchDistance = 401; //meter
+    private $nearbyHomeDistance = 4001; //meter
+
     public function getNotifications(Request $request)
     {
         $validation = Validator::make($request->all(), [
@@ -71,26 +74,26 @@ class CustomerController extends Controller
             ->selectRaw('users.id as vendor_id, users.org_name as org_name, users.coordinates as location, posts.*')
             ->whereRaw('users.user_role = ? or users.is_vend_cust = ?', ['vendor', true])
             ->whereRaw('match(categories.category) against(? in boolean mode)', [$capitalizedSearch])
-            ->havingRaw('st_distance_sphere(users.coordinates, point(?, ?)) < ?', [$latLang[1], $latLang[0], 401]) // less than 401 meter
+            ->havingRaw('st_distance_sphere(users.coordinates, point(?, ?)) < ?', [$latLang[1], $latLang[0], $this->nearbySearchDistance]) // less than 401 meter
             ->orderBy('posts.created_at', 'desc')
             ->get();
     }
 
     public function getPreferredPosts(Request $request)
     {
-        return $this->getPosts( $request, 0, 4001, true);
+        return $this->getPosts( $request, 0, $this->nearbyHomeDistance, true);
     }
 
     // returns the posts from nearby vendors other than preferred categories
     public function getNearbyPosts(Request $request)
     {
-        return $this->getPosts($request, 0, 4001, false);
+        return $this->getPosts($request, 0, $this->nearbyHomeDistance, false);
     }
 
     // returns the posts from preferred categories but beyond the nearby distance
     public function getPreferredPostsBeyondNear(Request $request)
     {
-        return $this->getPosts($request, 4001,  9001, true);
+        return $this->getPosts($request, $this->nearbyHomeDistance,  9001, true);
     }
 
     private function getPosts(Request $request, $minDistance, $maxDistance, $preferred)

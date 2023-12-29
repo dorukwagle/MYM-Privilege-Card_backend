@@ -10,6 +10,7 @@ use App\Http\Controllers\ResetPasswordController;
 use App\Http\Controllers\VendorController;
 use App\Http\Controllers\VerificationController;
 use App\Http\Middleware\AuthorizationMiddleware;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Monolog\Registry;
@@ -283,19 +284,12 @@ Route::post('/verify/verify-email', [VerificationController::class, 'verifyEmail
 Route::post('/auth/forget-password', [ResetPasswordController::class, 'sendResetOtp']);
 Route::put('/auth/reset-password', [ResetPasswordController::class, 'resetPassword']);
 
+
+
 /**
  * TODO:
  * 
- * cust: search nearby post by category -400 m #done
- * cust: show preferred posts in home page -4 km #done
- * 
- * cust: recommended {
- * -nearby posts with non preferred category // near you section
- * -preferred posts beyong nearby // you might like section
- * }
- * 
  * users: send feedback
- * admin: view feedback
  * 
  * SOMETIMES LATER
  * send notifications when vendor posts
@@ -320,4 +314,8 @@ Route::put('/auth/reset-password', [ResetPasswordController::class, 'resetPasswo
  * add new categories in users table: preferred_categories and product_categories to adjust the dual_users
  * do not delete entire user while rejecting vendor, as it can be customer upgrading to vendor
  * add one more account_status flag in database to keep track of dual users verification
+ */
+
+/**
+ * "coordinates":{"type":"Point","coordinates":[100,86.32]}
  */
