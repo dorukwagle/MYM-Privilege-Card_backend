@@ -293,7 +293,6 @@ Route::put('/auth/reset-password', [ResetPasswordController::class, 'resetPasswo
  * get notifications : fix the bug that returns only the notif id
  * 
  * SOMETIMES LATER
- * send notifications when vendor posts:: done
  * send push notification
  * admin view the feedback
  * 

@@ -26,7 +26,10 @@ class CustomerController extends Controller
         if ($validation->fails())
             return response($validation->errors(), 400);
 
-        return Notification::where('user_id', $request->user->id)
+        return DB::table('users')
+            ->join('notifications', 'notifications.user_id', '=', 'users.id')
+            ->where('notifications.user_id', $request->user->id)
+            ->selectRaw('notifications.*')
             ->orderBy('created_at', 'desc')
             ->offset(($page - 1) * $size)
             ->limit($size)
