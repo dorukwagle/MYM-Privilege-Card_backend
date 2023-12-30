@@ -4,6 +4,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RegistrationController;
 use App\Http\Controllers\ResetPasswordController;
@@ -56,6 +57,10 @@ Route::middleware('auth')->group(function () {
         Route::get('/info/admin', [ProfileController::class, 'getAdminInfo']);
 
         Route::put('/profile/update-profile', [ProfileController::class, 'updateProfile']);
+
+        Route::post('/feedbacks', [FeedbackController::class, 'createFeedback']);
+        // body: message
+
 });
 
 Route::middleware(['auth', 'auth.admin'])->group(function () {
@@ -130,6 +135,9 @@ Route::middleware(['auth', 'auth.admin'])->group(function () {
         Route::get('/users/search', [AdminController::class, 'searchUsers']);
         // returns the list of users matching the query
         // /users/search/?value=<full name> or <email>
+
+        Route::get('/feedbacks', [FeedbackController::class, 'getFeedbacks']);
+        // supports pagination as other routes
 });
 
 Route::middleware(['auth', 'auth.vendor'])->group(function () {
