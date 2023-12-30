@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\SendPostNotifications;
 use App\Models\Post;
 use Illuminate\Http\Request;
+use Illuminate\Notifications\NotificationSender;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
 
@@ -11,12 +13,13 @@ class VendorController extends Controller
 {
     private $uploadPath = 'public/uploads/cdn';
 
-    public function createPost(Request $request) {
+    public function createPost(Request $request)
+    {
         $validation = Validator::make($request->all(), [
             'title' => ['required', 'string', 'min:3'],
             'body' => ['required', 'string', 'min:10'],
             'category_id' => ['required', 'exists:categories,id'],
-            'icon' =>'required'
+            'icon' => 'required'
         ]);
 
         if ($validation->fails())
@@ -27,7 +30,7 @@ class VendorController extends Controller
 
         $icon = $request->file('banner_icon')->store($this->uploadPath);
 
-        Post::create([
+        $post = Post::create([
             'icon' => $icon,
             'body' => $request->body,
             'category_id' => $request->category_id,
@@ -36,11 +39,13 @@ class VendorController extends Controller
         ]);
 
         // send notification to nearby customers with preferred categories
+        SendPostNotifications::dispatch($request->user, $post);
 
         return ['status' => 'ok'];
     }
 
-    public function updatePost(Request $request) {
+    public function updatePost(Request $request)
+    {
         $validation = Validator::make($request->all(), [
             'post_id' => ['required'],
             'title' => ['required', 'string', 'min:3'],
@@ -59,7 +64,7 @@ class VendorController extends Controller
         $post->title = $request->title;
         $post->body = $request->body;
         $post->category_id = $request->category_id;
-        
+
         if ($request->hasFile('icon')) {
             $icon = $request->file('banner_icon')->store($this->uploadPath);
             File::delete($post->icon);
@@ -70,7 +75,8 @@ class VendorController extends Controller
         return ['status' => 'ok'];
     }
 
-    public function deletePost($postId) {
+    public function deletePost($postId)
+    {
         $post = Post::find($postId);
 
         if (!$post)
@@ -78,11 +84,12 @@ class VendorController extends Controller
 
         File::delete($post->icon);
         $post->delete();
-        
+
         return ['status' => 'ok'];
     }
 
-    public function getPosts(Request $request) {
+    public function getPosts(Request $request)
+    {
         $validation = Validator::make($request->all(), [
             'size' => ['sometimes', 'nullable', 'numeric', 'min:1'],
             'page' => ['sometimes', 'nullable', 'numeric', 'min:1']
@@ -95,9 +102,9 @@ class VendorController extends Controller
             return response($validation->errors(), 400);
 
         return Post::where('user_id', $request->user->id)
-                            ->orderBy('created_at', 'desc')
-                            ->offset(($page - 1) * $size)
-                            ->limit($size)
-                            ->get();
+            ->orderBy('created_at', 'desc')
+            ->offset(($page - 1) * $size)
+            ->limit($size)
+            ->get();
     }
 }
