@@ -40,7 +40,7 @@ class VerificationController extends Controller
     public function verifyEmail(Request $request) {
         $validation = Validator::make($request->all(), [
             'user_id' => 'required',
-            'otp' => ['required', 'min:6', 'max:6', 'numeric'],
+            'otp' => ['required', 'min:6', 'max:6'],
         ]);
 
         if ($validation->fails())
@@ -49,8 +49,9 @@ class VerificationController extends Controller
         $verified = OtpHelper::verifyOtp($request->user_id, $request->otp);
         if (!$verified) return response(['err' => 'failed to verify otp', 400]);
 
-        $user = User::where('id', $request->user_id)
-                    ->update(['email_verified' => true]);
+        $user = User::find($request->user_id);
+        $user->email_verified = true;
+        $user->save();
 
         return ['status' => 'ok', 'user_role' => $user->user_role];
     }
