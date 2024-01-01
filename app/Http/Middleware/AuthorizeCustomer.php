@@ -17,10 +17,11 @@ class AuthorizeCustomer
     {
         $res = response(['err' => 'Unauthorized'], 403);
 
-        if (!$request->user)
+        if (!$request->user || !$request->user->email_verified)
             return $res;
         if ($request->user->user_role !== 'customer' && !$request->user->is_vend_cust)
             return $res;
+        
 
         return $next($request);
     }

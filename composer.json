@@ -31,7 +31,8 @@
         "files": [
             "app/Helpers/OtpHelper.php",
             "app/Helpers/PaymentsHelper.php",
-            "app/Helpers/QueryHelper.php"
+            "app/Helpers/QueryHelper.php",
+            "app/Helpers/ArrayEqual.php"
         ]
     },
     "autoload-dev": {

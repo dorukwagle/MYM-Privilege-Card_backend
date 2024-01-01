@@ -33,6 +33,7 @@ return new class extends Migration
             $table->string('user_role', 10);
             $table->boolean('is_vend_cust')->default(0);
             $table->text('about_org')->nullable();
+            $table->text('device_token')->nullable();
             $table->timestamps();
         });
 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helpers\QueryHelper;
 use App\Models\Notification;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
@@ -135,5 +136,20 @@ class CustomerController extends Controller
             ->offset(($page - 1) * $size)
             ->limit($size)
             ->get();
+    }
+
+    public function setDeviceId(Request $request) {
+        $validation = Validator::make($request->all(), [
+            'device_id' => ['required', 'regex:/^[A-Za-z0-9_-]{140,255}$/']
+        ]);
+
+        if ($validation->fails())
+            return response($validation->errors(), 400);
+
+        $user = User::find($request->user->id);
+        $user->device_id = $request->device_id;
+        $user->save();
+
+        return ['status' => 'ok'];
     }
 }

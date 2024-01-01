@@ -1,5 +1,6 @@
 <?php
 
+use App\Helpers\ArrayEqual;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoriesController;
@@ -204,6 +205,8 @@ Route::middleware(['auth', 'auth.customer'])->group(function () {
         Route::get('/cust/recommended/preferred', [CustomerController::class, 'getPreferredPostsBeyondNear']);
 
         // all posts routes support pagination i.e. ?page=2&size=9 for example
+
+        Route::post('/cust/device-id', [CustomerController::class, 'setDeviceId']);
 });
 
 Route::post('/register/customer', [RegistrationController::class, 'registerCustomer']);
@@ -293,15 +296,26 @@ Route::post('/auth/forget-password', [ResetPasswordController::class, 'sendReset
 Route::put('/auth/reset-password', [ResetPasswordController::class, 'resetPassword']);
 
 
+Route::get('/notif/send', function () {
+      
+
+        // The registration token of the device you want to send the notification to
+        $registrationTokens = [
+                'dgwC5PaOSxGeptW64VqeOp:APA91bGM1xN-7v6dzMDpm9Jz34jRgiVo1etHSkWzgohk9i6fWs-fU26nzXeyQmpKzZV8mtg3Pmy4-ZrN7lHzMVw20-5n8S8H3k9Kal5EYjGlZRNyItAUmtU1G-fCVw-uvFG2jLr5jktg',
+
+        ];
+
+       
+
+       
+});
 
 /**
  * TODO:
- * 
- * users: send feedback
+ * Analytics
  * 
  * SOMETIMES LATER
  * send push notification
- * admin view the feedback
  * 
  * 
  * packages system {

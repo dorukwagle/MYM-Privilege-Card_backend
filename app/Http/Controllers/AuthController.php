@@ -33,13 +33,7 @@ class AuthController extends Controller
         if(!$user || !$passCheck)
             return $this->getErrMsg();
 
-        if(!$user->email_verified)
-            return response([
-                'user_id' => $user->id,
-                'email' => $user->email,
-                'email_status' => 'unverified'
-            ], 401);
-       
+        
         // create a session cookie and insert it into the database
         $cookie = Hash::make(Carbon::now());
         Session::create([
@@ -47,6 +41,14 @@ class AuthController extends Controller
             'user_id' => $user->id,
             'expiry_date' => Carbon::now()->addHours(2)
         ]);
+        
+        if(!$user->email_verified)
+            return response([
+                'user_id' => $user->id,
+                'email' => $user->email,
+                'access_token' => $cookie,
+                'email_status' => 'unverified'
+            ], 401);
 
         // return the session cookie to the user
         return [
