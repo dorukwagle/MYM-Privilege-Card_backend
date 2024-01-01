@@ -11,6 +11,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 
 class SendPostNotifications implements ShouldQueue
 {
@@ -106,11 +107,11 @@ class SendPostNotifications implements ShouldQueue
 
             // Check for errors
             if (curl_errno($ch)) {
-                echo 'FCM request failed: ' . curl_error($ch);
+                Log::error('FCM request failed: ' . curl_error($ch));
             } else {
                 // Decode and print the response
                 $response = json_decode($result, true);
-                print_r($response);
+                Log::info($response);
             }
 
             // Close cURL session
