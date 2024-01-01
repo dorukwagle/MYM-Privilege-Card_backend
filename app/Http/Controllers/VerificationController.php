@@ -49,10 +49,10 @@ class VerificationController extends Controller
         $verified = OtpHelper::verifyOtp($request->user_id, $request->otp);
         if (!$verified) return response(['err' => 'failed to verify otp', 400]);
 
-        User::where('id', $request->user_id)
+        $user = User::where('id', $request->user_id)
                     ->update(['email_verified' => true]);
 
-        return ['status' => 'ok'];
+        return ['status' => 'ok', 'user_role' => $user->user_role];
     }
 
     public function changeEmail(Request $request) {
