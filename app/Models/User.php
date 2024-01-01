@@ -12,7 +12,6 @@ class User extends Model
     use HasSpatial;
 
     protected $guarded = ['id'];
-    // protected $fillable = ['coordinates', 'full_name', 'contact_no'];
 
     protected $casts = [
         'coordinates' => Point::class

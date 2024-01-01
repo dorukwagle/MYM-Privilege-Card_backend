@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->point('coordinates');
+            $table->point('coordinates')->nullable();
             $table->string('banner_icon', 150)->nullable();
             $table->string('profile_icon', 150)->nullable();
             $table->string('full_name');
@@ -37,7 +37,7 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        DB::statement('ALTER TABLE users ADD SPATIAL INDEX(coordinates)');
+        // DB::statement('ALTER TABLE users ADD SPATIAL INDEX(coordinates)');
     }
 
     /**
