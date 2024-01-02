@@ -8,6 +8,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use PhpParser\Node\Expr\Cast\Object_;
 
 class AuthController extends Controller
 {
@@ -32,7 +33,6 @@ class AuthController extends Controller
 
         if(!$user || !$passCheck)
             return $this->getErrMsg();
-
         
         // create a session cookie and insert it into the database
         $cookie = Hash::make(Carbon::now());
@@ -42,21 +42,11 @@ class AuthController extends Controller
             'expiry_date' => Carbon::now()->addHours(2)
         ]);
         
-        if(!$user->email_verified)
-            return response([
-                'user_id' => $user->id,
-                'email' => $user->email,
-                'access_token' => $cookie,
-                'email_status' => 'unverified'
-            ], 401);
+        return $this->getResponse($user, $cookie);
+    }
 
-        // return the session cookie to the user
-        return [
-            'status' => 'ok',
-            'access_token' => $cookie,
-            'user_role' => $user->user_role,
-            'is_vend_cust' => $user->is_vend_cust
-        ];
+    public function checkLoggedIn(Request $request)  {
+        return $this->getResponse($request->user, "");
     }
 
     public function logout(Request $request) {
@@ -65,5 +55,21 @@ class AuthController extends Controller
         return [
             'status' => 'ok'
         ];
+    }
+
+    private function getResponse($user, $cookie) {
+        $response = [
+            'email_status' => $user->email_verified,
+            'access_token' => $cookie,
+            'user_role' => $user->user_role,
+            'is_vend_cust' => $user->is_vend_cust,
+            'user_id' => $user->id,
+            'email' => $user->email
+        ];
+
+        if(!$user->email_verified)
+            return response($response, 401);
+
+        return response($response, 200);
     }
 }

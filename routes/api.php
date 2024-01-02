@@ -30,6 +30,9 @@ Route::get('/categories', [CategoriesController::class, 'getProductCategories'])
  */
 
 Route::middleware('auth')->group(function () {
+        Route::get('/auth/check-logged-in', [AuthController::class, 'checkLoggedIn']);
+        // returns if the user is logged in 
+        
         Route::post('/profile/profile-icon', [ProfileController::class, 'profileIconUpdate']);
 
         Route::post('/profile/change-password', [ProfileController::class, 'changePassword']);
