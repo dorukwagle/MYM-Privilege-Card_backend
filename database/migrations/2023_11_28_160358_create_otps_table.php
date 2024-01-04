@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->bigInteger('otp');
             $table->timestamp('expiry_date');
+            $table->string("sent_to");
             $table->bigInteger('user_id');
         });
     }

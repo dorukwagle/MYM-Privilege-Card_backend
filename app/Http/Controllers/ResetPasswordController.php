@@ -38,7 +38,7 @@ class ResetPasswordController extends Controller
 
         $user = User::where('email', $request->email)->first();
         if (!$user) return $err;
-
+      
         $verified = OtpHelper::verifyOtp($user->id, $request->otp, $request->email);
         if (!$verified) return $err;
 

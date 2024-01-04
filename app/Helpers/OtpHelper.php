@@ -30,13 +30,12 @@ class OtpHelper {
 
     public static function verifyOtp($user_id, $otp, $email=null): bool {
         $otp = Otp::where('user_id', $user_id)->where('otp', $otp)->first();
+        if (!$otp) return false;
 
         if ($email) {
             if ($otp->sent_to !== $email)
                 return false;
         }
-
-        if (!$otp) return false;
 
         if (Carbon::parse($otp->expiry_date)->isPast())
            return false;
