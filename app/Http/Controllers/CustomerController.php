@@ -140,14 +140,14 @@ class CustomerController extends Controller
 
     public function setDeviceId(Request $request) {
         $validation = Validator::make($request->all(), [
-            'device_id' => ['required', 'regex:/^[A-Za-z0-9_-]{140,255}$/']
+            'device_id' => ['required', 'min:90']
         ]);
 
         if ($validation->fails())
             return response($validation->errors(), 400);
 
         $user = User::find($request->user->id);
-        $user->device_id = $request->device_id;
+        $user->device_token = $request->device_id;
         $user->save();
 
         return ['status' => 'ok'];
