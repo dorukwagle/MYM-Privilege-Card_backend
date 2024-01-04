@@ -32,7 +32,7 @@ Route::get('/categories', [CategoriesController::class, 'getProductCategories'])
 Route::middleware('auth')->group(function () {
         Route::get('/auth/check-logged-in', [AuthController::class, 'checkLoggedIn']);
         // returns if the user is logged in 
-        
+
         Route::post('/profile/profile-icon', [ProfileController::class, 'profileIconUpdate']);
 
         Route::post('/profile/change-password', [ProfileController::class, 'changePassword']);
@@ -60,7 +60,7 @@ Route::middleware('auth')->group(function () {
 
         Route::get('/info/admin', [ProfileController::class, 'getAdminInfo']);
 
-        Route::put('/profile/update-profile', [ProfileController::class, 'updateProfile']);
+        Route::post('/profile/update-profile', [ProfileController::class, 'updateProfile']);
 
         Route::post('/feedbacks', [FeedbackController::class, 'createFeedback']);
         // body: message
@@ -116,12 +116,12 @@ Route::middleware(['auth', 'auth.admin'])->group(function () {
         //assign card to the user
         // body: card_id, valid_duration
 
-        Route::put('/users/card/renew/{id}', [AdminController::class, 'renewCard'])
+        Route::post('/users/card/renew/{id}', [AdminController::class, 'renewCard'])
                 ->whereNumber('id');
         // renew expired customer cards
         // body: valid_duration
 
-        Route::put('/users/card/expire/{id}', [AdminController::class, 'expireCard'])
+        Route::post('/users/card/expire/{id}', [AdminController::class, 'expireCard'])
                 ->whereNumber('id');
         //expire the card if needed
 
@@ -149,7 +149,7 @@ Route::middleware(['auth', 'auth.vendor'])->group(function () {
         // /vendor/posts?size=9&page=1
 
         Route::post('/vendor/post', [VendorController::class, 'createPost']);
-        Route::put('/vendor/post', [VendorController::class, 'updatePost']);
+        Route::post('/vendor/post', [VendorController::class, 'updatePost']);
         Route::delete('/vendor/post/{id}', [VendorController::class, 'deletePost']);
         Route::post('/profile/banner-icon', [ProfileController::class, 'bannerIconUpdate']);
         Route::post('/profile/org-bio', [ProfileController::class, 'orgBioUpdate']);
@@ -296,22 +296,7 @@ Route::post('/verify/verify-email', [VerificationController::class, 'verifyEmail
  */
 
 Route::post('/auth/forget-password', [ResetPasswordController::class, 'sendResetOtp']);
-Route::put('/auth/reset-password', [ResetPasswordController::class, 'resetPassword']);
-
-
-Route::get('/notif/send', function () {
-      
-
-        // The registration token of the device you want to send the notification to
-        $registrationTokens = [
-                'dgwC5PaOSxGeptW64VqeOp:APA91bGM1xN-7v6dzMDpm9Jz34jRgiVo1etHSkWzgohk9i6fWs-fU26nzXeyQmpKzZV8mtg3Pmy4-ZrN7lHzMVw20-5n8S8H3k9Kal5EYjGlZRNyItAUmtU1G-fCVw-uvFG2jLr5jktg',
-
-        ];
-
-       
-
-       
-});
+Route::post('/auth/reset-password', [ResetPasswordController::class, 'resetPassword']);
 
 /**
  * TODO:
