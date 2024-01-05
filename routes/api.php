@@ -215,6 +215,10 @@ Route::middleware(['auth', 'auth.customer'])->group(function () {
 Route::post('/register/customer', [RegistrationController::class, 'registerCustomer']);
 
 Route::post('/register/vendor', [RegistrationController::class, 'registerVendor']);
+
+Route::get('/public/{path}', function($path){
+        return response()->file(storage_path("/app/public/".$path));
+})->where('path', '.+');
 /**
  * Body parameters:
  * location

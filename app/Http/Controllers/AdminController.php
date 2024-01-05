@@ -7,12 +7,10 @@ use App\Models\Card;
 use App\Models\PaymentHistory;
 use App\Models\User;
 use Carbon\Carbon;
-use Illuminate\Http\Client\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
 
-use function PHPUnit\Framework\returnSelf;
 
 class AdminController extends Controller
 {
@@ -116,9 +114,9 @@ class AdminController extends Controller
         $registrationCard = $user->org_registration_card;
         $profileIcon = $user->profile_icon;
 
-        if ($vatCard) File::delete($vatCard);
-        if ($registrationCard) File::delete($registrationCard);
-        if ($profileIcon) File::delete($profileIcon);
+        if ($vatCard) unlink(storage_path("/app/" . $vatCard));
+        if ($registrationCard) unlink(storage_path("/app/".$registrationCard));
+        if ($profileIcon) unlink(storage_path("/app/".$profileIcon));
 
         $user->delete();
 

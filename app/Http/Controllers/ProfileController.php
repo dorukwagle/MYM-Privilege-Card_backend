@@ -26,7 +26,7 @@ class ProfileController extends Controller
         $user = User::find($request->user->id);
 
         $previousIcon = $user->profile_icon;
-        if ($previousIcon) File::delete($profileIcon);
+        if ($previousIcon) unlink(storage_path("/app/".$profileIcon));
 
         $user->profile_icon = $profileIcon;
         $user->save();
@@ -43,7 +43,7 @@ class ProfileController extends Controller
         $user = User::find($request->user->id);
 
         $previousBanner = $user->banner_icon;
-        if ($previousBanner) File::delete($previousBanner);
+        if ($previousBanner) unlink(storage_path("/app/".$previousBanner));
 
         $user->banner_icon = $bannerIcon;
         $user->save();

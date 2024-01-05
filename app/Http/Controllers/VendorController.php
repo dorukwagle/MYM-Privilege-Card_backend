@@ -82,7 +82,7 @@ class VendorController extends Controller
         if (!$post)
             return response(['err' => 'not found'], 404);
 
-        File::delete($post->icon);
+        unlink(storage_path("/app/".$post->icon));
         $post->delete();
 
         return ['status' => 'ok'];
