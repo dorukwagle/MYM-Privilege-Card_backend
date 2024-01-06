@@ -20,7 +20,7 @@ class FeedbackController extends Controller
 
         Feedback::create([
             'message' => $request->message,
-            'sender_id' => $request->user->id
+            'sendor_id' => $request->user->id
         ]);
 
         return ['status' => 'ok'];
