@@ -66,7 +66,7 @@ class VendorController extends Controller
         $post->category_id = $request->category_id;
 
         if ($request->hasFile('icon')) {
-            $icon = $request->file('banner_icon')->store($this->uploadPath);
+            $icon = $request->file('icon')->store($this->uploadPath);
             File::delete($post->icon);
             $post->icon = $icon;
         }
