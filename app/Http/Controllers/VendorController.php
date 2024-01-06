@@ -28,7 +28,7 @@ class VendorController extends Controller
         if (!$request->hasFile('icon'))
             return response(['icon' => 'icon file required'], 400);
 
-        $icon = $request->file('banner_icon')->store($this->uploadPath);
+        $icon = $request->file('icon')->store($this->uploadPath);
 
         $post = Post::create([
             'icon' => $icon,
