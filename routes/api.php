@@ -138,7 +138,7 @@ Route::middleware(['auth', 'auth.admin'])->group(function () {
 
         Route::get('/users/search', [AdminController::class, 'searchUsers']);
         // returns the list of users matching the query
-        // /users/search/?value=<full name> or <email>
+        // /users/search/?value=<full name> or <email>        
 
         Route::get('/feedbacks', [FeedbackController::class, 'getFeedbacks']);
         // supports pagination as other routes
