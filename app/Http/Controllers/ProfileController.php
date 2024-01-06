@@ -51,20 +51,20 @@ class ProfileController extends Controller
         return ['status' => 'ok'];
     }
 
-    public function orgBioUpdate(Request $request) {
-        $validation = Validator::make($request->all(), [
-            'about_org' => ['required', 'string', 'max:500', 'min:50']
-        ]);
+    // public function orgBioUpdate(Request $request) {
+    //     $validation = Validator::make($request->all(), [
+    //         'about_org' => ['required', 'string', 'max:500', 'min:50']
+    //     ]);
 
-        if ($validation->fails())
-            return response($validation->errors(), 400);
+    //     if ($validation->fails())
+    //         return response($validation->errors(), 400);
 
-        $user = User::find($request->user->id);
-        $user->about_org = $request->about_org;
-        $user->save();
+    //     $user = User::find($request->user->id);
+    //     $user->about_org = $request->about_org;
+    //     $user->save();
 
-        return ['status' => 'ok'];
-    }
+    //     return ['status' => 'ok'];
+    // }
 
     public function changePassword(Request $request) {
         $validation = Validator::make($request->all(), [

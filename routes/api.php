@@ -149,10 +149,10 @@ Route::middleware(['auth', 'auth.vendor'])->group(function () {
         // /vendor/posts?size=9&page=1
 
         Route::post('/vendor/post', [VendorController::class, 'createPost']);
-        Route::post('/vendor/post', [VendorController::class, 'updatePost']);
+        Route::post('/vendor/post/update', [VendorController::class, 'updatePost']);
         Route::delete('/vendor/post/{id}', [VendorController::class, 'deletePost']);
         Route::post('/profile/banner-icon', [ProfileController::class, 'bannerIconUpdate']);
-        Route::post('/profile/org-bio', [ProfileController::class, 'orgBioUpdate']);
+        // Route::post('/profile/org-bio', [ProfileController::class, 'orgBioUpdate']);
 });
 
 Route::middleware(['auth', 'auth.customer'])->group(function () {
