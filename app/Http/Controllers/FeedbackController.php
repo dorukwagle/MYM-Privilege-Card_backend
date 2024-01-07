@@ -50,7 +50,7 @@ class FeedbackController extends Controller
                 users.full_name as full_name, 
                 users.org_name as org_name
             ')
-            ->orderBy('created_at', 'desc')
+            ->orderBy('feedbacks.created_at', 'desc')
             ->offset(($page - 1) * $size)
             ->limit($size)
             ->get();
