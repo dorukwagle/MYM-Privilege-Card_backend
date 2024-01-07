@@ -43,7 +43,6 @@ class RegistrationController extends Controller
 
     public function customerKyc(Request $request) {
         $validation = Validator::make($request->all(), [
-            'user_id' => ['required', 'number'],
             'location' => ['required', 'regex:/^-?([1-8]?\d(?:\.\d+)?|90(?:\.0+)?), -?(180(?:\.0+)?|1[0-7]\d(?:\.\d+)?|\d{1,2}(?:\.\d+)?)$/'],
             'profile_icon' => 'required',
             'full_name' => ['required', 'string', 'regex:/^[\pL\s]+ [\pL\s]+$/u'],
@@ -64,7 +63,7 @@ class RegistrationController extends Controller
             return response(['profile_icon' => 'file required'], 400);
 
         $profileIcon = $request->file('profile_icon')->store($this->uploadPath);
-        $user = User::find($request->user_id);
+        $user = User::find($request->user->id);
 
         if (!$user) return response(['err' => 'user_id not found'], 404);
 
