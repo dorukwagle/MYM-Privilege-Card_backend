@@ -45,9 +45,6 @@ class RegistrationController extends Controller
         $validation = Validator::make($request->all(), [
             'location' => ['required', 'regex:/^-?([1-8]?\d(?:\.\d+)?|90(?:\.0+)?), -?(180(?:\.0+)?|1[0-7]\d(?:\.\d+)?|\d{1,2}(?:\.\d+)?)$/'],
             'profile_icon' => 'required',
-            'full_name' => ['required', 'string', 'regex:/^[\pL\s]+ [\pL\s]+$/u'],
-            'contact_no' => ['required', 'regex:/^(\+?\d{6,15})$/'],
-            'gender' => ['required', 'string', 'in:male,female,others'],
             'address' => 'required',
             'dob' => ['required', 'date'],
             'preferred_categories' => ['required', 'array'],
@@ -71,7 +68,6 @@ class RegistrationController extends Controller
         
         $user->full_name = $request->full_name;
         $user->dob = $request->dob;
-        $user->gender = $request->gender;
         $user->address = $request->address;
         $user->coordinates = $location;
         $user->profile_icon = $profileIcon;
