@@ -66,12 +66,10 @@ class RegistrationController extends Controller
         $latLong = explode(", ", $request->location);
         $location = DB::raw("POINT($latLong[1], $latLong[0])");
         
-        $user->full_name = $request->full_name;
         $user->dob = $request->dob;
         $user->address = $request->address;
         $user->coordinates = $location;
         $user->profile_icon = $profileIcon;
-        $user->contact_no = $request->contact_no;
         $user->account_status = 'requested';
 
         $user->save();
