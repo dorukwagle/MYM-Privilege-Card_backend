@@ -39,7 +39,7 @@ class SendPostNotifications implements ShouldQueue
 
         $users = User::whereRaw('users.user_role = ? or users.is_vend_cust = ?', ['customer', true])
             ->selectRaw(
-                'id, device_id, st_distance_sphere(coordinates, point(?, ?)) as distance',
+                'id, device_token, st_distance_sphere(coordinates, point(?, ?)) as distance',
                 [$vendorLocation->longitude, $vendorLocation->latitude]
             )
             ->having('distance', '<', 4001)  
