@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Jobs\SendPostNotifications;
 use App\Models\Post;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Notifications\NotificationSender;
 use Illuminate\Support\Facades\File;
@@ -81,8 +82,10 @@ class VendorController extends Controller
 
         if (!$post)
             return response(['err' => 'not found'], 404);
-
-        unlink(storage_path("/app/".$post->icon));
+        try {
+            unlink(storage_path("/app/" . $post->icon));
+        } catch (Exception $e) {
+        }
         $post->delete();
 
         return ['status' => 'ok'];

@@ -8,6 +8,7 @@ use App\Models\Card;
 use App\Models\Session;
 use App\Models\User;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
@@ -17,7 +18,8 @@ class ProfileController extends Controller
 {
     private $uploadPath = 'public/uploads/cdn';
 
-    public function profileIconUpdate(Request $request) {
+    public function profileIconUpdate(Request $request)
+    {
         if (!$request->hasFile('profile_icon'))
             return response(['profile_icon' => 'file required'], 400);
 
@@ -26,7 +28,12 @@ class ProfileController extends Controller
         $user = User::find($request->user->id);
 
         $previousIcon = $user->profile_icon;
-        if ($previousIcon) unlink(storage_path("/app/".$previousIcon));
+        if ($previousIcon) {
+            try {
+                unlink(storage_path("/app/" . $previousIcon));
+            } catch (Exception $e) {
+            }
+        }
 
         $user->profile_icon = $profileIcon;
         $user->save();
@@ -34,7 +41,8 @@ class ProfileController extends Controller
         return ['status' => 'ok'];
     }
 
-    public function bannerIconUpdate(Request $request) {
+    public function bannerIconUpdate(Request $request)
+    {
         if (!$request->hasFile('banner_icon'))
             return response(['banner_icon' => 'file required'], 400);
 
@@ -43,7 +51,12 @@ class ProfileController extends Controller
         $user = User::find($request->user->id);
 
         $previousBanner = $user->banner_icon;
-        if ($previousBanner) unlink(storage_path("/app/".$previousBanner));
+        if ($previousBanner) {
+            try {
+                unlink(storage_path("/app/" . $previousBanner));
+            } catch (Exception $e) {
+            }
+        }
 
         $user->banner_icon = $bannerIcon;
         $user->save();
@@ -66,42 +79,45 @@ class ProfileController extends Controller
     //     return ['status' => 'ok'];
     // }
 
-    public function changePassword(Request $request) {
+    public function changePassword(Request $request)
+    {
         $validation = Validator::make($request->all(), [
             'new_password' => ['required', 'string', 'min:6'],
             'current_password' => 'required',
             'logout_all' => ['required', 'boolean']
         ]);
-        
+
         if ($validation->fails())
             return response($validation->errors(), 400);
-    
+
         $user = User::find($request->user->id);
 
-        if(!Hash::check($request->current_password, $user->password))
+        if (!Hash::check($request->current_password, $user->password))
             return response(['err' => 'incorrect current password'], 400);
 
         $user->password = Hash::make($request->new_password);
         $user->save();
 
-        if ($request->logout_all) 
+        if ($request->logout_all)
             Session::where('user_id', $user->id)->delete();
-        
+
         return ['status' => 'ok'];
     }
-    
-    public function getProfile(Request $request) {
-        $info = array_filter($request->user->toArray(), function($value) {
+
+    public function getProfile(Request $request)
+    {
+        $info = array_filter($request->user->toArray(), function ($value) {
             return $value !== null;
         });
 
         unset($info['updated_at']);
         unset($info['password']);
-        
+
         return $info;
     }
 
-    public function updateEmail(Request $request) {
+    public function updateEmail(Request $request)
+    {
         $validation = Validator::make($request->all(), [
             'email' => ['required', 'email']
         ]);
@@ -113,28 +129,30 @@ class ProfileController extends Controller
         return ['status' => 'ok'];
     }
 
-    public function verifyEmail(Request $request)  {
+    public function verifyEmail(Request $request)
+    {
         $validation = Validator::make($request->all(), [
             'email' => ['required', 'email'],
             'otp' => ['required', 'numeric']
         ]);
 
-        if ($validation->fails()) 
+        if ($validation->fails())
             return response($validation->errors(), 400);
-        
+
         $validOtp = OtpHelper::verifyOtp($request->user->id, $request->otp, $request->email);
         if (!$validOtp) return response(['err' => 'unable to verify otp']);
 
         User::where('id', $request->user->id)
-                    ->update([
-                        'email' => $request->email,
-                        'email_verified' => true
-                    ]);
-        
+            ->update([
+                'email' => $request->email,
+                'email_verified' => true
+            ]);
+
         return ['status' => 'ok'];
     }
 
-    public function updateProfile(Request $request)  {
+    public function updateProfile(Request $request)
+    {
         $validation = Validator::make($request->all(), [
             'location' => ['sometimes', 'nullable', 'regex:/^-?([1-8]?\d(?:\.\d+)?|90(?:\.0+)?)\s*,\s*-?(180(?:\.0+)?|1[0-7]\d(?:\.\d+)?|\d{1,2}(?:\.\d+)?)$/'],
             'full_name' => ['required', 'string', 'regex:/^[\pL\s]+ [\pL\s]+$/u'],
@@ -150,7 +168,7 @@ class ProfileController extends Controller
             return response($validation->errors(), 400);
 
         $user = User::find($request->user->id);
-        
+
         $user->full_name = $request->full_name;
         $user->contact_no = $request->contact_no;
         $user->address = $request->address;
@@ -171,7 +189,8 @@ class ProfileController extends Controller
         return ['status' => 'ok'];
     }
 
-    public function getAdminInfo(Request $request) {
+    public function getAdminInfo(Request $request)
+    {
         $admin = User::where('user_role', 'admin')->first([
             'profile_icon',
             'full_name',
@@ -184,7 +203,8 @@ class ProfileController extends Controller
         return $admin;
     }
 
-    public function getVendorInfo($vendor_id) {
+    public function getVendorInfo($vendor_id)
+    {
         $vendor = User::where('id', $vendor_id)->first([
             'profile_icon',
             'full_name',
@@ -198,16 +218,18 @@ class ProfileController extends Controller
             'banner_icon'
         ]);
 
-        if(!$vendor) return response(['err' => 'user not found'], 400);
-        
+        if (!$vendor) return response(['err' => 'user not found'], 400);
+
         return $vendor;
     }
 
-    public function getPaymentHistory(Request $request) {
+    public function getPaymentHistory(Request $request)
+    {
         return PaymentsHelper::getHistory($request->user->id);
     }
 
-    public function getMyCard(Request $request) {
+    public function getMyCard(Request $request)
+    {
         $id = $request->user->id;
         $card = Card::where('user_id', $id)->first();
 

@@ -7,6 +7,7 @@ use App\Models\Card;
 use App\Models\PaymentHistory;
 use App\Models\User;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
@@ -113,10 +114,12 @@ class AdminController extends Controller
         $vatCard = $user->org_vat_card;
         $registrationCard = $user->org_registration_card;
         $profileIcon = $user->profile_icon;
-
-        if ($vatCard) unlink(storage_path("/app/" . $vatCard));
-        if ($registrationCard) unlink(storage_path("/app/".$registrationCard));
-        if ($profileIcon) unlink(storage_path("/app/".$profileIcon));
+        try {
+            if ($vatCard) unlink(storage_path("/app/" . $vatCard));
+            if ($registrationCard) unlink(storage_path("/app/" . $registrationCard));
+            if ($profileIcon) unlink(storage_path("/app/" . $profileIcon));
+        } catch (Exception $e) {
+        }
 
         $user->delete();
 
