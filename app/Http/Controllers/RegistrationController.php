@@ -50,8 +50,6 @@ class RegistrationController extends Controller
             'gender' => ['required', 'string', 'in:male,female,others'],
             'address' => 'required',
             'dob' => ['required', 'date'],
-            'email' => ['required', 'email', 'unique:users'],
-            'password' => ['required', 'string', 'min:6'],
             'preferred_categories' => ['required', 'array'],
             'preferred_categories.*' => 'exists:categories,id'
         ]);
@@ -78,9 +76,6 @@ class RegistrationController extends Controller
         $user->coordinates = $location;
         $user->profile_icon = $profileIcon;
         $user->contact_no = $request->contact_no;
-        $user->email = $request->email;
-        $user->password = Hash::make($request->password);
-        $user->user_role = 'customer';
         $user->account_status = 'requested';
 
         $user->save();
