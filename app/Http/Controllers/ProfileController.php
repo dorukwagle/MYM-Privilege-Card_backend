@@ -26,7 +26,7 @@ class ProfileController extends Controller
         $user = User::find($request->user->id);
 
         $previousIcon = $user->profile_icon;
-        if ($previousIcon) unlink(storage_path("/app/".$profileIcon));
+        if ($previousIcon) unlink(storage_path("/app/".$previousIcon));
 
         $user->profile_icon = $profileIcon;
         $user->save();
