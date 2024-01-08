@@ -48,7 +48,8 @@ class AdminController extends Controller
                 'email',
                 'full_name',
                 'org_name',
-                'payment_status'
+                'payment_status',
+                'coordinates'
             ];
 
             return $query->offset($offset)
