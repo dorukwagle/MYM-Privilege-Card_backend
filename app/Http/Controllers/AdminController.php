@@ -41,20 +41,10 @@ class AdminController extends Controller
             $defaultSize = $size ? $size : 9;
             $offset = ($defaultPage - 1) * $defaultSize;
 
-            $columns = [
-                'id',
-                'profile_icon',
-                'contact_no',
-                'email',
-                'full_name',
-                'org_name',
-                'payment_status',
-                'coordinates'
-            ];
-
-            return $query->offset($offset)
+            return $query->selectRaw('id, profile_icon, contact_no, email, full_name, org_name, payment_status, st_astext(coordinates) as location')
+                ->offset($offset)
                 ->limit($defaultSize)
-                ->get($columns);
+                ->get();
         }
 
         $validation = Validator::make($request->all(), [
