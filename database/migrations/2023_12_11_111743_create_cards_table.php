@@ -12,7 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('cards', function (Blueprint $table) {
-            $table->string('id', 20)->unique();
+            $table->bigIncrements('prim');
+            $table->string('id')->unique();
             $table->bigInteger('user_id');
             $table->timestamps();
         });
