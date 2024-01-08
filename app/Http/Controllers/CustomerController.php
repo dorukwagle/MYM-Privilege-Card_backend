@@ -77,7 +77,7 @@ class CustomerController extends Controller
         return DB::table('users')
             ->join('posts', 'users.id', '=', 'posts.user_id')
             ->join('categories', 'categories.id', '=', 'posts.category_id')
-            ->selectRaw('users.id as vendor_id, users.org_name as org_name, users.coordinates as location, posts.*')
+            ->selectRaw('users.id as vendor_id, users.org_name as org_name, st_astext(users.coordinates) as location, posts.*')
             ->whereRaw('users.user_role = ? or users.is_vend_cust = ?', ['vendor', true])
             ->whereRaw('match(categories.category) against(? in boolean mode)', [$capitalizedSearch])
             ->havingRaw('st_distance_sphere(users.coordinates, point(?, ?)) < ?', [$latLang[1], $latLang[0], $this->nearbySearchDistance]) // less than 401 meter
@@ -122,7 +122,7 @@ class CustomerController extends Controller
             ->join('posts', 'users.id', '=', 'posts.user_id')
             ->join('categories', 'categories.id', '=', 'posts.category_id')
             ->selectRaw(
-                'users.id as vendor_id, users.org_name as org_name, users.coordinates as location, posts.*, 
+                'users.id as vendor_id, users.org_name as org_name, st_astext(users.coordinates) as location, posts.*, 
                 st_distance_sphere(users.coordinates, point(?, ?)) as distance',
                 [$userLocation->longitude, $userLocation->latitude]
             )
