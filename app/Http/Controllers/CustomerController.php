@@ -118,8 +118,8 @@ class CustomerController extends Controller
         $userId = $request->user->id;
         $userLocation = $request->user->coordinates;
 
-        $query = DB::table('users')
-            ->join('posts', 'users.id', '=', 'posts.user_id')
+        $query = User::
+            join('posts', 'users.id', '=', 'posts.user_id')
             ->join('categories', 'categories.id', '=', 'posts.category_id')
             ->selectRaw(
                 'users.id as vendor_id, users.org_name as org_name, users.coordinates as location, posts.*, 
@@ -132,16 +132,16 @@ class CustomerController extends Controller
             $query->whereIn('posts.category_id', QueryHelper::getPreferredCategories($userId));
         else $query->whereNotIn('posts.category_id', QueryHelper::getPreferredCategories($userId));
 
-        $data = $query->havingBetween('distance', [$minDistance, $maxDistance])
+        return $query->havingBetween('distance', [$minDistance, $maxDistance])
             ->orderBy('posts.created_at', 'desc')
             ->offset(($page - 1) * $size)
             ->limit($size)
             ->get();
 
-        return $data->map(function ($result) {
-            $result->location = Point::fromWKT($result->location);
-            return $result;
-        });
+        // return $data->map(function ($result) {
+        //     $result->location = Point::fromWKT($result->location);
+        //     return $result;
+        // });
     }
 
     public function setDeviceId(Request $request) {
