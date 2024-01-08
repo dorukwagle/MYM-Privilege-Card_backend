@@ -271,7 +271,7 @@ class AdminController extends Controller
                 'id',
                 'full_name',
                 'email',
-                'contact',
+                'contact_no',
                 'account_status',
             ]);
 
