@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
+use MatanYadaev\EloquentSpatial\Objects\Point;
 
 class CustomerController extends Controller
 {
@@ -131,11 +132,16 @@ class CustomerController extends Controller
             $query->whereIn('posts.category_id', QueryHelper::getPreferredCategories($userId));
         else $query->whereNotIn('posts.category_id', QueryHelper::getPreferredCategories($userId));
 
-        return $query->havingBetween('distance', [$minDistance, $maxDistance])
+        $data = $query->havingBetween('distance', [$minDistance, $maxDistance])
             ->orderBy('posts.created_at', 'desc')
             ->offset(($page - 1) * $size)
             ->limit($size)
             ->get();
+
+        return $data->map(function ($result) {
+            $result->location = Point::fromWKT($result->location);
+            return $result;
+        });
     }
 
     public function setDeviceId(Request $request) {
