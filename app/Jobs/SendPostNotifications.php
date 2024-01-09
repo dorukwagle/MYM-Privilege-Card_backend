@@ -63,7 +63,8 @@ class SendPostNotifications implements ShouldQueue
                 ]);
 
                 // store the user device_id
-                $groups->push($user->device_id);
+                if($user->device_id)
+                    $groups->push($user->device_id);
             }
         }
 

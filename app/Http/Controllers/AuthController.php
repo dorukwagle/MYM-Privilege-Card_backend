@@ -51,7 +51,14 @@ class AuthController extends Controller
 
     public function logout(Request $request) {
         $cookie = $request->bearerToken();
+
         Session::where('session', '=', $cookie)->delete();
+        
+        $id = $request->user->id;
+        $user = User::find($id);
+        $user->device_token = null;
+        $user->save();
+
         return [
             'status' => 'ok'
         ];
