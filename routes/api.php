@@ -142,6 +142,8 @@ Route::middleware(['auth', 'auth.admin'])->group(function () {
 
         Route::get('/feedbacks', [FeedbackController::class, 'getFeedbacks']);
         // supports pagination as other routes
+
+        Route::get('/analytics/user-counts', [AdminController::class, 'getUserAnalytics']);
 });
 
 Route::middleware(['auth', 'auth.vendor'])->group(function () {

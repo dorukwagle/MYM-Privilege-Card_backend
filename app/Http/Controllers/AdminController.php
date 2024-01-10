@@ -202,10 +202,14 @@ class AdminController extends Controller
 
     public function getUserRequestDetails($userId)
     {
-        $user = User::find($userId);
+        $user = User::where('id', $userId)
+                    ->selectRaw('*, st_astext(coordinates) as location')
+                    ->get();
+
         if (!$user)
             return $this->notFound();
 
+        unset($user['coordinates']);
         unset($user['updated_at']);
         unset($user['password']);
 
@@ -276,5 +280,24 @@ class AdminController extends Controller
             ]);
 
         return $users;
+    }
+
+    public function getUserAnalytics(Request $request) {
+        /**
+         * total users (all users)
+         * total vendors (all vendors)
+         * total customers (all customers)
+         * 
+         * total verified users
+         * total verified customers
+         * total verified vendors
+         * 
+         * total unverified users
+         * total unverified customers
+         * total unverified vendors
+         * 
+         */
+
+         
     }
 }
