@@ -203,8 +203,8 @@ class AdminController extends Controller
     public function getUserRequestDetails($userId)
     {
         $user = User::where('id', $userId)
-                    ->selectRaw('*, st_astext(coordinates) as location')
-                    ->get();
+            ->selectRaw('*, st_astext(coordinates) as location')
+            ->get();
 
         if (!$user)
             return $this->notFound();
@@ -282,22 +282,67 @@ class AdminController extends Controller
         return $users;
     }
 
-    public function getUserAnalytics(Request $request) {
-        /**
-         * total users (all users)
-         * total vendors (all vendors)
-         * total customers (all customers)
-         * 
-         * total verified users
-         * total verified customers
-         * total verified vendors
-         * 
-         * total unverified users
-         * total unverified customers
-         * total unverified vendors
-         * 
-         */
+    public function getUserAnalytics(Request $request)
+    {
+        $totalUsers = User::selectRaw('count(*) as total_users')
+        ->where('user_role', '!=', 'admin')
+            ->first();
 
-         
+        $totalVendors = User::selectRaw('count(*) as total_vendors')
+            ->where('user_role', 'vendor')
+            ->first();
+
+        $totalCustomers = User::selectRaw('count(*) as total_customers')
+            ->where('user_role', 'customer')
+            ->first();
+
+        $totalCardRequested = User::selectRaw('count(*) as total_card_requests')
+            ->where('account_status', 'requested')
+            ->first();
+
+        $totalVerifiedUsers = User::selectRaw('count(*) as total_verified_users')
+        ->where('user_role', '!=', 'admin')
+            ->where('account_status', 'verified')
+            ->first();
+
+        $totalVerifiedCustomers = User::selectRaw('count(*) as total_verified_customers')
+            ->where('account_status', 'verified')
+            ->where('user_role', 'customer')
+            ->first();
+
+        $totalVerifiedVendors = User::selectRaw('count(*) as total_verified_vendors')
+            ->where('account_status', 'verified')
+            ->where('user_role', 'vendor')
+            ->first();
+
+        $totalUnverifiedUsers = User::selectRaw('count(*) as total_unverified_users')
+        ->where('user_role', '!=', 'admin')
+            ->where('account_status', 'pending')
+            ->first();
+
+        $totalUnverifiedCustomers = User::selectRaw('count(*) as total_unverified_customers')
+            ->where('account_status', 'pending')
+            ->where('user_role', 'customer')
+            ->first();
+
+        $totalUnverifiedVendors = User::selectRaw('count(*) as total_unverified_vendors')
+            ->where('account_status', 'pending')
+            ->where('user_role', 'vendor')
+            ->first();
+
+        return [
+            'total_users' => $totalUsers->total_users,
+            'total_vendors' => $totalVendors->total_vendors,
+            'total_customers' => $totalCustomers->total_customers,
+            'total_card_requests' => $totalCardRequested->total_card_requests,
+
+            'total_verified_users' => $totalVerifiedUsers->total_verified_users,
+            'total_verified_customers' => $totalVerifiedCustomers->total_verified_customers,
+            'total_verified_vendors' => $totalVerifiedVendors->total_verified_vendors,
+
+            'total_unverified_users' => $totalUnverifiedUsers->total_unverified_users,
+            'total_unverified_customers' => $totalUnverifiedCustomers->total_unverified_users,
+            'total_unverified_vendors' => $totalUnverifiedVendors->total_unverified_vendors
+        ];
     }
 }

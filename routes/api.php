@@ -304,6 +304,8 @@ Route::post('/verify/verify-email', [VerificationController::class, 'verifyEmail
 Route::post('/auth/forget-password', [ResetPasswordController::class, 'sendResetOtp']);
 Route::post('/auth/reset-password', [ResetPasswordController::class, 'resetPassword']);
 
+Route::get('/analytics', [AdminController::class, 'getUserAnalytics']);
+
 /**
  * TODO:
  * Analytics
