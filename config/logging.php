@@ -118,6 +118,12 @@ return [
             'replace_placeholders' => true,
         ],
 
+        'updateItem' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/updateItem.log'),
+            'level' => 'info',
+        ]
+,
         'null' => [
             'driver' => 'monolog',
             'handler' => NullHandler::class,

@@ -117,6 +117,7 @@ class CustomerController extends Controller
 
         $userId = $request->user->id;
         $userLocation = $request->user->coordinates;
+        if (!$userLocation) return response(['err' => 'location not provided'], 404);
 
         $query = DB::table('users')
             ->join('posts', 'users.id', '=', 'posts.user_id')

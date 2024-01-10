@@ -219,7 +219,11 @@ Route::post('/register/customer', [RegistrationController::class, 'registerCusto
 Route::post('/register/vendor', [RegistrationController::class, 'registerVendor']);
 
 Route::get('/public/{path}', function($path){
-        return response()->file(storage_path("/app/public/".$path));
+        try {
+                return response()->file(storage_path("/app/public/".$path));
+        }catch(Exception $e) {
+                return ['err' => 'requested asset not found', 404];
+        }
 })->where('path', '.+');
 /**
  * Body parameters:

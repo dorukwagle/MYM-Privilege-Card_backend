@@ -54,8 +54,6 @@ class SendPostNotifications implements ShouldQueue
 
             // Check if the post category is in the user's preferred categories
             if (in_array($postCategory, $preferredCategories)) {
-                // send notification to them
-                $filteredUsers[] = $user->id;
                 Notification::create([
                     'post_id' => $this->post->id,
                     'user_id' => $user->id,
@@ -63,25 +61,27 @@ class SendPostNotifications implements ShouldQueue
                 ]);
 
                 // store the user device_id
-                if($user->device_id)
-                    $groups->push($user->device_id);
+                if($user->device_token)
+                    $groups->push($user->device_token);
             }
         }
 
         // send push notifications
-        $this->sendPushNotification($groups);
+        $this->sendPushNotification($groups->getList());
     }
 
     private function sendPushNotification($groups) {
-        $serverKey = env('FIREBASE_SERVER_KEY');
-
+        // $serverKey = env('FIREBASE_SERVER_KEY');
+        $serverKey = 'AAAAN2BTZ4c:APA91bECrwF9BAbVEWEVLiwfLEmoJO34RxEMlLMegjHuqLemMrzCtt5fVX_6Iq1WGOzpSA0pe7VTHmrhKzms19l-J-bBbHTdbY3T7Yrpk-aXj-l3lv2U8rLsBW5V08wTiOu4FTSjiI7t';
+        
         foreach ($groups as $group) {
             // Notification payload
             $message = [
                 'registration_ids' => $group,
                 'notification' => [
-                    'title' => 'Your Notification ',
-                    'body' => 'Your Notification Body',
+                    'title' => $this->post->title,
+                    'body' => $this->post->body,
+                    'icon' => $this->post->icon
                 ],
                 // Additional data fields can be added here
             ];
@@ -94,6 +94,7 @@ class SendPostNotifications implements ShouldQueue
 
             // Initialize cURL session
             $ch = curl_init();
+            
 
             // Set cURL options
             curl_setopt($ch, CURLOPT_URL, 'https://fcm.googleapis.com/fcm/send');
@@ -106,13 +107,13 @@ class SendPostNotifications implements ShouldQueue
             // Execute cURL session
             $result = curl_exec($ch);
 
+
             // Check for errors
             if (curl_errno($ch)) {
                 Log::error('FCM request failed: ' . curl_error($ch));
             } else {
                 // Decode and print the response
-                $response = json_decode($result, true);
-                Log::info($response);
+                Log::info($result);
             }
 
             // Close cURL session
