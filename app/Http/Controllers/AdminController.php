@@ -204,8 +204,8 @@ class AdminController extends Controller
     {
         $user = User::where('id', $userId)
             ->selectRaw('*, st_astext(coordinates) as location')
-            ->get();
-
+            ->first();
+    
         if (!$user)
             return $this->notFound();
 
