@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('cards', function (Blueprint $table) {
             $table->bigIncrements('prim');
-            $table->string('id')->unique();
+            $table->text('id');
             $table->bigInteger('user_id');
             $table->timestamps();
         });

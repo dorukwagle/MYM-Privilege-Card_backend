@@ -131,8 +131,8 @@ class AdminController extends Controller
     public function assignCard(Request $request, $userId)
     {
         $validation = Validator::make($request->all(), [
-            'card_id' => ['required', 'min:19', 'max:19', 'unique:card,id'],
-            'valid_duration' => ['required', 'numeric', 'min:1']
+            'card_id' => ['required', 'unique:cards,id', 'regex:/^\d{4}-\d{4}-\d{4}-\d{4}$/'],
+            'valid_duration' => ['required', 'numeric', 'min:1', 'max:20']
         ]);
 
         if ($validation->fails())
@@ -142,7 +142,7 @@ class AdminController extends Controller
         if (!$this->isValidAccount($user, 'customer')) return $this->notFound();
 
         $user->account_status = 'verified';
-        $user->expires = Carbon::now()->addYears($request->valid_duration);
+        $user->expires = Carbon::now()->addYears($request->valid_duration)->endOfDay()->toDateTime();
         $user->payment_status = 'pending';
 
         Card::create([
