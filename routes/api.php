@@ -195,8 +195,8 @@ Route::middleware(['auth', 'auth.customer'])->group(function () {
         Route::get('/cust/notifications', [CustomerController::class, 'getNotifications']);
         // /card/notifications?page=1&size=9
 
-        Route::post('/cust/notifs-read/{last-notif-id}', [CustomerController::class, 'markNotificationAsRead'])
-                ->whereNumber('last-notif-id');
+        Route::post('/cust/notifs/mark-as-read/{id}', [CustomerController::class, 'markNotificationAsRead'])
+                ->whereNumber('id');
         // /cust/notifs-read/5  (marks all the notifications as seen upto this timestamp)
 
         Route::get('/cust/unread-notifs-count', [CustomerController::class, 'getUnreadNotifsCount']);

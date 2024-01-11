@@ -39,7 +39,7 @@ class AuthController extends Controller
         Session::create([
             'session' => $cookie,
             'user_id' => $user->id,
-            'expiry_date' => Carbon::now()->addHours(2)
+            'expiry_date' => Carbon::now()->addDays(5)->endOfDay()
         ]);
         
         return $this->getResponse($user, $cookie);
