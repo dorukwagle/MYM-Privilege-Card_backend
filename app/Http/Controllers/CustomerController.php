@@ -22,7 +22,7 @@ class CustomerController extends Controller
             'page' => ['sometimes', 'nullable', 'numeric', 'min:1']
         ]);
 
-        $size = $request->filled('size') ? $request->query('size') : 1;
+        $size = $request->filled('size') ? $request->query('size') : 9;
         $page = $request->filled('page') ? $request->query('page') : 1;
 
         if ($validation->fails())
@@ -30,9 +30,10 @@ class CustomerController extends Controller
 
         return DB::table('users')
             ->join('notifications', 'notifications.user_id', '=', 'users.id')
+            ->join('posts', 'posts.id', '=', 'notifications.post_id')
             ->where('notifications.user_id', $request->user->id)
-            ->selectRaw('notifications.*')
-            ->orderBy('created_at', 'desc')
+            ->selectRaw('notifications.id as id, notifications.read as seen, posts.title, posts.icon, posts.body, posts.category_id')
+            ->orderBy('notifications.created_at', 'desc')
             ->offset(($page - 1) * $size)
             ->limit($size)
             ->get();
