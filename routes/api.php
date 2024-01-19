@@ -308,24 +308,6 @@ Route::post('/verify/verify-email', [VerificationController::class, 'verifyEmail
 Route::post('/auth/forget-password', [ResetPasswordController::class, 'sendResetOtp']);
 Route::post('/auth/reset-password', [ResetPasswordController::class, 'resetPassword']);
 
-/**
- * TODO:
- * Analytics
- * 
- * SOMETIMES LATER
- * send push notification
- * 
- * 
- * packages system {
- * 1 year - Rs 1000
- * 2 years - Rs 1800
- * } etc, editable and removable by admin
- */
-
-/**
- * LATERAL CHANGES
- * add new database table for packages
- **/
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /**
@@ -334,8 +316,4 @@ Route::post('/auth/reset-password', [ResetPasswordController::class, 'resetPassw
  * add new categories in users table: preferred_categories and product_categories to adjust the dual_users
  * do not delete entire user while rejecting vendor, as it can be customer upgrading to vendor
  * add one more account_status flag in database to keep track of dual users verification
- */
-
-/**
- * "coordinates":{"type":"Point","coordinates":[100,86.32]}
  */

@@ -11,15 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('posts', function (Blueprint $table) {
+        Schema::create('subscriptions', function (Blueprint $table) {
             $table->id();
-            $table->text('title');
-            $table->string('icon', 255);
-            $table->text('body');
-            $table->bigInteger('user_id');
-            $table->bigInteger('category_id');
-            $table->boolean('is_signup_offer')->default(0);
-            $table->boolean('approved')->default(0);
+            $table->integer('duration');
+            $table->double('rate');
             $table->timestamps();
         });
     }
@@ -29,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('posts');
+        Schema::dropIfExists('subscriptions');
     }
 };
