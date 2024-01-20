@@ -42,7 +42,12 @@ class AuthController extends Controller
             'expiry_date' => Carbon::now()->addDays(5)->endOfDay()
         ]);
         
-        return $this->getResponse($user, $cookie);
+        $res = $this->getResponse($user, $cookie);
+        if ($user->has_logged_in) {
+            $user->has_logged_in = true;
+            $user->save();
+        }
+        return $res;
     }
 
     public function checkLoggedIn(Request $request)  {
@@ -71,6 +76,7 @@ class AuthController extends Controller
             'user_role' => $user->user_role,
             'is_vend_cust' => $user->is_vend_cust,
             'user_id' => $user->id,
+            'is_first_login' => !$user->has_logged_in,
             'email' => $user->email
         ];
 
