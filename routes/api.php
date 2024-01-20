@@ -1,6 +1,5 @@
 <?php
 
-use App\Helpers\ArrayEqual;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoriesController;
@@ -11,16 +10,7 @@ use App\Http\Controllers\RegistrationController;
 use App\Http\Controllers\ResetPasswordController;
 use App\Http\Controllers\VendorController;
 use App\Http\Controllers\VerificationController;
-use App\Http\Middleware\AuthorizationMiddleware;
-use App\Models\User;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use Monolog\Registry;
-use Symfony\Component\HttpKernel\Profiler\Profile;
-
-// Route::middleware('auth')->get('/user', function (Request $request) {
-//     return $request->user();
-// });
 
 
 Route::get('/categories', [CategoriesController::class, 'getProductCategories']);
@@ -144,6 +134,10 @@ Route::middleware(['auth', 'auth.admin'])->group(function () {
         // supports pagination as other routes
 
         Route::get('/analytics/user-counts', [AdminController::class, 'getUserAnalytics']);
+
+        Route::post('/register/add-vendor', [RegistrationController::class, 'addVendorAccount']);
+
+        Route::post('/register/add-customer', [RegistrationController::class, 'addCustomerAccount']);
 });
 
 Route::middleware(['auth', 'auth.vendor'])->group(function () {
