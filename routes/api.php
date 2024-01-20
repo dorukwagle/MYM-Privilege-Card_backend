@@ -1,5 +1,6 @@
 <?php
 
+use App\Helpers\CredentialHelper;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoriesController;
@@ -302,6 +303,15 @@ Route::post('/verify/verify-email', [VerificationController::class, 'verifyEmail
 Route::post('/auth/forget-password', [ResetPasswordController::class, 'sendResetOtp']);
 Route::post('/auth/reset-password', [ResetPasswordController::class, 'resetPassword']);
 
+Route::get('/test/pass', function() {
+        $helper = new CredentialHelper("hello");
+        $res = [
+                'status' => 'hello world',
+                'hey' => 'moreover'
+        ];
+        return $res['status'] == 'hello world';
+        return $helper->getPassword();
+});
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /**
