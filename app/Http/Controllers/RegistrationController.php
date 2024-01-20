@@ -45,7 +45,7 @@ class RegistrationController extends Controller
         $this->addCategories($request->preferred_categories, $user->id);
 
         $creds->sendCredentials();
-        
+
         return [
             'status' => 'ok',
             'user_id' => $user->id,
@@ -150,8 +150,8 @@ class RegistrationController extends Controller
     private function createVendor(Request $request, $addedByAdmin)
     {
         $signupOffer = $this->extractSignupOffer($request);
-        if ($signupOffer && $signupOffer->fails)
-            return response($signupOffer->errors, 400);
+        if ($signupOffer && $signupOffer['fails'])
+            return response($signupOffer['errors'], 400);
 
         $orgVatCard = '';
         if (!$request->hasFile('org_vat_card'))
@@ -209,14 +209,14 @@ class RegistrationController extends Controller
         if ($request->hasFile('icon'))
             $icon = $request->file('icon')->store($this->uploadPath);
 
-        return (object) array(
+        return [
             'title' => $request->title,
             'body' => $request->body,
             'category_id' => $request->category_id,
             'icon' => $icon,
             'errors' => $validation->errors(),
             'fails' => $validation->fails()
-        );
+        ];
     }
 
     private function createSignupOffer($userId, $offer)
