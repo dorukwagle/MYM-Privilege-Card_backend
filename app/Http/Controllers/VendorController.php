@@ -39,9 +39,6 @@ class VendorController extends Controller
             'user_id' => $request->user->id
         ]);
 
-        // send notification to nearby customers with preferred categories
-        SendPostNotifications::dispatch($request->user, $post);
-
         return ['status' => 'ok'];
     }
 
