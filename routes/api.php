@@ -139,6 +139,14 @@ Route::middleware(['auth', 'auth.admin'])->group(function () {
         Route::post('/register/add-vendor', [RegistrationController::class, 'addVendorAccount']);
 
         Route::post('/register/add-customer', [RegistrationController::class, 'addCustomerAccount']);
+
+        Route::get('/posts', [AdminController::class, 'getPostRequests']);
+
+        Route::post('/posts/approve/{postid}', [AdminController::class, 'approvePost'])
+                ->whereNumber('postid');
+
+        Route::post('/posts/approve-signup-post/{userid}', [AdminController::class, 'approveSignupPost'])
+                ->whereNumber('userid');
 });
 
 Route::middleware(['auth', 'auth.vendor'])->group(function () {

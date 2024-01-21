@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Helpers\PaymentsHelper;
 use App\Models\Card;
 use App\Models\PaymentHistory;
+use App\Models\Post;
 use App\Models\User;
 use Carbon\Carbon;
 use Exception;
@@ -205,7 +206,7 @@ class AdminController extends Controller
         $user = User::where('id', $userId)
             ->selectRaw('*, st_astext(coordinates) as location')
             ->first();
-    
+
         if (!$user)
             return $this->notFound();
 
@@ -282,10 +283,54 @@ class AdminController extends Controller
         return $users;
     }
 
+    public function getPostRequests(Request $request)
+    {
+        $validation = Validator::make($request->all(), [
+            'size' => ['sometimes', 'nullable', 'numeric', 'min:1'],
+            'page' => ['sometimes', 'nullable', 'numeric', 'min:1'],
+            'signup' => ['sometimes', 'nullable', 'in:yes,no']
+        ]);
+
+        $size = $request->filled('size') ? $request->query('size') : 1;
+        $page = $request->filled('page') ? $request->query('page') : 1;
+        $signup = $request->filled('signup') && $request->query('signup') == 'yes';
+
+        if ($validation->fails())
+            return response($validation->errors(), 400);
+
+        return Post::where('signup', $signup)
+            ->where('approved', false)
+            ->orderBy('created_at', 'desc')
+            ->offset(($page - 1) * $size)
+            ->limit($size)
+            ->get();
+    }
+
+    public function approvePost($postId)
+    {
+        $post = Post::find('id', $postId);
+        if (!$post) return response(['err' => 'not found'], 404);
+
+        $post->approved = true;
+        $post->save();
+        return ['status', 'ok'];
+    }
+
+    public function approveSignupPost($userId)
+    {
+        Post::where('user_id', $userId)
+            ->where('signup', true)
+            ->update([
+                'approved' => true
+            ]);
+
+        return ['status' => 'ok'];
+    }
+
     public function getUserAnalytics(Request $request)
     {
         $totalUsers = User::selectRaw('count(*) as total_users')
-        ->where('user_role', '!=', 'admin')
+            ->where('user_role', '!=', 'admin')
             ->first();
 
         $totalVendors = User::selectRaw('count(*) as total_vendors')
@@ -301,7 +346,7 @@ class AdminController extends Controller
             ->first();
 
         $totalVerifiedUsers = User::selectRaw('count(*) as total_verified_users')
-        ->where('user_role', '!=', 'admin')
+            ->where('user_role', '!=', 'admin')
             ->where('account_status', 'verified')
             ->first();
 
@@ -316,7 +361,7 @@ class AdminController extends Controller
             ->first();
 
         $totalUnverifiedUsers = User::selectRaw('count(*) as total_unverified_users')
-        ->where('user_role', '!=', 'admin')
+            ->where('user_role', '!=', 'admin')
             ->where('account_status', 'pending')
             ->first();
 
