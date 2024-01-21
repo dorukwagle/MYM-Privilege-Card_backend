@@ -21,11 +21,10 @@ class AdminSeeder extends Seeder
                 'contact_no' => '+9779829293466',
                 'gender' => 'male',
                 'email' => 'doruk',
-                'user_role' => 'admin',
+                'user_role' => 'superadmin',
                 'email_verified' => true,
                 'account_status' => 'verified',
-                'password' => Hash::make('adminpass'),
-                'coordinates' => DB::raw("point(100, 86.32)"),
+                'password' => Hash::make('adminpass')
             ]
         );
     }

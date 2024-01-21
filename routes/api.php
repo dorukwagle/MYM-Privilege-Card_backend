@@ -147,6 +147,11 @@ Route::middleware(['auth', 'auth.admin'])->group(function () {
 
         Route::post('/posts/approve-signup-post/{userid}', [AdminController::class, 'approveSignupPost'])
                 ->whereNumber('userid');
+
+        Route::post('/admin/create-admin', [AdminController::class, 'addAdminAccount']);
+
+        Route::delete('/admin/delete/{id}', [AdminController::class, 'removeAdminAccount'])
+                ->whereNumber('id');
 });
 
 Route::middleware(['auth', 'auth.vendor'])->group(function () {

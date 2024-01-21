@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\CredentialHelper;
 use App\Helpers\PaymentsHelper;
 use App\Jobs\SendPostNotifications;
 use App\Models\Card;
@@ -12,6 +13,7 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
 
@@ -317,7 +319,7 @@ class AdminController extends Controller
 
         // send notification to nearby customers with preferred categories
         SendPostNotifications::dispatch($post);
-        
+
         return ['status', 'ok'];
     }
 
@@ -332,6 +334,43 @@ class AdminController extends Controller
         // send notification to nearby customers with preferred categories
         SendPostNotifications::dispatch($post);
         return ['status' => 'ok'];
+    }
+
+    public function addAdminAccount(Request $request)
+    {
+        $validation = Validator::make($request->all(), [
+            'full_name' => ['required', 'string', 'regex:/^[\pL\s]+ [\pL\s]+$/u'],
+            'contact_no' => ['required', 'regex:/^(\+?\d{6,15})$/'],
+            'email' => ['required', 'email', 'unique:users'],
+            'gender' => ['required', 'in:male,female']
+        ]);
+
+        if ($validation->fails())
+            return response($validation->errors(), 400);
+
+        $creds = new CredentialHelper($request->email);
+        $password = $creds->getPassword();
+
+        User::create([
+            'full_name' => $request->full_name,
+            'contact_no' => $request->contact_no,
+            'email' => $request->email,
+            'gender' => $request->gender,
+            'password' => Hash::make($password),
+            'user_role' => 'admin',
+            'account_status' => 'verified',
+            'email_verified' => true,
+            'has_logged_in' => false
+        ]);
+
+        $creds->sendCredentials();
+        return ['status' => 'ok'];
+    }
+
+    public function removeAdminAccount($id)
+    {
+        User::where('id', $id)->delete();
+        return ['status' => 'pk'];
     }
 
     public function getUserAnalytics(Request $request)

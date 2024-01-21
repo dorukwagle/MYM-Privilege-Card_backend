@@ -191,7 +191,7 @@ class ProfileController extends Controller
 
     public function getAdminInfo(Request $request)
     {
-        $admin = User::where('user_role', 'admin')->first([
+        $admin = User::where('user_role', 'superadmin')->first([
             'profile_icon',
             'full_name',
             'contact_no',
