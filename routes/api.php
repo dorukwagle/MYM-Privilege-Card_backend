@@ -209,8 +209,7 @@ Route::middleware(['auth', 'auth.customer'])->group(function () {
         // /cust/search?category=cosmetic (returns all cosmetic posts created by nearby vendors)
 
         Route::get('/cust/preferred-posts', [CustomerController::class, 'getPreferredPosts']);
-        Route::get('/cust/recommended/nearby', [CustomerController::class, 'getNearbyPosts']);
-        Route::get('/cust/recommended/preferred', [CustomerController::class, 'getPreferredPostsBeyondNear']);
+        Route::get('/cust/recommended', [CustomerController::class, 'getRecommendedPosts']);
 
         // all posts routes support pagination i.e. ?page=2&size=9 for example
 
