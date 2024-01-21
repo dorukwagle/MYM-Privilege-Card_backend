@@ -31,7 +31,7 @@ class VendorController extends Controller
 
         $icon = $request->file('icon')->store($this->uploadPath);
 
-        $post = Post::create([
+        Post::create([
             'icon' => $icon,
             'body' => $request->body,
             'category_id' => $request->category_id,

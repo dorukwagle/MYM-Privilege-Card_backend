@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\PaymentsHelper;
+use App\Jobs\SendPostNotifications;
 use App\Models\Card;
 use App\Models\PaymentHistory;
 use App\Models\Post;
@@ -313,17 +314,23 @@ class AdminController extends Controller
 
         $post->approved = true;
         $post->save();
+
+        // send notification to nearby customers with preferred categories
+        SendPostNotifications::dispatch($post);
+        
         return ['status', 'ok'];
     }
 
     public function approveSignupPost($userId)
     {
-        Post::where('user_id', $userId)
+        $post = Post::where('user_id', $userId)
             ->where('signup', true)
             ->update([
                 'approved' => true
             ]);
 
+        // send notification to nearby customers with preferred categories
+        SendPostNotifications::dispatch($post);
         return ['status' => 'ok'];
     }
 
