@@ -123,13 +123,10 @@ class AdminController extends Controller
 
     public function generateCardNumber(Request $request)
     {
-        $numbers = [];
+        $totalCards = Card::count();
+        $firstPart = Carbon::now()->format('Ym');
 
-        for ($i = 0; $i < 4; $i++) {
-            $numbers[] = random_int(1000, 9999);
-        }
-
-        return ['id' => implode('-', $numbers)];
+        return ['id'  => $firstPart. "-" . sprintf('%06d', ($totalCards + 1))];
     }
 
     public function assignCard(Request $request, $userId)

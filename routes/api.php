@@ -315,15 +315,7 @@ Route::post('/verify/verify-email', [VerificationController::class, 'verifyEmail
 Route::post('/auth/forget-password', [ResetPasswordController::class, 'sendResetOtp']);
 Route::post('/auth/reset-password', [ResetPasswordController::class, 'resetPassword']);
 
-Route::get('/test/pass', function() {
-        $helper = new CredentialHelper("hello");
-        $res = [
-                'status' => 'hello world',
-                'hey' => 'moreover'
-        ];
-        return $res['status'] == 'hello world';
-        return $helper->getPassword();
-});
+Route::get('/test/pass', [AdminController::class, 'generateCardNumber']);
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /**
