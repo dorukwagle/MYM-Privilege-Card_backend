@@ -121,7 +121,7 @@ class AdminController extends Controller
         return ['status' => 'ok'];
     }
 
-    public function generateCardNumber(Request $request)
+    public function generateCardNumber()
     {
         $totalCards = Card::count();
         $firstPart = Carbon::now()->format('Ym');

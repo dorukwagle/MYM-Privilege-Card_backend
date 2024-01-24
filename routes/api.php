@@ -3,6 +3,7 @@
 use App\Helpers\CredentialHelper;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BenefitController;
 use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\FeedbackController;
@@ -56,6 +57,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/feedbacks', [FeedbackController::class, 'createFeedback']);
         // body: message
 
+        Route::get('/card/benefits', [BenefitController::class, 'getBenefits']);
 });
 
 Route::middleware(['auth', 'auth.admin'])->group(function () {
@@ -151,6 +153,12 @@ Route::middleware(['auth', 'auth.admin'])->group(function () {
         Route::post('/admin/create-admin', [AdminController::class, 'addAdminAccount']);
 
         Route::delete('/admin/delete/{id}', [AdminController::class, 'removeAdminAccount'])
+                ->whereNumber('id');
+
+        Route::post('/card/benefit', [BenefitController::class, 'addBenefit']);
+        // body: title, body
+
+        Route::delete('/card/benefit/{id}', [BenefitController::class, 'deleteBenefit'])
                 ->whereNumber('id');
 });
 
