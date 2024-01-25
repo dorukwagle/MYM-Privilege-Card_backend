@@ -7,11 +7,13 @@ use App\Http\Controllers\BenefitController;
 use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\FeedbackController;
+use App\Http\Controllers\PackageController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RegistrationController;
 use App\Http\Controllers\ResetPasswordController;
 use App\Http\Controllers\VendorController;
 use App\Http\Controllers\VerificationController;
+use App\Models\Package;
 use Illuminate\Support\Facades\Route;
 
 
@@ -58,6 +60,8 @@ Route::middleware('auth')->group(function () {
         // body: message
 
         Route::get('/card/benefits', [BenefitController::class, 'getBenefits']);
+
+        Route::get('/card/packages', [PackageController::class, 'getPackages']);
 });
 
 Route::middleware(['auth', 'auth.admin'])->group(function () {
@@ -154,11 +158,19 @@ Route::middleware(['auth', 'auth.admin'])->group(function () {
 
         Route::delete('/admin/delete/{id}', [AdminController::class, 'removeAdminAccount'])
                 ->whereNumber('id');
+        
+        Route::get('/admin/get-all', [AdminController::class, 'getAdmins']);
 
         Route::post('/card/benefit', [BenefitController::class, 'addBenefit']);
         // body: title, body
 
         Route::delete('/card/benefit/{id}', [BenefitController::class, 'deleteBenefit'])
+                ->whereNumber('id');
+
+        Route::post('/card/package', [PackageController::class, 'addPackage']);
+        // body: duration, rate
+
+        Route::delete('/card/package/{id}', [PackageController::class, 'deletePackage'])
                 ->whereNumber('id');
 });
 

@@ -333,6 +333,17 @@ class AdminController extends Controller
         return ['status' => 'ok'];
     }
 
+    public function getAdmins() {
+        return User::where('user_role', 'admin')->get([
+            'id',
+            'full_name',
+            'contact_no',
+            'email',
+            'gender',
+            'created_at'
+        ]);
+    }
+
     public function addAdminAccount(Request $request)
     {
         $validation = Validator::make($request->all(), [
