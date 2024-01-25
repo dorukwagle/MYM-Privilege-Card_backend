@@ -339,7 +339,7 @@ class AdminController extends Controller
             'full_name' => ['required', 'string', 'regex:/^[\pL\s]+ [\pL\s]+$/u'],
             'contact_no' => ['required', 'regex:/^(\+?\d{6,15})$/'],
             'email' => ['required', 'email', 'unique:users'],
-            'gender' => ['required', 'in:male,female']
+            'gender' => ['required', 'in:male,female,others']
         ]);
 
         if ($validation->fails())
