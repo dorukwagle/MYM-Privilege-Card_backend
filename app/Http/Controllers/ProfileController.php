@@ -245,4 +245,26 @@ class ProfileController extends Controller
             'expires_on' => $request->user->expires
         ];
     }
+
+    public function getMyReferrals(Request $request) {
+        return $this->getReferrals($request->user->id);
+    }
+
+    public function getUserReferrals($userId) {
+        return $this->getReferrals($userId);
+    }
+
+    private function getReferrals($id) {
+        $user = User::find($id);
+        if (!$user) return response(['err' => 'not found'], 404);
+
+        $referral = $user->referral_code;
+
+        $count = User::where('referred_by', $referral)->count();
+
+        return [
+            'referral_code' => $referral,
+            'total_referrals' => $count
+        ];
+    }
 }

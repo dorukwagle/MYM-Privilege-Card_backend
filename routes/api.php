@@ -62,6 +62,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/card/benefits', [BenefitController::class, 'getBenefits']);
 
         Route::get('/card/packages', [PackageController::class, 'getPackages']);
+
+        Route::get('/profile/referrals', [ProfileController::class, 'getMyReferrals']);
 });
 
 Route::middleware(['auth', 'auth.admin'])->group(function () {
@@ -165,6 +167,10 @@ Route::middleware(['auth', 'auth.admin'])->group(function () {
 
         Route::delete('/card/package/{id}', [PackageController::class, 'deletePackage'])
                 ->whereNumber('id');
+
+        Route::get('/user/referrals/{id}', [ProfileController::class, 'getUserReferrals'])
+                ->whereNumber('id');
+
 });
 
 Route::middleware(['auth', 'auth.superadmin'])->group(function() {
