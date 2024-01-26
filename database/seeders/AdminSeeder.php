@@ -24,7 +24,8 @@ class AdminSeeder extends Seeder
                 'user_role' => 'superadmin',
                 'email_verified' => true,
                 'account_status' => 'verified',
-                'password' => Hash::make('adminpass')
+                'password' => Hash::make('adminpass'),
+                'referral_code' => 'dorukwgl'
             ]
         );
     }

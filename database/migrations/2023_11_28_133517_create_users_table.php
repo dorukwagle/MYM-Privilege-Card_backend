@@ -27,7 +27,7 @@ return new class extends Migration
             $table->date('dob')->nullable();
             $table->string('org_registration_card', 150)->nullable();
             $table->string('org_vat_card', 150)->nullable();
-            $table->string('org_pan_no');
+            $table->string('org_pan_no')->nullable();
             $table->string('email', 100)->unique();
             $table->boolean('email_verified')->default(0);
             $table->string('password', 75);
@@ -36,7 +36,7 @@ return new class extends Migration
             $table->text('about_org')->nullable();
             $table->text('device_token')->nullable();
             $table->boolean('has_logged_in')->default(0);
-            $table->unique('referral_code');
+            $table->string('referral_code')->unique('referral_code');
             $table->string('referred_by')->nullable();
             $table->timestamps();
         });
