@@ -13,8 +13,8 @@
     <p>Please use the given email and password to login to your account.</p>
     <strong><b>Please change your password and update your profile once you login.</b></strong>
     <h6>Your Credentials</h6>
-    <p><strong>Email:</strong> {{email}}</p>
-    <p><strong>Password:</strong>{{password}}</p>
+    <p><strong>Email:</strong> {{$email}}</p>
+    <p><strong>Password:</strong>{{$password}}</p>
 </body>
 
 </html>
