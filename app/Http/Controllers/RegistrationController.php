@@ -39,7 +39,9 @@ class RegistrationController extends Controller
             'address' => $request->address,
             'account_status' => 'requested',
             'email_verified' => true,
-            'has_logged_in' => false
+            'has_logged_in' => false,
+            'referred_by' => $request->referred_by,
+            'referral_code' => $this->generateReferralCode($request->email)
         ]);
 
         $this->addCategories($request->preferred_categories, $user->id);
@@ -74,6 +76,8 @@ class RegistrationController extends Controller
             'password' => Hash::make($request->password),
             'user_role' => 'customer',
             'has_logged_in' => true,
+            'referred_by' => $request->referred_by,
+            'referral_code' => $this->generateReferralCode($request->email)
         ]);
 
         return [
@@ -179,7 +183,9 @@ class RegistrationController extends Controller
             'user_role' => 'vendor',
             'account_status' => $addedByAdmin ? 'verified' : 'pending',
             'email_verified' => $addedByAdmin,
-            'has_logged_in' => !$addedByAdmin
+            'has_logged_in' => !$addedByAdmin,
+            'referred_by' => $request->referred_by,
+            'referral_code' => $this->generateReferralCode($request->email)
         ]);
 
         $this->addCategories($request->product_categories, $user->id);
@@ -238,6 +244,7 @@ class RegistrationController extends Controller
             'contact_no' => ['required', 'regex:/^(\+?\d{6,15})$/'],
             'gender' => ['required', 'string', 'in:male,female,others'],
             'email' => ['required', 'email', 'unique:users'],
+            'referred_by' => ['sometimes', 'nullable', 'exists:users,referral_code']
         ]);
     }
 
@@ -254,6 +261,7 @@ class RegistrationController extends Controller
             'product_categories.*' => 'exists:categories,id',
             'org_vat_card' => 'required',
             'org_registration_card' => 'required',
+            'referred_by' => ['sometimes', 'nullable', 'exists:users,referral_code']
         ]);
     }
 
@@ -274,5 +282,10 @@ class RegistrationController extends Controller
                 'category_id' => $category_id
             ]);
         }
+    }
+
+    private function generateReferralCode($string) {
+        $str = substr($string, 0, 8);
+        return str_shuffle($str);
     }
 }

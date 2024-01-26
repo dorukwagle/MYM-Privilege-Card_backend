@@ -36,6 +36,8 @@ return new class extends Migration
             $table->text('about_org')->nullable();
             $table->text('device_token')->nullable();
             $table->boolean('has_logged_in')->default(0);
+            $table->unique('referral_code');
+            $table->string('referred_by')->nullable();
             $table->timestamps();
         });
 
