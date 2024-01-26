@@ -56,6 +56,7 @@ class Kernel extends HttpKernel
         'auth' => \App\Http\Middleware\AuthorizationMiddleware::class,
         'auth.customer' => \App\Http\Middleware\AuthorizeCustomer::class,
         'auth.admin' => \App\Http\Middleware\AuthorizeAdmin::class,
+        'auth.superadmin' => \App\Http\Middleware\AuthorizeSuperadmin::class,
         'auth.vendor' => \App\Http\Middleware\AuthorizeVerifiedVendor::class,
     ];
 

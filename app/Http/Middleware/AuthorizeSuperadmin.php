@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class AuthorizeAdmin
+class AuthorizeSuperadmin
 {
     /**
      * Handle an incoming request.
@@ -20,7 +20,7 @@ class AuthorizeAdmin
 
         if (!$request->user)
             return $res;
-        if ($role !== 'admin' && $role !== 'superadmin')
+        if ($role !== 'superadmin')
             return $res;
 
         return $next($request);

@@ -154,13 +154,6 @@ Route::middleware(['auth', 'auth.admin'])->group(function () {
         Route::post('/posts/approve-signup-post/{userid}', [AdminController::class, 'approveSignupPost'])
                 ->whereNumber('userid');
 
-        Route::post('/admin/create-admin', [AdminController::class, 'addAdminAccount']);
-
-        Route::delete('/admin/delete/{id}', [AdminController::class, 'removeAdminAccount'])
-                ->whereNumber('id');
-        
-        Route::get('/admin/get-all', [AdminController::class, 'getAdmins']);
-
         Route::post('/card/benefit', [BenefitController::class, 'addBenefit']);
         // body: title, body
 
@@ -172,6 +165,15 @@ Route::middleware(['auth', 'auth.admin'])->group(function () {
 
         Route::delete('/card/package/{id}', [PackageController::class, 'deletePackage'])
                 ->whereNumber('id');
+});
+
+Route::middleware(['auth', 'auth.superadmin'])->group(function() {
+        Route::post('/admin/create-admin', [AdminController::class, 'addAdminAccount']);
+
+        Route::delete('/admin/delete/{id}', [AdminController::class, 'removeAdminAccount'])
+                ->whereNumber('id');
+        
+        Route::get('/admin/get-all', [AdminController::class, 'getAdmins']);
 });
 
 Route::middleware(['auth', 'auth.vendor'])->group(function () {
