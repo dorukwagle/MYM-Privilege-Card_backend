@@ -368,7 +368,8 @@ class AdminController extends Controller
             'user_role' => 'admin',
             'account_status' => 'verified',
             'email_verified' => true,
-            'has_logged_in' => false
+            'has_logged_in' => false,
+            'referral_code' => Carbon::now()->timestamp
         ]);
 
         $creds->sendCredentials();
