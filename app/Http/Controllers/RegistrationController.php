@@ -259,8 +259,8 @@ class RegistrationController extends Controller
             'org_pan_no' => ['required'],
             'product_categories' => ['required', 'array'],
             'product_categories.*' => 'exists:categories,id',
-            'org_vat_card' => 'required',
-            'org_registration_card' => 'required',
+            'org_vat_card' => ['sometimes', 'nullable'],
+            'org_registration_card' => ['sometimes', 'nullable'],
             'referred_by' => ['sometimes', 'nullable', 'exists:users,referral_code']
         ]);
     }
