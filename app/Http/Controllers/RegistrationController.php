@@ -158,11 +158,11 @@ class RegistrationController extends Controller
             return response($signupOffer['errors'], 400);
 
         $orgVatCard = '';
-        if (!$request->hasFile('org_vat_card'))
+        if ($request->hasFile('org_vat_card'))
             $orgVatCard = $request->file('org_vat_card')->store($this->uploadPath);
 
         $registrationCertificate = '';
-        if (!$request->hasFile('org_registration_card'))
+        if ($request->hasFile('org_registration_card'))
             $registrationCertificate = $request->file('org_registration_card')->store($this->uploadPath);
 
         // convert location string to point
