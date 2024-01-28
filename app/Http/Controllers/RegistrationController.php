@@ -122,7 +122,7 @@ class RegistrationController extends Controller
     public function addVendorAccount(Request $request)
     {
         $validation = $this->vendorValidation($request);
-        if (!$validation->fails())
+        if ($validation->fails())
             return response($validation->errors(), 400);
 
         $creds = new CredentialHelper($request->email);
