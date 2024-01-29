@@ -38,6 +38,7 @@ return new class extends Migration
             $table->boolean('has_logged_in')->default(0);
             $table->string('referral_code')->unique('referral_code');
             $table->string('referred_by')->nullable();
+            $table->string('product_id')->unique('product_id');
             $table->timestamps();
         });
 

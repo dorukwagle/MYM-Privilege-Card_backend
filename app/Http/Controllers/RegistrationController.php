@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use PhpParser\Node\Expr\Cast\Bool_;
+use Illuminate\Support\Str;
 
 class RegistrationController extends Controller
 {
@@ -186,7 +186,8 @@ class RegistrationController extends Controller
             'email_verified' => $addedByAdmin,
             'has_logged_in' => !$addedByAdmin,
             'referred_by' => $request->referred_by,
-            'referral_code' => $this->generateReferralCode($request->email)
+            'referral_code' => $this->generateReferralCode($request->email),
+            'product_id' => Str::orderedUuid()
         ]);
 
         $this->addCategories($request->product_categories, $user->id);
