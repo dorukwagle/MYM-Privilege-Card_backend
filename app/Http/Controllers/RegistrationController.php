@@ -44,7 +44,8 @@ class RegistrationController extends Controller
             'referral_code' => $this->generateReferralCode($request->email)
         ]);
 
-        $this->addCategories($request->preferred_categories, $user->id);
+        if ($request->preferred_categories)
+            $this->addCategories($request->preferred_categories, $user->id);
 
         $creds->sendCredentials();
 
