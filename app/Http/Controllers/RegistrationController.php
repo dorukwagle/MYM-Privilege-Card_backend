@@ -45,7 +45,7 @@ class RegistrationController extends Controller
         ]);
 
         if ($request->preferred_categories)
-            $this->addCategories($request->preferred_categories, $user->id);
+            $this->addCategories($user->id, $request->preferred_categories);
 
         $creds->sendCredentials();
 
@@ -110,7 +110,7 @@ class RegistrationController extends Controller
 
         $user->save();
 
-        $this->addCategories($request->preferred_categories, $user->id);
+        $this->addCategories($user->id, $request->preferred_categories);
     
         return response()->json([
             'status' => 'ok',
@@ -190,7 +190,7 @@ class RegistrationController extends Controller
             'product_id' => Str::orderedUuid()
         ]);
 
-        $this->addCategories($request->product_categories, $user->id);
+        $this->addCategories($user->id, $request->product_categories);
 
         if ($signupOffer) $this->createSignupOffer($user->id, $signupOffer);
 
