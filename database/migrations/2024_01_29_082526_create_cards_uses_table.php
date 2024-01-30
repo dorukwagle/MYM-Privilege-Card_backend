@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('customer_name');
             $table->double('total_price');
             $table->string('discount_amount');
+            $table->boolean('approved')->default(false);
             $table->timestamps();
         });
     }
