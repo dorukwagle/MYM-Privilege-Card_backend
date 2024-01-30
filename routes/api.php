@@ -4,6 +4,7 @@ use App\Helpers\CredentialHelper;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BenefitController;
+use App\Http\Controllers\CardUsesController;
 use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\FeedbackController;
@@ -190,6 +191,8 @@ Route::middleware(['auth', 'auth.vendor'])->group(function () {
         Route::post('/vendor/post/update', [VendorController::class, 'updatePost']);
         Route::delete('/vendor/post/{id}', [VendorController::class, 'deletePost']);
         Route::post('/profile/banner-icon', [ProfileController::class, 'bannerIconUpdate']);
+        Route::get('/vendor/product-qr', [CardUsesController::class, 'getVendorQRData']);
+
         // Route::post('/profile/org-bio', [ProfileController::class, 'orgBioUpdate']);
 });
 
@@ -247,6 +250,9 @@ Route::middleware(['auth', 'auth.customer'])->group(function () {
         // all posts routes support pagination i.e. ?page=2&size=9 for example
 
         Route::post('/cust/device-id', [CustomerController::class, 'setDeviceId']);
+
+        Route::post('/customer/swipe-card/{productid}', [CardUsesController::class, 'claimPurchase'])
+                ->whereAlphaNumeric('productid');
 });
 
 Route::post('/register/customer', [RegistrationController::class, 'registerCustomer']);

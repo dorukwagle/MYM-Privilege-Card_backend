@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Card;
 use App\Models\CardUses;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -38,6 +39,9 @@ class CardUsesController extends Controller
             return $res;
 
         $card = Card::where('user_id', $request->user->id)->get();
+
+        $vendor = User::where('product_id', $productId)->get();
+        if (!$vendor) return response(['invalid merchant' => 'merchant not found'], 404);
 
         CardUses::create([
             'product_id' => $productId,
