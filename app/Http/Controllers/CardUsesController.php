@@ -54,15 +54,41 @@ class CardUsesController extends Controller
         return ['status' => 'ok'];
     }
 
-    public function getPurchaseRequests(Request $request) {
-
-    }
-
-    public function verifyPurchase($productId)
+    public function getPurchaseRequests(Request $request)
     {
+        return CardUses::where('product_id', $request->user->product_id)
+            ->where('approved', false)
+            ->orderBy('created_at')
+            ->get();
     }
 
-    public function deletePurchase($productId)
+    public function verifyPurchase(Request $request, $purchaseId)
     {
+        $res = response(['invalid item', 'item not found'], 400);
+
+        $purchase = CardUses::find($purchaseId);
+        if (!$purchase) return $res;
+
+        if ($purchase->product_id !== $request->user->product_id)
+            return $res;
+
+        $purchase->approved = true;
+        $purchase->save();
+
+        return ['status' => 'ok'];
     }
+
+    public function deletePurchase(Request $request, $purchaseId)
+    {
+        $purchase = CardUses::find($purchaseId);
+
+        if (!$purchase)
+            return response(['invalid item' => 'item not found']);
+
+        if ($purchase->product_id === $request->user->product_id)
+            $purchase->delete();
+
+        return ['status' => 'ok'];
+    }
+    
 }

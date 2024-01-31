@@ -192,6 +192,11 @@ Route::middleware(['auth', 'auth.vendor'])->group(function () {
         Route::delete('/vendor/post/{id}', [VendorController::class, 'deletePost']);
         Route::post('/profile/banner-icon', [ProfileController::class, 'bannerIconUpdate']);
         Route::get('/vendor/product-qr', [CardUsesController::class, 'getVendorQRData']);
+        Route::get('/vendor/card-swipes', [CardUsesController::class, 'getPurchaseRequests']);
+        Route::post('/vendor/approve-card-swipe/{id}', [CardUsesController::class, 'verifyPurchase'])
+                ->whereNumber('id');
+        Route::post('/vendor/reject-card-swipe/{id}', [CardUsesController::class, 'deletePurchase'])
+                ->whereNumber('id');
 
         // Route::post('/profile/org-bio', [ProfileController::class, 'orgBioUpdate']);
 });
@@ -251,8 +256,7 @@ Route::middleware(['auth', 'auth.customer'])->group(function () {
 
         Route::post('/cust/device-id', [CustomerController::class, 'setDeviceId']);
 
-        Route::post('/customer/swipe-card/{productid}', [CardUsesController::class, 'claimPurchase'])
-                ->whereAlphaNumeric('productid');
+        Route::post('/customer/swipe-card/{productid}', [CardUsesController::class, 'claimPurchase']);
 });
 
 Route::post('/register/customer', [RegistrationController::class, 'registerCustomer']);
