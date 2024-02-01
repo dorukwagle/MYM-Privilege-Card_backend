@@ -90,5 +90,26 @@ class CardUsesController extends Controller
 
         return ['status' => 'ok'];
     }
-    
+
+    public function myCustomers(Request $request) {
+        $validation = Validator::make($request->all(), [
+            'size' => ['sometimes', 'nullable', 'numeric', 'min:1'],
+            'page' => ['sometimes', 'nullable', 'numeric', 'min:1']
+        ]);
+
+        $size = $request->filled('size') ? $request->query('size') : 1;
+        $page = $request->filled('page') ? $request->query('page') : 1;
+
+        if ($validation->fails())
+            return response($validation->errors(), 400);
+
+        return CardUses::where('product_id', $request->user->product_id)
+            ->where('approved', true)
+            ->selectRaw('card_no, customer_name, count(*) as total_swipes')
+            ->groupBy('card_no', 'customer_name')
+            ->orderBy('updated_at')
+            ->offset(($page - 1) * $size)
+            ->limit($size)
+            ->get();
+    }    
 }

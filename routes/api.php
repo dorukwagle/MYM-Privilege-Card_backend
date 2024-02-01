@@ -197,6 +197,11 @@ Route::middleware(['auth', 'auth.vendor'])->group(function () {
                 ->whereNumber('id');
         Route::post('/vendor/reject-card-swipe/{id}', [CardUsesController::class, 'deletePurchase'])
                 ->whereNumber('id');
+        
+        Route::get('/vendor/my-customers', [CardUsesController::class, 'myCustomers']);
+        // supports pagination
+
+        
 
         // Route::post('/profile/org-bio', [ProfileController::class, 'orgBioUpdate']);
 });
