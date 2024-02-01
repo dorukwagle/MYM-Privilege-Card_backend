@@ -128,4 +128,17 @@ class CardUsesController extends Controller
             'total_card_swipes' => $totalSwipes
         ];
     }
+
+    public function searchCustomer(Request $request) {
+        $validation = Validator::make($request->all(), [
+            'value' => ['required', 'string'],
+        ]);
+
+        if ($validation->fails())
+            return response($validation->errors(), 400);
+
+        return CardUses::where('product_id', $request->user->product_id)
+            ->whereRaw("card_no like '%?%'  or customer_name like '%?%'", [$request->value, $request->value])
+            ->get();
+    }
 }
