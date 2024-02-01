@@ -112,4 +112,20 @@ class CardUsesController extends Controller
             ->limit($size)
             ->get();
     }    
+
+    public function getTotalCustomerSwipes(Request $request) {
+        $totalUsers = CardUses::where('product_id', $request->user->product_id)
+            ->where('approved', true)
+            ->distinct()
+            ->count('card_no');
+        
+        $totalSwipes = CardUses::where('product_id', $request->user->product_id)
+                ->where('approved', true)
+                ->count('id');
+        
+        return [
+            'total_customers' => $totalUsers,
+            'total_card_swipes' => $totalSwipes
+        ];
+    }
 }

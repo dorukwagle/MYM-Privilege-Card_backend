@@ -201,7 +201,7 @@ Route::middleware(['auth', 'auth.vendor'])->group(function () {
         Route::get('/vendor/my-customers', [CardUsesController::class, 'myCustomers']);
         // supports pagination
 
-        
+        Route::get('/vendor/total-customer-swipes', [CardUsesController::class, 'getTotalCustomerSwipes']);
 
         // Route::post('/profile/org-bio', [ProfileController::class, 'orgBioUpdate']);
 });
