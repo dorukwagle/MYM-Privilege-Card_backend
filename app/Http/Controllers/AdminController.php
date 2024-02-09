@@ -132,7 +132,7 @@ class AdminController extends Controller
     public function assignCard(Request $request, $userId)
     {
         $validation = Validator::make($request->all(), [
-            'card_id' => ['required', 'unique:cards,id', 'regex:/^\d{4}-\d{4}-\d{4}-\d{4}$/'],
+            'card_id' => ['required', 'unique:cards,id'],
             'valid_duration' => ['required', 'numeric', 'min:1', 'max:20']
         ]);
 
