@@ -111,8 +111,8 @@ class CustomerController extends Controller
             return response($validation->errors(), 400);
 
         $userId = $request->user->id;
-        $userLocation = $request->user->coordinates;
-        if (!$userLocation) return response(['err' => 'location not provided'], 404);
+        // $userLocation = $request->user->coordinates;
+        // if (!$userLocation) return response(['err' => 'location not provided'], 404);
 
         $query = DB::table('users')
             ->join('posts', 'users.id', '=', 'posts.user_id')

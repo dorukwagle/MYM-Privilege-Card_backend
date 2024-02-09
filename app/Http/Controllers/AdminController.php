@@ -293,12 +293,12 @@ class AdminController extends Controller
 
         $size = $request->filled('size') ? $request->query('size') : 1;
         $page = $request->filled('page') ? $request->query('page') : 1;
-        $signup = $request->filled('signup') && $request->query('signup') == 'yes';
+        $signup = $request->filled('signup') && $request->query('signup') == 'yes' ? true : false;
 
         if ($validation->fails())
             return response($validation->errors(), 400);
 
-        return Post::where('signup', $signup)
+        return Post::where('is_signup_offer', $signup)
             ->where('approved', false)
             ->orderBy('created_at', 'desc')
             ->offset(($page - 1) * $size)
@@ -308,7 +308,7 @@ class AdminController extends Controller
 
     public function approvePost($postId)
     {
-        $post = Post::find('id', $postId);
+        $post = Post::find($postId);
         if (!$post) return response(['err' => 'not found'], 404);
 
         $post->approved = true;
