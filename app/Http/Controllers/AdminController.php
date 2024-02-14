@@ -317,7 +317,7 @@ class AdminController extends Controller
         // send notification to nearby customers with preferred categories
         SendPostNotifications::dispatch($post);
 
-        return ['status', 'ok'];
+        return ['status' => 'ok'];
     }
 
     public function rejectPost($postId) {
