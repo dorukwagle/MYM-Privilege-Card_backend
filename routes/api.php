@@ -157,6 +157,8 @@ Route::middleware(['auth', 'auth.admin'])->group(function () {
         Route::post('/posts/approve-signup-post/{userid}', [AdminController::class, 'approveSignupPost'])
                 ->whereNumber('userid');
 
+        Route::post('/posts/reject/{postid}', [AdminController::class, 'rejectPost']);
+
         Route::post('/card/benefit', [BenefitController::class, 'addBenefit']);
         // body: title, body
 

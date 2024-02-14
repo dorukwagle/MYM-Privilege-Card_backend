@@ -320,6 +320,11 @@ class AdminController extends Controller
         return ['status', 'ok'];
     }
 
+    public function rejectPost($postId) {
+        Post::find($postId)->delete();
+        return ['status' => 'ok'];
+    }
+
     public function approveSignupPost($userId)
     {
         $post = Post::where('user_id', $userId)
