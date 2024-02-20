@@ -230,10 +230,10 @@ class RegistrationController extends Controller
     private function createSignupOffer($userId, $offer)
     {
         Post::create([
-            'icon' => $offer->icon,
-            'body' => $offer->body,
-            'category_id' => $offer->category_id,
-            'title' => $offer->title,
+            'icon' => $offer["icon"],
+            'body' => $offer["body"],
+            'category_id' => $offer["category_id"],
+            'title' => $offer["title"],
             'user_id' => $userId,
             'is_signup_offer' => true
         ]);
