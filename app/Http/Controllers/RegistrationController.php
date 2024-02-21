@@ -213,15 +213,11 @@ class RegistrationController extends Controller
         if (!$request->filled('title') || !$request->filled('body'))
             return null;
 
-        $icon = '';
-        if ($request->hasFile('icon'))
-            $icon = $request->file('icon')->store($this->uploadPath);
-
         return [
             'title' => $request->title,
             'body' => $request->body,
             'category_id' => $request->category_id,
-            'icon' => $icon,
+            'icon' => $request->hasFile('icon') ? $request->file('icon')->store($this->uploadPath) : "",
             'errors' => $validation->errors(),
             'fails' => $validation->fails()
         ];
