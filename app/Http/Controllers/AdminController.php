@@ -278,6 +278,7 @@ class AdminController extends Controller
                 'email',
                 'contact_no',
                 'account_status',
+                'user_role'
             ]);
 
         return $users;
