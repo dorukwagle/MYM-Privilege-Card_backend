@@ -25,7 +25,8 @@ class AdminSeeder extends Seeder
                 'email_verified' => true,
                 'account_status' => 'verified',
                 'password' => Hash::make('adminpass'),
-                'referral_code' => 'dorukwgl'
+                'referral_code' => 'dorukwgl',
+                'has_logged_in' => true
             ]
         );
     }

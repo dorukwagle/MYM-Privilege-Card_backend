@@ -43,10 +43,11 @@ class AuthController extends Controller
         ]);
         
         $res = $this->getResponse($user, $cookie);
-        if ($user->has_logged_in) {
+        if (!$user->has_logged_in) {
             $user->has_logged_in = true;
             $user->save();
         }
+
         return $res;
     }
 
@@ -80,6 +81,12 @@ class AuthController extends Controller
             'email' => $user->email
         ];
 
+        if ($response['is_first_login']) {
+            $response['full_name'] = $user->full_name; 
+            $response['address'] = $user->address; 
+            $response['contact_no'] = $user->contact_no; 
+        }
+            
         if(!$user->email_verified)
             return response($response, 401);
 
