@@ -8,6 +8,7 @@ use App\Http\Controllers\CardUsesController;
 use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\FeedbackController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PackageController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RegistrationController;
@@ -65,6 +66,19 @@ Route::middleware('auth')->group(function () {
         Route::get('/card/packages', [PackageController::class, 'getPackages']);
 
         Route::get('/profile/referrals', [ProfileController::class, 'getMyReferrals']);
+
+
+        Route::post('/user/device-id', [NotificationController::class, 'setDeviceId']);
+
+        Route::get('/user/notifications', [NotificationController::class, 'getNotifications']);
+        // /card/notifications?page=1&size=9
+
+        Route::post('/user/notifs/mark-as-read/{id}', [NotificationController::class, 'markNotificationAsRead'])
+                ->whereNumber('id');
+        // /cust/notifs-read/5  (marks all the notifications as seen upto this timestamp)
+
+        Route::get('/user/unread-notifs-count', [NotificationController::class, 'getUnreadNotifsCount']);
+        // returns the number new/unread notifications
 });
 
 Route::middleware(['auth', 'auth.admin'])->group(function () {
@@ -244,16 +258,6 @@ Route::middleware(['auth', 'auth.customer'])->group(function () {
         Route::get('/profile/payment-history', [ProfileController::class, 'getPaymentHistory']);
         // returns the payment history of the user
 
-        Route::get('/cust/notifications', [CustomerController::class, 'getNotifications']);
-        // /card/notifications?page=1&size=9
-
-        Route::post('/cust/notifs/mark-as-read/{id}', [CustomerController::class, 'markNotificationAsRead'])
-                ->whereNumber('id');
-        // /cust/notifs-read/5  (marks all the notifications as seen upto this timestamp)
-
-        Route::get('/cust/unread-notifs-count', [CustomerController::class, 'getUnreadNotifsCount']);
-        // returns the number new/unread notifications
-
         Route::get('/cust/search', [CustomerController::class, 'searchVendorPosts']);
         // /cust/search?category=cosmetic (returns all cosmetic posts created by nearby vendors)
 
@@ -261,8 +265,6 @@ Route::middleware(['auth', 'auth.customer'])->group(function () {
         Route::get('/cust/recommended', [CustomerController::class, 'getRecommendedPosts']);
 
         // all posts routes support pagination i.e. ?page=2&size=9 for example
-
-        Route::post('/cust/device-id', [CustomerController::class, 'setDeviceId']);
 
         Route::post('/customer/swipe-card/{productid}', [CardUsesController::class, 'claimPurchase']);
 });
