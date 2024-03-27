@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helpers\CredentialHelper;
 use App\Helpers\PaymentsHelper;
+use App\Jobs\MakeAnnouncements;
 use App\Jobs\SendPostNotifications;
 use App\Models\Card;
 use App\Models\PaymentHistory;
@@ -318,6 +319,31 @@ class AdminController extends Controller
         // send notification to nearby customers with preferred categories
         SendPostNotifications::dispatch($post);
 
+        return ['status' => 'ok'];
+    }
+
+    public function makeAnnouncement(Request $request) {
+        $validation = Validator::make($request->all(), [
+            'title' => ['required', 'string', 'min:3'],
+            'body' => ['required', 'string', 'min:10'],
+            'user_type' => ['required', 'in:all,customer,vendor']
+        ]);
+
+        if ($validation->fails())
+            return response($validation->errors(), 400);
+
+        if (!$request->hasFile('icon'))
+            return response(['icon' => 'icon file required'], 400);
+
+        $post = Post::create([
+            'body' => $request->body,
+            'category_id' => 0,
+            'title' => $request->title,
+            'user_id' => $request->user->id,
+            'approved' => true
+        ]);
+
+        MakeAnnouncements::dispatch($post, $request->user_type);
         return ['status' => 'ok'];
     }
 

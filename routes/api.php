@@ -188,6 +188,8 @@ Route::middleware(['auth', 'auth.admin'])->group(function () {
         Route::get('/user/referrals/{id}', [ProfileController::class, 'getUserReferrals'])
                 ->whereNumber('id');
 
+        Route::post('/admin/announce', [AdminController::class, 'makeAnnouncement']);
+        //body: title, body, user_type
 });
 
 Route::middleware(['auth', 'auth.superadmin'])->group(function() {
