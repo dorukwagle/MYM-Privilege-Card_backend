@@ -33,7 +33,8 @@
             "app/Helpers/PaymentsHelper.php",
             "app/Helpers/QueryHelper.php",
             "app/Helpers/ArrayEqual.php",
-            "app/Helpers/CredentialHelper.php"
+            "app/Helpers/CredentialHelper.php",
+            "app/Helpers/SendGroupPushNotifs.php"
         ]
     },
     "autoload-dev": {

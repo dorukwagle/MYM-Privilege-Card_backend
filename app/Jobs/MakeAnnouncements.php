@@ -14,16 +14,14 @@ class MakeAnnouncements implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     protected $userType;
-    protected $title;
-    protected $body;
+    protected $post;
     /**
      * Create a new job instance.
      */
-    public function __construct($title, $body, $userType)
+    public function __construct($post, $userType)
     {
         $this->userType = $userType;
-        $this->title = $title;
-        $this->body = $body;
+        $this->post = $post;
     }
 
     /**
