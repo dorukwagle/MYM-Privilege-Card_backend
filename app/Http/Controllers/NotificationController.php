@@ -24,9 +24,9 @@ class NotificationController extends Controller
             return response($validation->errors(), 400);
 
         return DB::table('users')
-        ->join('notifications', 'notifications.user_id', '=', 'users.id')
-        ->join('posts', 'posts.id', '=', 'notifications.post_id')
-        ->where('notifications.user_id', $request->user->id)
+            ->join('notifications', 'notifications.user_id', '=', 'users.id')
+            ->join('posts', 'posts.id', '=', 'notifications.post_id')
+            ->where('notifications.user_id', $request->user->id)
             ->selectRaw('notifications.id as id, notifications.read as seen, posts.title, posts.icon, posts.body, posts.category_id')
             ->orderBy('notifications.created_at', 'desc')
             ->offset(($page - 1) * $size)

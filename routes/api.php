@@ -375,3 +375,12 @@ Route::get('/test/pass', function() {
  * do not delete entire user while rejecting vendor, as it can be customer upgrading to vendor
  * add one more account_status flag in database to keep track of dual users verification
  */
+
+/**
+ * TESTS:
+ * create an offer, check if the notification is sent to customer (just to make sure, it isn't messed up)
+ * create an announcement for 'all' then check if both customer&vendor receive the notifcation
+ * create an anouncement for vendor and check if vendor receivs the notification. customer shouldn't receive it
+ * create an announcement for customer, vendor shouldn't receive the notifs. only customer should.
+ * now open customer dashboard and check offers whether the announcement appears as offer. (if it does, that's a bug)
+ */
