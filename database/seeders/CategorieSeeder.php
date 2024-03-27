@@ -15,11 +15,11 @@ class CategorieSeeder extends Seeder
     {
         DB::table('categories')->insert(
             [
-                ['category' => 'Cosmetics'],
-                ['category' => 'Groceries'],
-                ['category' => 'Cold Drinks'],
-                ['category' => 'Hard Drinks'],
-                ['category' => 'Undergarments']
+                ['id' => 1, 'category' => 'Cosmetics'],
+                ['id' => 2, 'category' => 'Groceries'],
+                ['id' => 3, 'category' => 'Cold Drinks'],
+                ['id' => 4, 'category' => 'Hard Drinks'],
+                ['id' => 5, 'category' => 'Undergarments']
             ]
             );
     }

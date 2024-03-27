@@ -24,7 +24,7 @@ class CustomerController extends Controller
         if ($validation->fails())
             return response($validation->errors(), 400);
 
-        $capitalizedSearch = ucwords($request->category);
+        $capitalizedSearch = ucwords($request->search);
         $latLang = explode(", ", $request->user_location);
 
         return DB::table('users')
