@@ -332,9 +332,6 @@ class AdminController extends Controller
         if ($validation->fails())
             return response($validation->errors(), 400);
 
-        if (!$request->hasFile('icon'))
-            return response(['icon' => 'icon file required'], 400);
-
         $post = Post::create([
             'body' => $request->body,
             'category_id' => 0,
