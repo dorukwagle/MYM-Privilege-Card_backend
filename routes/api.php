@@ -381,8 +381,18 @@ Route::get('/test/pass', function() {
 /**
  * TESTS:
  * create an offer, check if the notification is sent to customer (just to make sure, it isn't messed up)
+ * The offer notification is sent to the customer only, not to the vendor.
+ * 
  * create an announcement for 'all' then check if both customer&vendor receive the notifcation
+ * The announcement is not sent to merchant
+ * 
  * create an anouncement for vendor and check if vendor receivs the notification. customer shouldn't receive it
+ * The announcement is sent.
+ * 
  * create an announcement for customer, vendor shouldn't receive the notifs. only customer should.
+ * The announcment is sent.
+ * 
  * now open customer dashboard and check offers whether the announcement appears as offer. (if it does, that's a bug)
+ * The announcement and offer section is currently same so the announcement also appears in the notification.
+ * Different api should be created for announcements and offers in the future.
  */
