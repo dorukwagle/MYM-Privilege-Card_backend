@@ -37,12 +37,12 @@ class MakeAnnouncements implements ShouldQueue
         $filter = ['customer', true];
 
         if ($this->userType == 'all')
-            $users = User::all();
+            $filter = [];
         else if ($this->userType == 'vendor')
             $filter = ['vendor', true];
         else $filter = $filter;
 
-        $users = User::whereRaw('users.user_role = ? or users.is_vend_cust = ?', $filter)
+        $users = $filter ? User::whereRaw('users.user_role = ? or users.is_vend_cust = ?', $filter) : User::all()
         ->selectRaw('id, device_token')
         ->get();
 
