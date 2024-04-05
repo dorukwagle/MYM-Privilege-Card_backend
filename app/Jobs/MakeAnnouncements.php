@@ -33,18 +33,18 @@ class MakeAnnouncements implements ShouldQueue
      */
     public function handle(): void
     {
-        $users = null;
-        $filter = ['customer', true];
+        $users = User::selectRaw('id, device_token');
+        $filter = [];
 
-        if ($this->userType == 'all')
-            $filter = [];
-        else if ($this->userType == 'vendor')
+        if ($this->userType == 'vendor')
             $filter = ['vendor', true];
-        else $filter = $filter;
+        if ($this->userType == 'customer') 
+            $filter = ['customer', true];
 
-        $users = $filter ? User::whereRaw('users.user_role = ? or users.is_vend_cust = ?', $filter) : User::all()
-        ->selectRaw('id, device_token')
-        ->get();
+        if ($filter)
+            $users->whereRaw('users.user_role = ? or users.is_vend_cust = ?', $filter);
+            
+        $users->get();
 
         // initialize array to group all device_id in array
         $groups = new ArrayEqual(480);
