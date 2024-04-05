@@ -16,6 +16,7 @@ use App\Http\Controllers\ResetPasswordController;
 use App\Http\Controllers\VendorController;
 use App\Http\Controllers\VerificationController;
 use App\Models\Package;
+use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
 
@@ -365,8 +366,20 @@ Route::post('/verify/verify-email', [VerificationController::class, 'verifyEmail
 Route::post('/auth/forget-password', [ResetPasswordController::class, 'sendResetOtp']);
 Route::post('/auth/reset-password', [ResetPasswordController::class, 'resetPassword']);
 
-Route::get('/test/pass', function() {
-        return (new RegistrationController())->generateReferralCode("kushal1@gmail.com");
+Route::get('/test/users/{userType}', function($userType) {
+        $users = User::selectRaw('id, full_name, user_role');
+
+        $filter = null;
+
+        if ($userType == 'vendor')
+        $filter = ['vendor', true];
+        if ($userType == 'customer')
+        $filter = ['customer', true];
+
+        if ($filter)
+                $users->whereRaw('users.user_role = ? or users.is_vend_cust = ?', $filter);
+
+        return $users->get();
 });
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
