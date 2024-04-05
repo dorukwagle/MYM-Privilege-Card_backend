@@ -12,6 +12,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Nette\Utils\Arrays;
 
 class MakeAnnouncements implements ShouldQueue
 {
@@ -41,7 +42,7 @@ class MakeAnnouncements implements ShouldQueue
         if ($this->userType == 'customer') 
             $filter = ['customer', true];
 
-        if ($filter)
+        if (!empty($filter))
             $users->whereRaw('users.user_role = ? or users.is_vend_cust = ?', $filter);
             
         $users->get();
